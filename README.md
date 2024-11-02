@@ -2,7 +2,10 @@
 
 Secure Multifactor Authentication System with High-security Biometric Recognition and Optical eXecution
 
-### Concept
+### Authors
+
+- Francesco Marzo @fmarzo
+- Simone Bugo @simonebugo
 ...
 ...
 ...
