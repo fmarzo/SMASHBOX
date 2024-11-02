@@ -3,6 +3,8 @@ import requests
 import serial.tools.list_ports
 from serial.rfc2217 import Serial
 
+SERIAL_BAUDRATE = 9600
+URL_DEVICE = "http://demo.thingsboard.io/api/v1/o0SzxyiH8fZWK1uQrRh2/telemetry"
 
 def main ():
     # show port available and print it
@@ -17,12 +19,8 @@ def main ():
 
     while True:
         val = ser.read(1)
-
         strval =  "{temperature:%d}" % int.from_bytes(val)
-        print(strval)
-        #print("{temperature:" + str(int(val.hex()) + "}"))
-        r = requests.post("http://demo.thingsboard.io/api/v1/o0SzxyiH8fZWK1uQrRh2/telemetry", data=strval)
-
+        r = requests.post(URL_DEVICE, data=strval)
 
 #entry point
 if __name__ == '__main__':
