@@ -9,7 +9,7 @@ import Box
 from serial.rfc2217 import Serial
 
 URL_DEVICE_1 = "http://demo.thingsboard.io/api/v1/o0SzxyiH8fZWK1uQrRh2/telemetry"
-URL_DEVICE_2 = "http://demo.thingsboard.io/api/v1/QC2PthzFKhkp9AJAW2z/telemetry"
+URL_DEVICE_2 = "http://demo.thingsboard.io/api/v1/7QC2PthzFKhkp9AJAW2z/telemetry"
 URL_DEVICE_3 = "http://demo.thingsboard.io/api/v1/wbUjViNjPWcBp2iyHGDy/telemetry"
 
 
