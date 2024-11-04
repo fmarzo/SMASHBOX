@@ -12,8 +12,7 @@ URL_DEVICE_1 = "http://demo.thingsboard.io/api/v1/o0SzxyiH8fZWK1uQrRh2/telemetry
 URL_DEVICE_2 = "http://demo.thingsboard.io/api/v1/7QC2PthzFKhkp9AJAW2z/telemetry"
 URL_DEVICE_3 = "http://demo.thingsboard.io/api/v1/wbUjViNjPWcBp2iyHGDy/telemetry"
 
-
-SERIAL_BAUDRATE = 9600
+#SERIAL_BAUDRATE = 9600
 
 def main ():
     # show port available and print it
@@ -31,21 +30,24 @@ def main ():
 
         # BOX 1
         val = random.randint(0,10)
-        lock = random.randint (0,1)
+        lock = 0
+        #lock = random.randint (0,1)
         print("BOX_1 " + str(val) + " " + str(lock))
         strval =  "{temperature:%d, lock:%d}" % (val,lock)
         r = requests.post(URL_DEVICE_1, data=strval)
 
         # BOX 2
         val = random.randint(0,10)
-        lock = random.randint (0,1)
+        #lock = random.randint (0,1)
+        lock = 0
         print("BOX_2 " + str(val) + " " + str(lock))
         strval =  "{temperature:%d, lock:%d}" % (val,lock)
         r = requests.post(URL_DEVICE_2, data=strval)
 
         # BOX 3
         val = random.randint(0,10)
-        lock = random.randint (0,1)
+        #lock = random.randint (0,1)
+        lock = 0
         print("BOX_3 " + str(val) + " " + str(lock))
         strval =  "{temperature:%d, lock:%d}" % (val,lock)
         r = requests.post(URL_DEVICE_3, data=strval)
