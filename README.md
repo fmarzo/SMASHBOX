@@ -1,4 +1,4 @@
-# SMASHBROX
+# SMASHBOX
 
 Secure Multifactor Authentication System with High-security Biometric and Optical eXecution
 
