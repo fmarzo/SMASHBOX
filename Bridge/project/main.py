@@ -13,6 +13,7 @@ URL_DEVICE_2 = "http://demo.thingsboard.io/api/v1/7QC2PthzFKhkp9AJAW2z/telemetry
 URL_DEVICE_3 = "http://demo.thingsboard.io/api/v1/wbUjViNjPWcBp2iyHGDy/telemetry"
 
 #SERIAL_BAUDRATE = 9600
+#SERIAL_COM = "COM1"
 
 def main ():
     # show port available and print it
