@@ -10,7 +10,7 @@ import paho.mqtt.client as mqtt
 
 # Thingsboard platform credentials
 THINGSBOARD_HOST = 'demo.thingsboard.io'
-ACCESS_TOKEN = '7nxoq3udn22iyy2inrwh'
+ACCESS_TOKEN = '1EB9tCjP9BbUM7IYIqAe'
 button_state = {"enabled": False}
 
 
@@ -25,7 +25,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe('v1/devices/me/rpc/request/+')
 
 
-# MQTT on_message caallback function
+# MQTT on_message callback function
 def on_message(client, userdata, msg):
     print('Topic: ' + msg.topic + '\nMessage: ' + str(msg.payload))
     if msg.topic.startswith('v1/devices/me/rpc/request/'):
