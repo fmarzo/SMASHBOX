@@ -25,7 +25,7 @@ def main ():
    #        ser = serial.Serial(p.name, SERIAL_BAUDRATE)
    #        break
 
-    while True:
+    #while True:
         #val = ser.read(1)
 
         ## BOX 1
@@ -53,13 +53,13 @@ def main ():
         #r = requests.post(URL_DEVICE_3, data=strval)
 
         # BOX 5
-        val = random.randint(0, 10)
-        lock = 0
-        print("BOX_5: " + str(val) + " " + str(lock))
-        strval = '{"temperature":%d, "lock": %d}' % (val,lock)
-        print (strval)
-        r = requests.post(URL_DEVICE_5, data=strval)
-        sleep(1)
+    val = random.randint(0, 10)
+    lock = 1
+    print("BOX_5: " + str(val) + " " + str(lock))
+    strval = '{"temperature":%d, "lock": %d}' % (val,lock)
+    print (strval)
+    r = requests.post(URL_DEVICE_5, data=strval)
+    sleep(1)
 
 #entry point
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ import random
 import paho.mqtt.client as mqtt
 
 # Thingsboard platform credentials
-THINGSBOARD_HOST = 'demo.thingsboard.io'
+THINGSBOARD_HOST = 'broker.hivemq.com'
 ACCESS_TOKEN = '1EB9tCjP9BbUM7IYIqAe'
 button_state = {"enabled": False}
 
