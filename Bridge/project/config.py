@@ -21,3 +21,8 @@ TEMP_PARAM = 10
 
 SERIAL_BAUDRATE = 9600
 SERIAL_COM = "COM1"
+
+#FIREBASE PARAMS
+
+DATABASE_URL = "https://customerlist-970ff-default-rtdb.europe-west1.firebasedatabase.app/"
+CREDENTIALS_PATH = "credential.json"

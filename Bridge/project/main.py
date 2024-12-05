@@ -1,14 +1,10 @@
 import random
 from time import sleep
 
-import serialpy
 import requests
-import serial.tools.list_ports
-from serial.rfc2217 import Serial
-import paho.mqtt.client as mqtt
-from box import Box
+from models.box import Box
 import config
-from client import Client
+from models.client import Client
 from firebase_db import FirebaseDB
 
 
@@ -37,6 +33,8 @@ def main ():
     client_6 = Client("Pippo", "Franco", 12, "pippo.franco@gogo.com")
 
     firebase_db.insert_new_customer(box_6, client_6)
+
+    firebase_db.client_validity(2)
 
     while True:
         #TODO: Read from Acquisition Module

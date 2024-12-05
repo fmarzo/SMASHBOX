@@ -1,15 +1,12 @@
 import firebase_admin
 from firebase_admin import db, credentials
-from google.auth.environment_vars import CREDENTIALS
+import config
 
-
-DATABASE_URL = "https://customerlist-970ff-default-rtdb.europe-west1.firebasedatabase.app/"
-CREDENTIALS_PATH = "credential.json"
 class FirebaseDB:
     def __init__(self):
-        self.__cred = credentials.Certificate(CREDENTIALS_PATH)
-        self.__database_url = DATABASE_URL
-        self.__customers_id = list()
+        self.__cred = credentials.Certificate(config.CREDENTIALS_PATH)
+        self.__database_url = config.DATABASE_URL
+        self.__customer_list = list()
         self.__n_cust = 0
         self.db_init()
 
@@ -24,10 +21,10 @@ class FirebaseDB:
 
         for id in range(self.__n_cust):
             ref = db.reference(f"/Customers/Client{id}/ID").get()
-            self.__customers_id.append(ref)
+            self.__customer_list.append(ref)
 
     def fetch_customers_id(self):
-        return self.__customers_id
+        return self.__customer_list
 
     def insert_new_customer(self, Box, Client):
         #check if already exists
@@ -41,6 +38,15 @@ class FirebaseDB:
         print("Stampo il numero di customers" + str(self.__n_cust))
         ref = db.reference(f"/Customers/Client{self.__n_cust}")
         ref.push(new_item)
+
+    def client_validity(self, id_client, id_box):
+            id_list = self.fetch_customers_id()
+            for id in id_list:
+                if id == id_client:
+                    id_box_assigned = db.reference(f"/Customers/Client{id}/Box").get()
+                    if id_box_assigned == id_box:
+                        return True
+            return False
 
 
 
