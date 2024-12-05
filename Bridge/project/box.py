@@ -1,6 +1,6 @@
 class Box:
-  def __init__(self, id, url_dev):
-    self.id = id
+  def __init__(self, box_id, url_dev):
+    self.id = box_id
     self.__url_device = url_dev
     self.__lock = 0
     self.__temperature = 0
@@ -29,3 +29,4 @@ class Box:
 
   def get_url_dev(self):
       return self.__url_device
+
