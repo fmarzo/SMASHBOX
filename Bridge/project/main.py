@@ -7,6 +7,8 @@ import config
 from models.client import Client
 from firebase_db import FirebaseDB
 
+INJECT = 0
+
 
 def simulate_param(param):
     if param == config.LOCK_PARAM:
@@ -24,17 +26,28 @@ def main ():
     #TODO: connect to Acquisition Module
 
     firebase_db = FirebaseDB()
+
     box_1 = Box(1, config.URL_DEVICE_1)
     box_2 = Box(2, config.URL_DEVICE_2)
     box_3 = Box(3, config.URL_DEVICE_3)
     box_4 = Box(4, config.URL_DEVICE_4)
     box_5 = Box(5, config.URL_DEVICE_5)
-    box_6 = Box (6, config.URL_DEVICE_5)
-    client_6 = Client("Pippo", "Franco", 12, "pippo.franco@gogo.com")
 
-    firebase_db.insert_new_customer(box_6, client_6)
+    cli_1 = Client("El", "Tucu", 1, "eltucuman@gmail.com")
+    cli_2 = Client("Tu", "Tucu", 1, "eltucuman@gmail.com")
+    cli_3 = Client("Cu", "Tucu", 1, "eltucuman@gmail.com")
+    cli_4 = Client("Ma", "Tucu", 1, "eltucuman@gmail.com")
+    cli_5 = Client("No", "Tucu", 1, "eltucuman@gmail.com")
 
-    firebase_db.client_validity(2)
+    if INJECT == 1:
+        firebase_db.insert_new_customer(box_1, cli_1)
+        firebase_db.insert_new_customer(box_2, cli_2)
+        firebase_db.insert_new_customer(box_3, cli_3)
+        firebase_db.insert_new_customer(box_4, cli_4)
+        firebase_db.insert_new_customer(box_5, cli_5)
+
+    #find test
+    firebase_db.client_validity(1,1)
 
     while True:
         #TODO: Read from Acquisition Module
@@ -66,12 +79,15 @@ def main ():
         box_5.set_lock(simulate_param(config.LOCK_PARAM))
         requests.post(box_5.get_url_dev(),data=prepare_packet_str(box_5))
 
-        print(firebase_db.fetch_customers_id())
+        print("fetching")
+        firebase_db.fetch_customers_id()
+        firebase_db.client_validity(12, 3)
         sleep(1)
 
 #entry point
 if __name__ == '__main__':
     main()
+
 
 
 

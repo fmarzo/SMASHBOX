@@ -13,15 +13,13 @@ class FirebaseDB:
     def db_init(self):
         firebase_admin.initialize_app(self.__cred, {
             "databaseURL": self.__database_url})
-        cust_list = db.reference(f"/Customers").get()
-        if cust_list:
-            self.__n_cust = len(cust_list)
-            print("Stampo il numero di customers")
-            print(self.__n_cust)
+        self.update_customers_list()
+        if self.__customer_list:
+            self.__n_cust = len(self.__customer_list)
+            print("Stampo il numero di customers " + str(self.__n_cust))
 
-        for id in range(self.__n_cust):
-            ref = db.reference(f"/Customers/Client{id}/ID").get()
-            self.__customer_list.append(ref)
+    def update_customers_list(self):
+        self.__customer_list = db.reference(f"/Customers").get().items()
 
     def fetch_customers_id(self):
         return self.__customer_list
@@ -35,18 +33,23 @@ class FirebaseDB:
             "Name": Client.name,
             "Surname": Client.surname
         }
-        print("Stampo il numero di customers" + str(self.__n_cust))
-        ref = db.reference(f"/Customers/Client{self.__n_cust}")
+        ref = db.reference(f"/Customers")
         ref.push(new_item)
 
     def client_validity(self, id_client, id_box):
-            id_list = self.fetch_customers_id()
-            for id in id_list:
-                if id == id_client:
-                    id_box_assigned = db.reference(f"/Customers/Client{id}/Box").get()
-                    if id_box_assigned == id_box:
-                        return True
-            return False
+        self.update_customers_list()
+        for key, item in self.__customer_list:
+            if item.get('ID') == id_client:
+                print (f"Found client ID {id_client}")
+                if item.get('Box') == id_box:
+                    print(f"Client ID {id_client} has Box {id_box}")
+                    return
+        print("No matches!")
+
+
+
+
+
 
 
 
