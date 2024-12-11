@@ -18,12 +18,10 @@ def setValue(params):
     button_state['enabled'] = params
     print("Rx setValue is : ", button_state)
 
-
 # MQTT on_connect callback function
 def on_connect(client, userdata, flags, rc):
     print("rc code:", rc)
     client.subscribe('v1/devices/me/rpc/request/+')
-
 
 # MQTT on_message callback function
 def on_message(client, userdata, msg):
@@ -41,7 +39,6 @@ def on_message(client, userdata, msg):
             params = data['params']
             setValue(params)
             client.publish('v1/devices/me/attributes', json.dumps(button_state), 1)
-
 
 # start the client instance
 client = mqtt.Client()

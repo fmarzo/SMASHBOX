@@ -7,7 +7,7 @@ import config
 from models.client import Client
 from firebase_db import FirebaseDB
 
-INJECT = 0
+INJECT = 1
 
 
 def simulate_param(param):
@@ -42,7 +42,13 @@ def main ():
         firebase_db.insert_new_customer(box_5, cli_5)
 
     #find test
-    firebase_db.delete_customer(1003,3)
+    firebase_db.delete_customer(box_1,cli_1)
+    firebase_db.delete_customer(box_2,cli_2)
+    firebase_db.delete_customer(box_3,cli_3)
+    firebase_db.delete_customer(box_4,cli_4)
+    firebase_db.delete_customer(box_5,cli_5)
+
+    return
     while True:
         #TODO: Read from Acquisition Module
         #val = ser.read(1)

@@ -19,6 +19,7 @@ class FirebaseDB:
 
     def update_customers_list(self):
         self.__customer_list = db.reference(f"/Customers").get().items()
+        self.__n_cust = len(self.__customer_list)
 
     def get_db_reference (self):
         return db.reference(f"/Customers")
@@ -27,37 +28,50 @@ class FirebaseDB:
         return self.__customer_list
 
     def insert_new_customer(self, Box, Client):
-        #check if already exists
-        new_item = {
-            "Box": Box.id,
-            "ID": Client.client_id,
-            "Mail": Client.mail,
-            "Name": Client.name,
-            "Surname": Client.surname
-        }
-        ref = db.reference(config.DB_ROOT_PATH)
-        ref.push(new_item)
+        print("Trying to insert a new customer..")
+        client = self.find_client(Client.client_id,Box.id)
+        if not client[0] & self.__n_cust != 0:
+            new_item = {
+                "Box": Box.id,
+                "ID": Client.client_id,
+                "Mail": Client.mail,
+                "Name": Client.name,
+                "Surname": Client.surname
+            }
+            ref = db.reference(config.DB_ROOT_PATH)
+            ref.push(new_item)
+            self.update_customers_list()
+        else:
+            print("Customer exists already!")
 
     def delete_customer(self, Box, Client):
-        client = self.find_client(Box,Client)
+        client = self.find_client(Client.client_id,Box.id)
         if client[0]:
             ref = self.get_db_reference()
             ref.child(client[1]).delete()
             print(f"Deleted client {Client.client_id} related to {Box.id}")
+            self.update_customers_list()
         else:
             print("No Deletion!")
 
     def find_client(self, id_client, id_box):
-        print(self.update_customers_list())
-        for key, item in self.__customer_list:
-            if item.get(config.DB_FIELD_ID) == id_client:
-                if item.get(config.DB_FIELD_BOX) == id_box:
-                    print("Name " + item.get(config.DB_FIELD_NAME))
-                    print("Surname " + item.get(config.DB_FIELD_SURNAME))
-                    print(f"Client ID {id_client} has Box {id_box}")
-                    return True, key, item
-        print("No matches!")
-        return False, None
+        if self.__n_cust != 0:
+            for key, item in self.__customer_list:
+                if item.get(config.DB_FIELD_ID) == id_client:
+                    if item.get(config.DB_FIELD_BOX) == id_box:
+                        print ("Found Customers" + "Name " + item.get(config.DB_FIELD_NAME) +
+                               f"Surname " + item.get(config.DB_FIELD_SURNAME) +
+                               f"Client ID {id_client} has Box {id_box}")
+                        return True, key, item
+            print("No matches!")
+            return False, None, None
+        else:
+            print("Customer list empty!")
+            return False, None, None
+
+    #TODO: Add routine to query clients trough client_id
+    #TODO: Add routine to query clients trough box_id
+
 
 
 
