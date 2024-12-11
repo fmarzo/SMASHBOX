@@ -9,7 +9,14 @@ import random
 
 SERIAL_BAUDRATE = 9600
 SERIAL_COM = "/dev/cu.usbmodem101"
-N_BYTES = 7
+N_BYTES = 8
+
+#0 presence/absence
+#1-2 temperature
+#3-4 humidity
+#5 infringement
+#6 lock/unlock
+#7 open/closed
 
 def main ():
     # show port available and print it
