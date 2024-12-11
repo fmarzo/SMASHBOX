@@ -42,8 +42,7 @@ def main ():
         firebase_db.insert_new_customer(box_5, cli_5)
 
     #find test
-    firebase_db.client_validity(1003,3)
-
+    firebase_db.delete_customer(1003,3)
     while True:
         #TODO: Read from Acquisition Module
         #val = ser.read(1)
@@ -75,7 +74,7 @@ def main ():
         requests.post(box_5.get_url_dev(),box_5.get_packet_str())
 
         print("searching for client..")
-        firebase_db.client_validity(1001, 1)
+        firebase_db.find_client(1001, 1)
         sleep(1)
 
 #entry point

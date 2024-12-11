@@ -13,13 +13,15 @@ class FirebaseDB:
     def db_init(self):
         firebase_admin.initialize_app(self.__cred, {
             "databaseURL": self.__database_url})
-        #self.update_customers_list()
         if self.__customer_list:
             self.__n_cust = len(self.__customer_list)
             print("Stampo il numero di customers " + str(self.__n_cust))
 
     def update_customers_list(self):
         self.__customer_list = db.reference(f"/Customers").get().items()
+
+    def get_db_reference (self):
+        return db.reference(f"/Customers")
 
     def fetch_customers_id(self):
         return self.__customer_list
@@ -36,7 +38,16 @@ class FirebaseDB:
         ref = db.reference(config.DB_ROOT_PATH)
         ref.push(new_item)
 
-    def client_validity(self, id_client, id_box):
+    def delete_customer(self, Box, Client):
+        client = self.find_client(Box,Client)
+        if client[0]:
+            ref = self.get_db_reference()
+            ref.child(client[1]).delete()
+            print(f"Deleted client {Client.client_id} related to {Box.id}")
+        else:
+            print("No Deletion!")
+
+    def find_client(self, id_client, id_box):
         print(self.update_customers_list())
         for key, item in self.__customer_list:
             if item.get(config.DB_FIELD_ID) == id_client:
@@ -44,8 +55,9 @@ class FirebaseDB:
                     print("Name " + item.get(config.DB_FIELD_NAME))
                     print("Surname " + item.get(config.DB_FIELD_SURNAME))
                     print(f"Client ID {id_client} has Box {id_box}")
-                    return
+                    return True, key, item
         print("No matches!")
+        return False, None
 
 
 
