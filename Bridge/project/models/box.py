@@ -30,3 +30,8 @@ class Box:
   def get_url_dev(self):
       return self.__url_device
 
+  def get_packet_str(self):
+      strval = '{"ID": "%d","temperature":%d, "lock": %d}' % (self.id, self.get_temp(), self.get_lock())
+      print(strval)
+      return strval
+

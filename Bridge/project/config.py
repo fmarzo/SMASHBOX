@@ -24,5 +24,11 @@ SERIAL_COM = "COM1"
 
 #FIREBASE PARAMS
 
-DATABASE_URL = "https://customerlist-970ff-default-rtdb.europe-west1.firebasedatabase.app/"
-CREDENTIALS_PATH = "credential.json"
+DB_DATABASE_URL = "https://customerlist-970ff-default-rtdb.europe-west1.firebasedatabase.app/"
+DB_CREDENTIALS_PATH = "credential.json"
+DB_FIELD_NAME = 'Name'
+DB_FIELD_SURNAME = 'Surname'
+DB_FIELD_ID = 'ID'
+DB_FIELD_BOX = 'Box'
+DB_FIELD_MAIL = 'Mail'
+DB_ROOT_PATH = "/Customers"
