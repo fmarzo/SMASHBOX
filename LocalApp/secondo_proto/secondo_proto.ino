@@ -15,6 +15,8 @@ Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); //SDO low
 double X,Y,Z;
 sensors_event_t humidity, temp;
+String pres, infr, lock;
+int read;
 
 void setup() {
   Serial.begin(9600);
@@ -53,31 +55,47 @@ void setup() {
       delay(100);
     }
   }
-  
+  lock = "0"; //di default non è attivo il lock
+ 
 }
 
 void loop() {
+  // Lettura di 1 byte dalla Serial 
+  if (Serial.available() > 0) {
+    read = Serial.read();
+    if(read == 49){
+      lock = "1";
+    }
+    else{
+      lock = "0";
+    }
+    while(Serial.available()){
+        Serial.read();
+      } //modo per pulire il buffer
+  }
+
   if(digitalRead(4)==LOW){
-    Serial.print("1");
+    pres = "1";
   }
   else
   {
-    Serial.print("0");
+    pres = "0";
   }
   aht.getEvent(&humidity, &temp);
-  Serial.print(round(temp.temperature));
-  Serial.print(round(humidity.relative_humidity));
   if (accel.update()) {
     // Versione in cui invio allarme
     if (abs(X - accel.getX()) > 0.5 || abs(Y - accel.getY()) > 0.5 ||abs(Z - accel.getZ()) > 0.5 ){
-      Serial.print("1");
+      infr = "1";
     }
     else{
-      Serial.print("0");
+      infr = "0";
     }
     X = accel.getX();
     Y = accel.getY();
     Z = accel.getZ();
+    //Serial.print("\n");
+    Serial.print(pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock);
+
   } else {
     Serial.println("X6");
     while(1) {
