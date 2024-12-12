@@ -56,7 +56,6 @@ def main ():
     firebase_db.delete_customer(box_5,cli_5)
     sleep(1)
 
-    return
     while True:
         #TODO: Read from Acquisition Module
         #val = ser.read(1)
