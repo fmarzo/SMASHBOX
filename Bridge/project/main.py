@@ -36,17 +36,26 @@ def main ():
 
     if INJECT == 1:
         firebase_db.insert_new_customer(box_1, cli_1)
+        sleep(1)
         firebase_db.insert_new_customer(box_2, cli_2)
+        sleep(1)
         firebase_db.insert_new_customer(box_3, cli_3)
+        sleep(1)
         firebase_db.insert_new_customer(box_4, cli_4)
+        sleep(1)
         firebase_db.insert_new_customer(box_5, cli_5)
 
     #find test
     firebase_db.delete_customer(box_1,cli_1)
+    sleep(1)
     firebase_db.delete_customer(box_2,cli_2)
+    sleep(1)
     firebase_db.delete_customer(box_3,cli_3)
+    sleep(1)
     firebase_db.delete_customer(box_4,cli_4)
+    sleep(1)
     firebase_db.delete_customer(box_5,cli_5)
+    sleep(1)
 
     return
     while True:

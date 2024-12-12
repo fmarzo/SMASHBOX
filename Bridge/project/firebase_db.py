@@ -1,5 +1,7 @@
 import firebase_admin
 from firebase_admin import db, credentials
+from serialpy.utils import update
+
 import config
 
 class FirebaseDB:
@@ -13,16 +15,28 @@ class FirebaseDB:
     def db_init(self):
         firebase_admin.initialize_app(self.__cred, {
             "databaseURL": self.__database_url})
-        if self.__customer_list:
-            self.__n_cust = len(self.__customer_list)
-            print("Stampo il numero di customers " + str(self.__n_cust))
+
+        if not self.check_emptiness():
+                self.__n_cust = len(self.__customer_list)
+                print("Stampo il numero di customers " + str(self.__n_cust))
+        else:
+            self.__n_cust = 0
 
     def update_customers_list(self):
-        self.__customer_list = db.reference(f"/Customers").get().items()
-        self.__n_cust = len(self.__customer_list)
+        if not self.check_emptiness():
+            self.__customer_list = db.reference(f"/Customers").get().items()
+            self.__n_cust = len(self.__customer_list)
+        else:
+            self.__n_cust = 0
 
     def get_db_reference (self):
         return db.reference(f"/Customers")
+
+    def check_emptiness(self):
+        if self.get_db_reference().get() is None:
+            return True
+        else:
+            return False
 
     def fetch_customers_id(self):
         return self.__customer_list
@@ -30,7 +44,8 @@ class FirebaseDB:
     def insert_new_customer(self, Box, Client):
         print("Trying to insert a new customer..")
         client = self.find_client(Client.client_id,Box.id)
-        if not client[0] & self.__n_cust != 0:
+        if not client[0]:
+            # This Customer does not exists, proceed with insertion
             new_item = {
                 "Box": Box.id,
                 "ID": Client.client_id,
@@ -47,12 +62,14 @@ class FirebaseDB:
     def delete_customer(self, Box, Client):
         client = self.find_client(Client.client_id,Box.id)
         if client[0]:
+            # Client Exists, proceed with deletion
             ref = self.get_db_reference()
             ref.child(client[1]).delete()
             print(f"Deleted client {Client.client_id} related to {Box.id}")
             self.update_customers_list()
         else:
-            print("No Deletion!")
+            # No Customer found
+            print("No Customer found! No Deletion")
 
     def find_client(self, id_client, id_box):
         if self.__n_cust != 0:
@@ -66,7 +83,7 @@ class FirebaseDB:
             print("No matches!")
             return False, None, None
         else:
-            print("Customer list empty!")
+            print("Customer list is empty!")
             return False, None, None
 
     #TODO: Add routine to query clients trough client_id
