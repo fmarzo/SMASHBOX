@@ -9,7 +9,6 @@ from firebase_db import FirebaseDB
 
 INJECT = 1
 
-
 def simulate_param(param):
     if param == config.LOCK_PARAM:
         val = 1
