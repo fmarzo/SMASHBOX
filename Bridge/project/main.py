@@ -67,6 +67,9 @@ def main ():
         # BOX 1
         box_1.temperature = (simulate_param(config.TEMP_PARAM))
         box_1.lock = (simulate_param(config.LOCK_PARAM))
+        box_1.humidity = (simulate_param(config.TEMP_PARAM))
+        box_1.presence = (simulate_param(config.TEMP_PARAM))
+        box_1.open = (simulate_param(config.TEMP_PARAM))
         requests.post(box_1.get_url_dev(), box_1.get_packet_str())
 
         # BOX 2
