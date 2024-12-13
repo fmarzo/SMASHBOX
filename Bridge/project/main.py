@@ -55,6 +55,11 @@ def main ():
     sleep(1)
     firebase_db.delete_customer(box_5,cli_5)
     sleep(1)
+    #test on update
+    firebase_db.update_customer(box_5,cli_5, {'Names' : 'Tuccu'})
+    sleep(1)
+
+    return
 
     while True:
         #TODO: Read from Acquisition Module

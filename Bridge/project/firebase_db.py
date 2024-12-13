@@ -17,6 +17,7 @@ class FirebaseDB:
             "databaseURL": self.__database_url})
 
         if not self.check_emptiness():
+                self.update_customers_list()
                 self.__n_cust = len(self.__customer_list)
                 print("Stampo il numero di customers " + str(self.__n_cust))
         else:
@@ -70,6 +71,18 @@ class FirebaseDB:
         else:
             # No Customer found
             print("No Customer found! No Deletion")
+
+    def update_customer(self, Box, Client, updates):
+        client = self.find_client(Client.client_id,Box.id)
+        if client[0]:
+            # Client Exists, proceed with update
+            ref = self.get_db_reference()
+            ref.child(client[1]).update(updates)
+            print(f"Updated client {Client.client_id} related to {Box.id}")
+            self.update_customers_list()
+        else:
+            # No Customer found
+            print("No Customer found! No Update")
 
     def find_client(self, id_client, id_box):
         if self.__n_cust != 0:
