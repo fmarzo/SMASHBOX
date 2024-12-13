@@ -7,7 +7,7 @@ import config
 from models.client import Client
 from firebase_db import FirebaseDB
 
-INJECT = 1
+INJECT = 0
 
 def simulate_param(param):
     if param == config.LOCK_PARAM:
@@ -45,21 +45,19 @@ def main ():
         firebase_db.insert_new_customer(box_5, cli_5)
 
     #find test
-    firebase_db.delete_customer(box_1,cli_1)
-    sleep(1)
-    firebase_db.delete_customer(box_2,cli_2)
-    sleep(1)
-    firebase_db.delete_customer(box_3,cli_3)
-    sleep(1)
-    firebase_db.delete_customer(box_4,cli_4)
-    sleep(1)
-    firebase_db.delete_customer(box_5,cli_5)
-    sleep(1)
-    #test on update
-    firebase_db.update_customer(box_5,cli_5, {'Names' : 'Tuccu'})
-    sleep(1)
-
-    return
+    #firebase_db.delete_customer(box_1,cli_1)
+    #sleep(1)
+    #firebase_db.delete_customer(box_2,cli_2)
+    #sleep(1)
+    #firebase_db.delete_customer(box_3,cli_3)
+    #sleep(1)
+    #firebase_db.delete_customer(box_4,cli_4)
+    #sleep(1)
+    #firebase_db.delete_customer(box_5,cli_5)
+    #sleep(1)
+    ##test on update
+    #firebase_db.update_customer(box_5,cli_5, {'Names' : 'Tuccu'})
+    #sleep(1)
 
     while True:
         #TODO: Read from Acquisition Module
@@ -67,28 +65,28 @@ def main ():
 
         #Simulation starts here
         # BOX 1
-        box_1.set_temp(simulate_param(config.TEMP_PARAM))
-        box_1.set_lock(simulate_param(config.LOCK_PARAM))
+        box_1.temperature = (simulate_param(config.TEMP_PARAM))
+        box_1.lock = (simulate_param(config.LOCK_PARAM))
         requests.post(box_1.get_url_dev(), box_1.get_packet_str())
 
         # BOX 2
-        box_2.set_temp(simulate_param(config.TEMP_PARAM))
-        box_2.set_lock(simulate_param(config.LOCK_PARAM))
+        box_2.temperature = (simulate_param(config.TEMP_PARAM))
+        box_2.lock = (simulate_param(config.LOCK_PARAM))
         requests.post(box_2.get_url_dev(), box_2.get_packet_str())
 
         # BOX 3
-        box_3.set_temp(simulate_param(config.TEMP_PARAM))
-        box_3.set_lock(simulate_param(config.LOCK_PARAM))
+        box_3.temperature = (simulate_param(config.TEMP_PARAM))
+        box_3.lock = (simulate_param(config.LOCK_PARAM))
         requests.post(box_3.get_url_dev(),box_3.get_packet_str())
 
         # BOX 4
-        box_4.set_temp(simulate_param(config.TEMP_PARAM))
-        box_4.set_lock(simulate_param(config.LOCK_PARAM))
+        box_4.temperature = (simulate_param(config.TEMP_PARAM))
+        box_4.lock = (simulate_param(config.LOCK_PARAM))
         requests.post(box_4.get_url_dev(),box_4.get_packet_str())
 
         # BOX 5
-        box_5.set_temp(simulate_param(config.TEMP_PARAM))
-        box_5.set_lock(simulate_param(config.LOCK_PARAM))
+        box_5.temperature = (simulate_param(config.TEMP_PARAM))
+        box_5.lock = (simulate_param(config.LOCK_PARAM))
         requests.post(box_5.get_url_dev(),box_5.get_packet_str())
 
         print("searching for client..")
