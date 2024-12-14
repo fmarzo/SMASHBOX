@@ -1,4 +1,5 @@
 import random
+from importlib import import_module
 from time import sleep
 import serial
 import requests
@@ -6,6 +7,8 @@ from models.box import Box
 import config
 from models.client import Client
 from firebase_db import FirebaseDB
+from database.mqtt import MqttClient
+
 
 INJECT_CUSTOMERS = 0
 DELETE_CUSTOMERS = 0
@@ -20,6 +23,10 @@ def main ():
 
     #Firebase Database
     firebase_db = FirebaseDB()
+
+    #Mqtt alarm server
+    mqtt = MqttClient(config.BROKER, config.PORT, config.TOPIC)
+    mqtt.start_mqtt()
 
     #Entities
     box_1 = Box(1, config.URL_DEVICE_1)

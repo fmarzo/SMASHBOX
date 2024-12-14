@@ -1,41 +1,36 @@
 import paho.mqtt.client as mqtt
 
-# Define the MQTT broker details
-BROKER = "test.mosquitto.org"  # Free MQTT broker
-PORT = 1883                   # Default MQTT port (non-secure)
-TOPIC = "box/alarm"          # Topic to publish/subscribe
+class MqttClient:
+    def __init__(self, broker, port, topic):
+        self.broker = broker
+        self.port = port
+        self.topic = topic
+        self.client = mqtt.Client()
+        # Assign callback functions
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
 
-# Callback function when the client connects to the broker
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Connected to MQTT Broker!")
-        # Subscribe to the topic after connecting
-        client.subscribe(TOPIC)
-        print("SUBSCRIBED!")
-    else:
-        print(f"Failed to connect, return code {rc}")
+    def start_mqtt(self):
+        print(f"Connecting to broker {self.broker}...")
+        self.client.connect(self.broker, self.port, keepalive=60)
+        self.client.loop_start()
 
-# Callback function when a message is received
-def on_message(client, userdata, msg):
-    print(f"Received message from topic '{msg.topic}': {msg.payload.decode()}")
+    def stop_mqtt(self):
+        print(f"Stopping  broker {self.broker}...")
+        self.client.loop_stop()
+        self.client.disconnect()
 
-# Create MQTT client instance
-client = mqtt.Client()
+    # Callback function when the client connects to the broker
+    def on_connect(self, client, userdata, flags, rc):
+        if rc == 0:
+            print("Connected to MQTT Broker!")
+            # Subscribe to the topic after connecting
+            client.subscribe(self.topic)
+            print("SUBSCRIBED!")
+        else:
+            print(f"Failed to connect, return code {rc}")
 
-# Assign callback functions
-client.on_connect = on_connect
-client.on_message = on_message
+    # Callback function when a message is received
+    def on_message(self, client, userdata, msg):
+        print(f"Received message from topic '{msg.topic}': {msg.payload.decode()}")
 
-try:
-    # Connect to the MQTT broker
-    print(f"Connecting to broker {BROKER}...")
-    client.connect(BROKER, PORT, keepalive=60)
-
-    # Start the loop to process network traffic and dispatch callbacks
-    client.loop_forever()
-
-except KeyboardInterrupt:
-    print("\nDisconnecting from broker...")
-    client.disconnect()
-except Exception as e:
-    print(f"An error occurred: {e}")
