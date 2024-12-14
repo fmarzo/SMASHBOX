@@ -9,13 +9,6 @@ from firebase_db import FirebaseDB
 
 INJECT = 0
 
-def simulate_param(param):
-    if param == config.LOCK_PARAM:
-        val = 1
-    elif param == config.TEMP_PARAM:
-        val = 10
-    return random.randint(0,val)
-
 def main ():
     #TODO: connect to Acquisition Module
 
@@ -65,32 +58,24 @@ def main ():
 
         #Simulation starts here
         # BOX 1
-        box_1.temperature = (simulate_param(config.TEMP_PARAM))
-        box_1.lock = (simulate_param(config.LOCK_PARAM))
-        box_1.humidity = (simulate_param(config.TEMP_PARAM))
-        box_1.presence = (simulate_param(config.TEMP_PARAM))
-        box_1.open = (simulate_param(config.TEMP_PARAM))
+        box_1.simulate_box_param()
         requests.post(box_1.get_url_dev(), box_1.get_packet_str())
 
         # BOX 2
-        box_2.temperature = (simulate_param(config.TEMP_PARAM))
-        box_2.lock = (simulate_param(config.LOCK_PARAM))
+        box_2.simulate_box_param()
         requests.post(box_2.get_url_dev(), box_2.get_packet_str())
 
         # BOX 3
-        box_3.temperature = (simulate_param(config.TEMP_PARAM))
-        box_3.lock = (simulate_param(config.LOCK_PARAM))
-        requests.post(box_3.get_url_dev(),box_3.get_packet_str())
+        box_3.simulate_box_param()
+        requests.post(box_3.get_url_dev(), box_3.get_packet_str())
 
         # BOX 4
-        box_4.temperature = (simulate_param(config.TEMP_PARAM))
-        box_4.lock = (simulate_param(config.LOCK_PARAM))
-        requests.post(box_4.get_url_dev(),box_4.get_packet_str())
+        box_4.simulate_box_param()
+        requests.post(box_4.get_url_dev(), box_4.get_packet_str())
 
         # BOX 5
-        box_5.temperature = (simulate_param(config.TEMP_PARAM))
-        box_5.lock = (simulate_param(config.LOCK_PARAM))
-        requests.post(box_5.get_url_dev(),box_5.get_packet_str())
+        box_5.simulate_box_param()
+        requests.post(box_5.get_url_dev(), box_5.get_packet_str())
 
         print("searching for client..")
         firebase_db.find_client(1001, 1)

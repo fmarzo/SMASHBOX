@@ -1,3 +1,5 @@
+import config
+import random
 class Box:
   def __init__(self, box_id, url_dev):
     self.id = box_id
@@ -27,4 +29,20 @@ class Box:
       }
       print(packet)
       return str(packet)
+  def simulate_box_param(self):
+      self.temperature = (self.simulate_param(config.TEMP_PARAM))
+      self.lock = (self.simulate_param(config.LOCK_PARAM))
+      self.humidity = (self.simulate_param(config.TEMP_PARAM))
+      self.infringement = self.simulate_param(config.TEMP_PARAM)
+      self.presence = (self.simulate_param(config.TEMP_PARAM))
+      self.open = (self.simulate_param(config.TEMP_PARAM))
+
+  def simulate_param(self, param):
+      if param == config.LOCK_PARAM:
+          val = 1
+      elif param == config.TEMP_PARAM:
+          val = 10
+      return random.randint(0, val)
+
+
 
