@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import json
 
 class MqttClient:
     def __init__(self, broker, port, topic):
@@ -32,5 +33,9 @@ class MqttClient:
 
     # Callback function when a message is received
     def on_message(self, client, userdata, msg):
-        print(f"Received message from topic '{msg.topic}': {msg.payload.decode()}")
+        data = json.loads(msg.payload.decode())
+        for key, value in data.items():
+            if key == 'infringement':
+                if value == 1:
+                    print("WARNING! INFRINGEMENT RECEIVED!")
 
