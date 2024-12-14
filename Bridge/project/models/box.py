@@ -1,3 +1,6 @@
+from jwt.utils import bytes_from_int
+from mpl_toolkits.axisartist.angle_helper import select_step_degree
+
 import config
 import random
 
@@ -47,6 +50,18 @@ class Box:
       self.infringement = simulate_param(config.TEMP_PARAM)
       self.presence = (simulate_param(config.TEMP_PARAM))
       self.open = (simulate_param(config.TEMP_PARAM))
+
+  def set_box_param(self, packet):
+      #self.id = int.from_bytes(packet[0])
+      self.presence = int(chr(packet[1]))
+      self.temperature = (int(chr(packet[2])) * 10) + int(chr(packet [3]))
+      self.humidity = (int(chr(packet[4])) * 10) + int(chr(packet[5]))
+      self.infringement = int(chr(packet [6]))
+      self.lock = int(chr(packet[7]))
+      self.open = int(chr(packet[8]))
+
+
+
 
 
 
