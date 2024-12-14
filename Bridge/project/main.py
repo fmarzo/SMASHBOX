@@ -8,14 +8,12 @@ from models.client import Client
 from firebase_db import FirebaseDB
 
 INJECT_CUSTOMERS = 0
-
 SIMULATION = 0
 
 def main ():
     #TODO: connect to Acquisition Module
 
     ser = serial.Serial(config.SERIAL_COM, config.SERIAL_BAUDRATE)
-
 
     firebase_db = FirebaseDB()
 
