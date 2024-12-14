@@ -8,15 +8,21 @@ from models.client import Client
 from firebase_db import FirebaseDB
 
 INJECT_CUSTOMERS = 0
+DELETE_CUSTOMERS = 0
+UPDATE_CUSTOMERS = 0
 SIMULATION = 0
 
-def main ():
-    #TODO: connect to Acquisition Module
 
+def main ():
+    # SYSTEM INIT
+
+    # Serial Port
     ser = serial.Serial(config.SERIAL_COM, config.SERIAL_BAUDRATE)
 
+    #Firebase Database
     firebase_db = FirebaseDB()
 
+    #Entities
     box_1 = Box(1, config.URL_DEVICE_1)
     box_2 = Box(2, config.URL_DEVICE_2)
     box_3 = Box(3, config.URL_DEVICE_3)
@@ -40,25 +46,25 @@ def main ():
         sleep(1)
         firebase_db.insert_new_customer(box_5, cli_5)
 
-    #find test
-    #firebase_db.delete_customer(box_1,cli_1)
-    #sleep(1)
-    #firebase_db.delete_customer(box_2,cli_2)
-    #sleep(1)
-    #firebase_db.delete_customer(box_3,cli_3)
-    #sleep(1)
-    #firebase_db.delete_customer(box_4,cli_4)
-    #sleep(1)
-    #firebase_db.delete_customer(box_5,cli_5)
-    #sleep(1)
-    ##test on update
-    #firebase_db.update_customer(box_5,cli_5, {'Names' : 'Tuccu'})
-    #sleep(1)
+    if DELETE_CUSTOMERS == 1:
+        firebase_db.delete_customer(box_1,cli_1)
+        sleep(1)
+        firebase_db.delete_customer(box_2,cli_2)
+        sleep(1)
+        firebase_db.delete_customer(box_3,cli_3)
+        sleep(1)
+        firebase_db.delete_customer(box_4,cli_4)
+        sleep(1)
+        firebase_db.delete_customer(box_5,cli_5)
+        sleep(1)
+
+    if UPDATE_CUSTOMERS == 1:
+        firebase_db.update_customer(box_5,cli_5, {'Names' : 'Tuccu'})
+        sleep(1)
 
     while True:
-        #TODO: Read from Acquisition Module
-        #val = ser.read(1)
 
+        # ENDLESS LOOP
 
         if SIMULATION == 1:
             #Simulation starts here
@@ -94,6 +100,7 @@ def main ():
 #entry point
 if __name__ == '__main__':
     main()
+
 
 
 
