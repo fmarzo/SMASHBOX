@@ -15,7 +15,7 @@ Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); //SDO low
 double X,Y,Z;
 sensors_event_t humidity, temp;
-String pres, infr, lock, open;
+String ID, pres, infr, lock, open;
 int read;
 
 void setup() {
@@ -57,6 +57,8 @@ void setup() {
     }
   }
   lock = "0"; //di default non è attivo il lock
+
+  ID = "1" //identificativo della cassetta
  
 }
 
@@ -102,7 +104,7 @@ void loop() {
     Y = accel.getY();
     Z = accel.getZ();
     //Serial.print("\n");
-    Serial.print(pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
+    Serial.print(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
 
   } else {
     Serial.println("X6");
