@@ -52,7 +52,6 @@ class Box:
       self.open = (simulate_param(config.TEMP_PARAM))
 
   def set_box_param(self, packet):
-      #self.id = int.from_bytes(packet[0])
       self.presence = int(chr(packet[1]))
       self.temperature = (int(chr(packet[2])) * 10) + int(chr(packet [3]))
       self.humidity = (int(chr(packet[4])) * 10) + int(chr(packet[5]))
