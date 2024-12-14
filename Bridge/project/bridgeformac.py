@@ -9,14 +9,15 @@ import random
 
 SERIAL_BAUDRATE = 9600
 SERIAL_COM = "/dev/cu.usbmodem101"
-N_BYTES = 8
+N_BYTES = 9
 
-#0 presence/absence
-#1-2 temperature
-#3-4 humidity
-#5 infringement
-#6 lock/unlock
-#7 open/closed
+#0 ID
+#1 presence/absence
+#2-3 temperature
+#4-5 humidity
+#6 infringement
+#7 lock/unlock
+#8 open/closed
 
 def main ():
     # show port available and print it
@@ -31,10 +32,10 @@ def main ():
         val = ser.read(N_BYTES)
         print (val)
 
-        if val[5].to_bytes() == b'1':
+        if val[6].to_bytes() == b'1':
             ser.write(b"1")
             x = 0
-        if val[6].to_bytes() == b'1' and x != 1:
+        if val[7].to_bytes() == b'1' and x != 1:
             user_input = input("central: tipe yes if you want to unlock the box: ")
             if user_input == "yes":
                 ser.write(b"2")
