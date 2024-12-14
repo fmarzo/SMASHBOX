@@ -1,13 +1,11 @@
-import random
-from importlib import import_module
 from time import sleep
 import serial
 import requests
 from models.box import Box
 import config
 from models.client import Client
-from firebase_db import FirebaseDB
-from database.mqtt import MqttClient
+from database.firebase_db import FirebaseDB
+from mqtt.mqtt import MqttClient
 
 
 INJECT_CUSTOMERS = 0
