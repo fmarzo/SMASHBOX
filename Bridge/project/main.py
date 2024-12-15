@@ -11,13 +11,14 @@ from mqtt.mqtt import MqttClient
 INJECT_CUSTOMERS = 0
 DELETE_CUSTOMERS = 0
 UPDATE_CUSTOMERS = 0
-SIMULATION = 0
+SIMULATION = 1
 
 def main ():
     # SYSTEM INIT
 
     # Serial Port
-    ser = serial.Serial(config.SERIAL_COM, config.SERIAL_BAUDRATE)
+    if SIMULATION == 0:
+        ser = serial.Serial(config.SERIAL_COM, config.SERIAL_BAUDRATE)
 
     #Firebase Database
     firebase_db = FirebaseDB()
