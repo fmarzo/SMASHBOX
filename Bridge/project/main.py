@@ -11,7 +11,7 @@ from mqtt.mqtt import MqttClient
 INJECT_CUSTOMERS = 0
 DELETE_CUSTOMERS = 0
 UPDATE_CUSTOMERS = 0
-SIMULATION = 1
+SIMULATION = 0
 
 def main ():
     # SYSTEM INIT
