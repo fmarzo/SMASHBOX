@@ -18,7 +18,7 @@ def main ():
 
     # Serial Port
     if SIMULATION == 0:
-        ser = serial.Serial(config.SERIAL_COM, config.SERIAL_BAUDRATE)
+        ser = serial.Serial(config.SERIAL_COM_WIN, config.SERIAL_BAUDRATE)
 
     #Firebase Database
     firebase_db = FirebaseDB()
