@@ -23,6 +23,8 @@ def main ():
     #MQTT alarm server
     mqtt = system.get_mqtt()
     mqtt.start_mqtt()
+
+    #firebase server
     firebase_db = system.get_firebase_db()
 
     #Entities
