@@ -18,7 +18,8 @@ def main ():
     # SYSTEM INIT
     system = Initializer()
     system.init_system()
-    ser = system.get_serial()
+    ser = system.get_serials()
+    print (ser)
 
     #MQTT alarm server
     mqtt = system.get_mqtt()
