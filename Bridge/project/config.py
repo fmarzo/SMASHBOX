@@ -20,8 +20,8 @@ TEMP_PARAM = 10
 #SERIAL PARAMETERS
 
 SERIAL_BAUDRATE = 9600
-SERIAL_COM_MAC = "/dev/cu.usbmodem101"
-SERIAL_COM_WIN = "COM6"
+SERIAL_COM_MAC_RADIX = "/dev/cu.usbmodem"
+SERIAL_COM_WIN_RADIX = "COM"
 N_BYTES = 9
 
 #FIREBASE PARAMS
@@ -40,3 +40,11 @@ BROKER = "test.mosquitto.org"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
 TOPIC = "box/alarm"          # Topic to publish/subscribe
 
+#OPERATING SYSTEM ID
+WINDOWS_OS_ID = "nt"
+
+#DEBUG_PARAMETERS
+SIMULATION = 0 # no simulation for default
+INJECT_CUSTOMERS = 0
+DELETE_CUSTOMERS = 0
+UPDATE_CUSTOMERS = 0

@@ -1,31 +1,29 @@
+import os
 from time import sleep
-import serial
+
 import requests
+
+from init import Initializer
 from models.box import Box
 import config
 from models.client import Client
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
+from init import Initializer
 
 
-INJECT_CUSTOMERS = 0
-DELETE_CUSTOMERS = 0
-UPDATE_CUSTOMERS = 0
-SIMULATION = 0
 
 def main ():
+
     # SYSTEM INIT
+    system = Initializer()
+    system.init_system()
+    ser = system.get_serial()
 
-    # Serial Port
-    if SIMULATION == 0:
-        ser = serial.Serial(config.SERIAL_COM_WIN, config.SERIAL_BAUDRATE)
-
-    #Firebase Database
-    firebase_db = FirebaseDB()
-
-    #Mqtt alarm server
-    mqtt = MqttClient(config.BROKER, config.PORT, config.TOPIC)
+    #MQTT alarm server
+    mqtt = system.get_mqtt()
     mqtt.start_mqtt()
+    firebase_db = system.get_firebase_db()
 
     #Entities
     box_1 = Box(1, config.URL_DEVICE_1)
@@ -40,7 +38,7 @@ def main ():
     cli_4 = Client("Ma", "MA", 1004, "eltucuman4@gmail.com")
     cli_5 = Client("No", "NO", 1005, "eltucuman5@gmail.com")
 
-    if INJECT_CUSTOMERS == 1:
+    if config.INJECT_CUSTOMERS == 1:
         firebase_db.insert_new_customer(box_1, cli_1)
         sleep(1)
         firebase_db.insert_new_customer(box_2, cli_2)
@@ -51,7 +49,7 @@ def main ():
         sleep(1)
         firebase_db.insert_new_customer(box_5, cli_5)
 
-    if DELETE_CUSTOMERS == 1:
+    if config.DELETE_CUSTOMERS == 1:
         firebase_db.delete_customer(box_1,cli_1)
         sleep(1)
         firebase_db.delete_customer(box_2,cli_2)
@@ -63,7 +61,7 @@ def main ():
         firebase_db.delete_customer(box_5,cli_5)
         sleep(1)
 
-    if UPDATE_CUSTOMERS == 1:
+    if config.UPDATE_CUSTOMERS == 1:
         firebase_db.update_customer(box_5,cli_5, {'Names' : 'Tuccu'})
         sleep(1)
 
@@ -71,7 +69,7 @@ def main ():
 
         # ENDLESS LOOP
 
-        if SIMULATION == 1:
+        if config.SIMULATION == 1:
             #Simulation starts here
             # BOX 1
             box_1.simulate_box_param()
