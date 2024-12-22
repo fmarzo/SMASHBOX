@@ -16,19 +16,20 @@ class Initializer:
         self.init_mqtt_server()
 
     def init_serial_by_os(self):
+        serial_found = 0
         ports = serial.tools.list_ports.comports()
         for p in ports:
             print(p.name)
-            self.__ser_ports_list.append(p.name)
-            #if "Arduino" in p.description:
-            #    print ("This is an Arduino!")
-            #    self.__ser_port_list.append(p.name)
-            #    if self.__ser is None:
-            #        self.__ser = serial.Serial(p.name, config.SERIAL_BAUDRATE)
-        #print("No Arduino Found")
-        #print("Going in simulation mode")
-        #config.SIMULATION = 1
-        #self.__ser = None
+            if "Arduino" in p.description:
+                print ("This is an Arduino!")
+                #append it as more than one Arduino can be found
+                self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                serial_found = 1
+
+        if serial_found == 0:
+            print("No Arduino Found")
+            print("Going in simulation mode")
+            config.SIMULATION = 1
 
     def init_firebase_db(self):
         if self.__firebase is None:

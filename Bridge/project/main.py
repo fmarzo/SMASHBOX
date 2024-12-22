@@ -98,10 +98,12 @@ def main ():
             firebase_db.find_client(1001, 1)
             sleep(1)
         else:
-            val = ser.read(config.N_BYTES)
-            box_1.set_box_param(val)
-            requests.post(box_1.get_url_dev(), box_1.get_packet_str())
-            print(val)
+            # NO SIMULATION, System is in GO
+            for ser in system.get_serials():
+                val = ser.read(config.N_BYTES)
+                box_1.set_box_param(val)
+                requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+                print(val)
 
 #entry point
 if __name__ == '__main__':
