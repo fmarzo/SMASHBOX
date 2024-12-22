@@ -22,16 +22,25 @@ class Initializer:
         ports = serial.tools.list_ports.comports()
         print(os.name)
         descr = "Arduino"
-        if os.name != config.WINDOWS_OS_ID:
-            # not in a Win env
-            descr = None
-        for p in ports:
-            print(p.name)
-            if descr in p.description:
-                print ("This is an Arduino!")
-                #append it as more than one Arduino can be found
-                self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
-                serial_found = 1
+        if os.name == config.WINDOWS_OS_ID:
+            # in a Win env
+            for p in ports:
+                print(p.name)
+                if descr in p.description:
+                    print("This is an Arduino!")
+                    # append it as more than one Arduino can be found
+                    self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                    serial_found = 1
+        else:
+            #n not in a Win env
+            for p in ports:
+                print(p.name)
+                if "/dev/cu" in p.name:
+                    print("This is an Arduino!")
+                    # append it as more than one Arduino can be found
+                    name = f"/dev/{p.name}"
+                    self.__ser_ports_list.append(serial.Serial(name, config.SERIAL_BAUDRATE))
+                    serial_found = 1
 
         if serial_found == 0:
             print("No Arduino Found")
