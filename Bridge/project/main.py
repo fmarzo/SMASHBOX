@@ -104,6 +104,7 @@ def main ():
                 box_1.set_box_param(val)
                 requests.post(box_1.get_url_dev(), box_1.get_packet_str())
                 print(val)
+                sleep(1)
 
 #entry point
 if __name__ == '__main__':

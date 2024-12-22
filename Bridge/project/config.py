@@ -36,7 +36,7 @@ DB_FIELD_MAIL = 'Mail'
 DB_ROOT_PATH = "/Customers"
 
 #MQTT SERVER
-BROKER = "test.mosquitto.org"  # Free MQTT broker
+BROKER = "broker.hivemq.com"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
 TOPIC = "box/alarm"          # Topic to publish/subscribe
 
