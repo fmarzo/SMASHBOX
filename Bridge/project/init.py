@@ -1,3 +1,5 @@
+import os
+
 import serial
 import serial.tools.list_ports
 import config
@@ -18,9 +20,14 @@ class Initializer:
     def init_serial_by_os(self):
         serial_found = 0
         ports = serial.tools.list_ports.comports()
+        print(os.name)
+        descr = "Arduino"
+        if os.name != config.WINDOWS_OS_ID:
+            # not in a Win env
+            descr = None
         for p in ports:
             print(p.name)
-            if "Arduino" in p.description:
+            if descr in p.description:
                 print ("This is an Arduino!")
                 #append it as more than one Arduino can be found
                 self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
