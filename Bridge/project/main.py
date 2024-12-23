@@ -1,65 +1,116 @@
-import random
+import os
 from time import sleep
 
-import serialpy
 import requests
-import configurations
-import serial.tools.list_ports
-import Box
-from serial.rfc2217 import Serial
 
-URL_DEVICE_1 = "http://demo.thingsboard.io/api/v1/o0SzxyiH8fZWK1uQrRh2/telemetry"
-URL_DEVICE_2 = "http://demo.thingsboard.io/api/v1/7QC2PthzFKhkp9AJAW2z/telemetry"
-URL_DEVICE_3 = "http://demo.thingsboard.io/api/v1/wbUjViNjPWcBp2iyHGDy/telemetry"
-
-#SERIAL_BAUDRATE = 9600
-#SERIAL_COM = "COM1"
+from init import Initializer
+from models.box import Box
+import config
+from models.client import Client
+from database.firebase_db import FirebaseDB
+from mqtt.mqtt import MqttClient
+from init import Initializer
 
 
-#rebase test
+def main():
+    # SYSTEM INIT
+    system = Initializer()
+    system.init_system()
+    ser = system.get_serials()
+    print(ser)
 
-def main ():
-    # show port available and print it
-    print("list of available ports: ")
-    ports = serial.tools.list_ports.comports()
+    # MQTT alarm server
+    mqtt = system.get_mqtt()
+    mqtt.start_mqtt()
 
-   #for p in ports:
-   #    print(("Arduino Uno " + "(" + p.name + ")"))
-   #    if (p.description == ("Arduino Uno " + "(" + p.name + ")")):
-   #        ser = serial.Serial(p.name, SERIAL_BAUDRATE)
-   #        break
+    # firebase server
+    firebase_db = system.get_firebase_db()
 
-    while True:
-        #val = ser.read(1)
+    # Entities
+    box_1 = Box(1, config.URL_DEVICE_1)
+    box_2 = Box(2, config.URL_DEVICE_2)
+    box_3 = Box(3, config.URL_DEVICE_3)
+    box_4 = Box(4, config.URL_DEVICE_4)
+    box_5 = Box(5, config.URL_DEVICE_5)
 
-        # BOX 1
-        val = random.randint(0,10)
-        lock = 0
-        #lock = random.randint (0,1)
-        print("BOX_1 " + str(val) + " " + str(lock))
-        strval =  "{temperature:%d, lock:%d}" % (val,lock)
-        r = requests.post(URL_DEVICE_1, data=strval)
+    cli_1 = Client("El", "EL", 1001, "eltucuman1@gmail.com")
+    cli_2 = Client("Tu", "TU", 1002, "eltucuman2@gmail.com")
+    cli_3 = Client("Cu", "CU", 1003, "eltucuman3@gmail.com")
+    cli_4 = Client("Ma", "MA", 1004, "eltucuman4@gmail.com")
+    cli_5 = Client("No", "NO", 1005, "eltucuman5@gmail.com")
 
-        # BOX 2
-        val = random.randint(0,10)
-        #lock = random.randint (0,1)
-        lock = 0
-        print("BOX_2 " + str(val) + " " + str(lock))
-        strval =  "{temperature:%d, lock:%d}" % (val,lock)
-        r = requests.post(URL_DEVICE_2, data=strval)
+    if config.INJECT_CUSTOMERS == 1:
+        firebase_db.insert_new_customer(box_1, cli_1)
+        sleep(1)
+        firebase_db.insert_new_customer(box_2, cli_2)
+        sleep(1)
+        firebase_db.insert_new_customer(box_3, cli_3)
+        sleep(1)
+        firebase_db.insert_new_customer(box_4, cli_4)
+        sleep(1)
+        firebase_db.insert_new_customer(box_5, cli_5)
 
-        # BOX 3
-        val = random.randint(0,10)
-        #lock = random.randint (0,1)
-        lock = 0
-        print("BOX_3 " + str(val) + " " + str(lock))
-        strval =  "{temperature:%d, lock:%d}" % (val,lock)
-        r = requests.post(URL_DEVICE_3, data=strval)
-
+    if config.DELETE_CUSTOMERS == 1:
+        firebase_db.delete_customer(box_1, cli_1)
+        sleep(1)
+        firebase_db.delete_customer(box_2, cli_2)
+        sleep(1)
+        firebase_db.delete_customer(box_3, cli_3)
+        sleep(1)
+        firebase_db.delete_customer(box_4, cli_4)
+        sleep(1)
+        firebase_db.delete_customer(box_5, cli_5)
         sleep(1)
 
-#entry point
+    if config.UPDATE_CUSTOMERS == 1:
+        firebase_db.update_customer(box_5, cli_5, {'Names': 'Tuccu'})
+        sleep(1)
+
+    while True:
+
+        # ENDLESS LOOP
+
+        if config.SIMULATION == 1:
+            # Simulation starts here
+            # BOX 1
+            box_1.simulate_box_param()
+            requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+
+            # BOX 2
+            box_2.simulate_box_param()
+            requests.post(box_2.get_url_dev(), box_2.get_packet_str())
+
+            # BOX 3
+            box_3.simulate_box_param()
+            requests.post(box_3.get_url_dev(), box_3.get_packet_str())
+
+            # BOX 4
+            box_4.simulate_box_param()
+            requests.post(box_4.get_url_dev(), box_4.get_packet_str())
+
+            # BOX 5
+            box_5.simulate_box_param()
+            requests.post(box_5.get_url_dev(), box_5.get_packet_str())
+
+            print("searching for client..")
+            firebase_db.find_client(1001, 1)
+            sleep(1)
+        else:
+            # NO SIMULATION, System is in GO
+            for ser in system.get_serials():
+                val = ser.read(config.N_BYTES)
+                box_1.set_box_param(val)
+                requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+                print(val)
+                sleep(1)
+
+
+# entry point
 if __name__ == '__main__':
     main()
+
+
+
+
 
 
