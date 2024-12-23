@@ -15,6 +15,9 @@ URL_DEVICE_3 = "http://demo.thingsboard.io/api/v1/wbUjViNjPWcBp2iyHGDy/telemetry
 #SERIAL_BAUDRATE = 9600
 #SERIAL_COM = "COM1"
 
+
+#rebase test
+
 def main ():
     # show port available and print it
     print("list of available ports: ")
