@@ -1,6 +1,6 @@
 import paho.mqtt.client as mqtt
 import json
-
+#bridge rebase
 class MqttClient:
     def __init__(self, broker, port, topic):
         self.broker = broker
