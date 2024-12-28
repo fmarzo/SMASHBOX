@@ -1,5 +1,9 @@
+from urllib.parse import ResultBase
+
 import paho.mqtt.client as mqtt
 import json
+import init
+
 #bridge rebase
 class MqttClient:
     def __init__(self, broker, port, topic):
@@ -34,8 +38,17 @@ class MqttClient:
     # Callback function when a message is received
     def on_message(self, client, userdata, msg):
         data = json.loads(msg.payload.decode())
-        for key, value in data.items():
-            if key == 'infringement':
-                if value == 1:
-                    print("WARNING! INFRINGEMENT RECEIVED!")
+        ser = init.Initializer()
+        var = ser.get_serials()[data["ID"]]
+        print(var)
+        print("WARNING! INFRINGEMENT RECEIVED!")
+        #for key, value in data.items():
+        #    if key == 'ID':
+        #        serial_id = value
+        #    if key == 'infringement':
+        #        if value == 1:
+        #            print(serial_id)
+        #            result = [entry for entry in ser.get_serials() if entry.get("ID") == serial_id]
+        #            print(result)
+        #            print("WARNING! INFRINGEMENT RECEIVED!")
 

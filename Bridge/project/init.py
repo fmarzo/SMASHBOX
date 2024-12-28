@@ -7,8 +7,11 @@ from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 
 class Initializer:
+    def __new__(cls, *args, **kwargs):
+        instance = super(Initializer, cls).__new__(cls)
+        return instance
     def __init__(self):
-        self.__ser_ports_list = []
+        self.__ser_ports_list = {}
         self.__firebase = None
         self.__mqtt = None
 
@@ -29,7 +32,8 @@ class Initializer:
                 if descr in p.description:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
-                    self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                    self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
+                    #self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     serial_found = 1
         else:
             #n not in a Win env
@@ -39,7 +43,7 @@ class Initializer:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     name = f"/dev/{p.name}"
-                    self.__ser_ports_list.append(serial.Serial(name, config.SERIAL_BAUDRATE))
+                    self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
                     serial_found = 1
 
         if serial_found == 0:
@@ -57,6 +61,9 @@ class Initializer:
 
     def get_serials(self):
         return self.__ser_ports_list
+
+    def get_serials_by_id(self, id):
+        result = [entry for entry in self.__ser_ports_list if entry.get(id) == id]
 
     def get_firebase_db(self):
         return self.__firebase
