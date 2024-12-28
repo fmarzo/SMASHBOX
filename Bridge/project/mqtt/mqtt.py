@@ -42,6 +42,7 @@ class MqttClient:
         var = ser.get_serials()[data["ID"]]
         print(var)
         print("WARNING! INFRINGEMENT RECEIVED!")
+        # TODO: NOTIFY ONLY CENTRAL!
         #for key, value in data.items():
         #    if key == 'ID':
         #        serial_id = value

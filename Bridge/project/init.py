@@ -14,6 +14,7 @@ class Initializer:
         self.__ser_ports_list = {}
         self.__firebase = None
         self.__mqtt = None
+        #TODO separate central from acquisition serials
 
     def init_system(self):
         self.init_serial_by_os()
