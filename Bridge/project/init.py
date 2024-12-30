@@ -11,7 +11,8 @@ class Initializer:
         instance = super(Initializer, cls).__new__(cls)
         return instance
     def __init__(self):
-        self.__ser_ports_list = {}
+        self.__ser_ports_list = []
+        self.__ser_central = None
         self.__firebase = None
         self.__mqtt = None
         #TODO separate central from acquisition serials
@@ -33,8 +34,8 @@ class Initializer:
                 if descr in p.description:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
-                    self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
-                    #self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                    #self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
+                    self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     serial_found = 1
         else:
             #n not in a Win env
@@ -44,13 +45,29 @@ class Initializer:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     name = f"/dev/{p.name}"
-                    self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
+                    #self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
+                    self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     serial_found = 1
+
 
         if serial_found == 0:
             print("No Arduino Found")
             print("Going in simulation mode")
             config.SIMULATION = 1
+        else:
+            for ser in self.__ser_ports_list:
+                packet = ser.read(config.N_BYTES)
+                id_ser = int(chr(packet[0]))
+                print(id_ser)
+                if id_ser == config.CENTRAL_SERIAL:
+                    self.__ser_central = ser
+                    break
+            if self.__ser_central is not None:
+                self.get_serials().remove(self.__ser_central)
+            else:
+                print("Central not found")
+                print("Going in simulation mode")
+                config.SIMULATION = 1
 
     def init_firebase_db(self):
         if self.__firebase is None:
@@ -63,8 +80,8 @@ class Initializer:
     def get_serials(self):
         return self.__ser_ports_list
 
-    def get_serials_by_id(self, id):
-        result = [entry for entry in self.__ser_ports_list if entry.get(id) == id]
+    def get_central_serial(self):
+        return self.__ser_central
 
     def get_firebase_db(self):
         return self.__firebase
