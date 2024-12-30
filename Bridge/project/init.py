@@ -15,7 +15,6 @@ class Initializer:
         self.__ser_central = None
         self.__firebase = None
         self.__mqtt = None
-        #TODO separate central from acquisition serials
 
     def init_system(self):
         self.init_serial_by_os()
@@ -57,9 +56,11 @@ class Initializer:
         else:
             for ser in self.__ser_ports_list:
                 packet = ser.read(config.N_BYTES)
+                print(chr(packet[0]))
                 id_ser = int(chr(packet[0]))
                 print(id_ser)
                 if id_ser == config.CENTRAL_SERIAL:
+                    print("Central assigned")
                     self.__ser_central = ser
                     break
             if self.__ser_central is not None:

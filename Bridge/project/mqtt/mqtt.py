@@ -39,13 +39,14 @@ class MqttClient:
     def on_message(self, client, userdata, msg):
         data = json.loads(msg.payload.decode())
         ser = init.Initializer()
-        var = ser.get_serials()[data["ID"]]
-        print(var)
+        ser_central = ser.get_central_serial()
+        print("central " + str(ser_central))
+        #ser_central.write(1)
         print("WARNING! INFRINGEMENT RECEIVED!")
         # TODO: NOTIFY ONLY CENTRAL!
+        print(data.items())
+
         #for key, value in data.items():
-        #    if key == 'ID':
-        #        serial_id = value
         #    if key == 'infringement':
         #        if value == 1:
         #            print(serial_id)
