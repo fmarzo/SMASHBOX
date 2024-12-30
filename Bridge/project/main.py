@@ -21,8 +21,6 @@ def main():
     print("Acquisitions:" + str(ser))
     print("Central: " + str(central_ser))
 
-    return
-
     # MQTT alarm server
     mqtt = system.get_mqtt()
     mqtt.start_mqtt()
