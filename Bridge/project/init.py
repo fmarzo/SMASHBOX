@@ -51,7 +51,6 @@ class Initializer:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     name = f"/dev/{p.name}"
-                    #self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
                     self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     serial_found = 1
 
@@ -69,9 +68,8 @@ class Initializer:
 
                 print(id_ser)
                 if id_ser == config.CENTRAL_SERIAL:
-                    print("Central assigned")
                     self.__ser_central = ser
-                    print (self.__ser_central)
+                    print("Central serial assigned: it's " + self.__ser_central)
                     break
             if self.__ser_central is not None:
                 self.get_serials().remove(self.__ser_central)

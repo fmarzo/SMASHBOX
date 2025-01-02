@@ -40,7 +40,7 @@ class MqttClient:
         data = json.loads(msg.payload.decode())
         ser = init.Initializer()
         ser_central = ser.get_central_serial()
-        print("WARNING! INFRINGEMENT RECEIVED!")
+        print("WARNING! ALARM RECEIVED!")
         ser_central.write(b"1")
 
 

@@ -18,8 +18,8 @@ def main():
     system.init_system()
     ser = system.get_serials()
     central_ser = system.get_central_serial()
-    print("Acquisitions:" + str(ser))
-    print("Central: " + str(central_ser))
+    print("Acquisition serial list:" + str(ser))
+    print("Central serial: " + str(central_ser))
 
     # MQTT alarm server
     mqtt = system.get_mqtt()
