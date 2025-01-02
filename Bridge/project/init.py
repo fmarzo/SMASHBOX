@@ -5,16 +5,24 @@ import serial.tools.list_ports
 import config
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
+from time import sleep
 
 class Initializer:
+    _instance = None
+    _initialized = False
     def __new__(cls, *args, **kwargs):
-        instance = super(Initializer, cls).__new__(cls)
-        return instance
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        self.__ser_ports_list = []
-        self.__ser_central = None
-        self.__firebase = None
-        self.__mqtt = None
+        if not self._initialized:
+            Initializer._initialized = True
+            self.__ser_ports_list = []
+            self.__ser_central = None
+            self.__firebase = None
+            self.__mqtt = None
+        sleep(1)
 
     def init_system(self):
         self.init_serial_by_os()
@@ -33,7 +41,6 @@ class Initializer:
                 if descr in p.description:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
-                    #self.__ser_ports_list[p.name] = serial.Serial(p.name, config.SERIAL_BAUDRATE)
                     self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     serial_found = 1
         else:
@@ -48,6 +55,7 @@ class Initializer:
                     self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     serial_found = 1
 
+        sleep(2)
 
         if serial_found == 0:
             print("No Arduino Found")
@@ -58,10 +66,12 @@ class Initializer:
                 packet = ser.read(config.N_BYTES)
                 print(chr(packet[0]))
                 id_ser = int(chr(packet[0]))
+
                 print(id_ser)
                 if id_ser == config.CENTRAL_SERIAL:
                     print("Central assigned")
                     self.__ser_central = ser
+                    print (self.__ser_central)
                     break
             if self.__ser_central is not None:
                 self.get_serials().remove(self.__ser_central)

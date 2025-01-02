@@ -71,7 +71,7 @@ def main():
     while True:
 
         # ENDLESS LOOP
-
+        print("Central: " + str(system.get_central_serial()))
         if config.SIMULATION == 1:
             # Simulation starts here
             # BOX 1
