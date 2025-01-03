@@ -70,11 +70,14 @@ void loop()                     // run over and over again
     if (read == 49) {
       //UTILIZZO COME MECCANISMO DI SBLOCCO IL SENSORE AD INFRAROSSI ALTRIMENTI NON ESCI DA LOOP
       while(1){
-        if (digitalRead(4) == 0) {
+        if (digitalRead(4) == LOW) {
           Serial.println("Unlocked");
           break;
         }
-        else {Serial.println("ERROR!");}
+        if (digitalRead(4) == HIGH){
+          Serial.println("ERROR!");
+          delay(1000);
+          }
       }
     } 
     while (Serial.available()) {
@@ -90,7 +93,13 @@ void loop()                     // run over and over again
   if(ENR == 1){
     Serial.println("Ready to enroll a fingerprint!");
     Serial.println("Please type in the ID # (from 1 to 127) you want to save this finger as...");
-    id = readnumber();
+    Serial.println("ENROLL"); // Notify Python to send the ID
+    while (Serial.available() == 0) {
+     delay(1); // Wait for input from Python
+    }
+    String id = Serial.readStringUntil('\n'); // Read the ID
+    id.trim(); // Remove any unwanted whitespace
+    Serial.print("ID received: ");
     if (id == 0) {// ID #0 not allowed, try again!
        return;
     }
@@ -115,7 +124,7 @@ uint8_t getFingerprintEnroll() {
       Serial.println("Image taken");
       break;
     case FINGERPRINT_NOFINGER:
-      Serial.println(".");
+      Serial.print(".");
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
       Serial.println("Communication error");
