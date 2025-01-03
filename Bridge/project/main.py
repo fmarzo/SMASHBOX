@@ -1,4 +1,5 @@
 import os
+from configparser import NoOptionError
 from time import sleep
 
 import requests
@@ -24,6 +25,11 @@ def main():
     # MQTT alarm server
     mqtt = system.get_mqtt()
     mqtt.start_mqtt()
+
+    while not mqtt.is_init():
+        print("Wait for connection established")
+        sleep(1)
+        pass
 
     # firebase server
     firebase_db = system.get_firebase_db()

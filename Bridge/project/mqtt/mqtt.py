@@ -14,6 +14,7 @@ class MqttClient:
         # Assign callback functions
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
+        self.__initialized = False
 
     def start_mqtt(self):
         print(f"Connecting to broker {self.broker}...")
@@ -32,6 +33,7 @@ class MqttClient:
             # Subscribe to the topic after connecting
             client.subscribe(self.topic)
             print("SUBSCRIBED!")
+            self.__initialized = True
         else:
             print(f"Failed to connect, return code {rc}")
 
@@ -42,5 +44,8 @@ class MqttClient:
         ser_central = ser.get_central_serial()
         print("WARNING! ALARM RECEIVED!")
         ser_central.write(b"1")
+
+    def is_init (self):
+        return self.__initialized
 
 

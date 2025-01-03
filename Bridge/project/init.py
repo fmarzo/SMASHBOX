@@ -69,7 +69,7 @@ class Initializer:
                 print(id_ser)
                 if id_ser == config.CENTRAL_SERIAL:
                     self.__ser_central = ser
-                    print("Central serial assigned: it's " + self.__ser_central)
+                    print("Central serial assigned: it's " + str(self.__ser_central))
                     break
             if self.__ser_central is not None:
                 self.get_serials().remove(self.__ser_central)
@@ -85,6 +85,7 @@ class Initializer:
     def init_mqtt_server(self):
         if self.__mqtt is None:
             self.__mqtt = MqttClient(config.BROKER, config.PORT, config.TOPIC)
+
 
     def get_serials(self):
         return self.__ser_ports_list
