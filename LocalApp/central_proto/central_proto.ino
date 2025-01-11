@@ -63,7 +63,7 @@ uint8_t readnumber(void) {
 
 void loop()                     // run over and over again
 {
-  //finger.emptyDatabase(); SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
+  //finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
   //LEGGO SE IL BRIDGE MANDA IL LOCK 
   if (Serial.available() > 0) {
     read = Serial.read();
@@ -97,9 +97,10 @@ void loop()                     // run over and over again
     while (Serial.available() == 0) {
      delay(1); // Wait for input from Python
     }
-    String id = Serial.readStringUntil('\n'); // Read the ID
-    id.trim(); // Remove any unwanted whitespace
+    String idnew = Serial.readStringUntil('\n'); // Read the ID
+    idnew.trim(); // Remove any unwanted whitespace
     Serial.print("ID received: ");
+    id = atoi(idnew.c_str());
     if (id == 0) {// ID #0 not allowed, try again!
        return;
     }
@@ -133,7 +134,7 @@ uint8_t getFingerprintEnroll() {
       Serial.println("Imaging error");
       break;
     default:
-      Serial.println("Unknown error");
+      //Serial.println("Unknown error");
       break;
     }
   }
@@ -158,7 +159,7 @@ uint8_t getFingerprintEnroll() {
       Serial.println("Could not find fingerprint features");
       return p;
     default:
-      Serial.println("Unknown error");
+      //Serial.println("Unknown error");
       return p;
   }
 
@@ -187,7 +188,7 @@ uint8_t getFingerprintEnroll() {
       Serial.println("Imaging error");
       break;
     default:
-      Serial.println("Unknown error");
+      //Serial.println("Unknown error");
       break;
     }
   }
@@ -212,7 +213,7 @@ uint8_t getFingerprintEnroll() {
       Serial.println("Could not find fingerprint features");
       return p;
     default:
-      Serial.println("Unknown error");
+     // Serial.println("Unknown error");
       return p;
   }
 
@@ -229,7 +230,7 @@ uint8_t getFingerprintEnroll() {
     Serial.println("Fingerprints did not match");
     return p;
   } else {
-    Serial.println("Unknown error");
+    //Serial.println("Unknown error");
     return p;
   }
 
@@ -247,7 +248,7 @@ uint8_t getFingerprintEnroll() {
     Serial.println("Error writing to flash");
     return p;
   } else {
-    Serial.println("Unknown error");
+   // Serial.println("Unknown error");
     return p;
   }
 
@@ -269,7 +270,7 @@ uint8_t getFingerprintID() {
       Serial.println("Imaging error");
       return p;
     default:
-      Serial.println("Unknown error");
+    //  Serial.println("Unknown error");
       return p;
   }
 
@@ -293,7 +294,7 @@ uint8_t getFingerprintID() {
       Serial.println("Could not find fingerprint features");
       return p;
     default:
-      Serial.println("Unknown error");
+      //Serial.println("Unknown error");
       return p;
   }
 
@@ -308,7 +309,7 @@ uint8_t getFingerprintID() {
     Serial.println("Did not find a match");
     return p;
   } else {
-    Serial.println("Unknown error");
+   // Serial.println("Unknown error");
     return p;
   }
 
