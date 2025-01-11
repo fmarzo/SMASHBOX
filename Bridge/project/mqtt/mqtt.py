@@ -47,7 +47,8 @@ class MqttClient:
         ser_central = ser.get_central_serial()
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:
-            ser_central.write(b"1")
+            ser_central.write(b"1") #sending "1" to notify safe mode to central
+            #TODO: send to acquisition notification for locking
 
     def is_init (self):
         return self.__initialized
