@@ -2,6 +2,9 @@ from urllib.parse import ResultBase
 
 import paho.mqtt.client as mqtt
 import json
+import config
+from google.api_core.operations_v1.operations_client_config import config
+
 import init
 
 #bridge rebase
@@ -43,7 +46,8 @@ class MqttClient:
         ser = init.Initializer()
         ser_central = ser.get_central_serial()
         print("WARNING! ALARM RECEIVED!")
-        ser_central.write(b"1")
+        if ser_central is not None:
+            ser_central.write(b"1")
 
     def is_init (self):
         return self.__initialized
