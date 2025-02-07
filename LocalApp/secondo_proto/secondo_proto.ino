@@ -60,7 +60,7 @@ void setup() {
   }
 
   lock = "0"; //di default non è attivo il lock
-  ID = "1"; //identificativo della cassetta
+  ID = "001"; //identificativo della cassetta
 
 }
 

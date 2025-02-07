@@ -64,9 +64,12 @@ class Initializer:
             for ser in self.__ser_ports_list:
                 packet = ser.read(config.N_BYTES)
                 print(chr(packet[0]))
-                id_ser = int(chr(packet[0]))
+                id_ser_0 = int(chr(packet[0]))
+                id_ser_1 = int(chr(packet[1]))
+                id_ser_2 = int(chr(packet[2]))
 
-                print(id_ser)
+                id_ser = id_ser_0 + id_ser_1 + id_ser_2
+
                 if id_ser == config.CENTRAL_SERIAL:
                     self.__ser_central = ser
                     print("Central serial assigned: it's " + str(self.__ser_central))
