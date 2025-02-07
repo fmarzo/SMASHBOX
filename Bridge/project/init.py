@@ -2,6 +2,8 @@ import os
 
 import serial
 import serial.tools.list_ports
+from scipy.stats import false_discovery_control
+
 import config
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
@@ -18,7 +20,7 @@ class Initializer:
     def __init__(self):
         if not self._initialized:
             Initializer._initialized = True
-            self.__ser_ports_list = []
+            self.__ser_ports_dict = {}
             self.__ser_central = None
             self.__firebase = None
             self.__mqtt = None
@@ -41,7 +43,11 @@ class Initializer:
                 if descr in p.description:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
-                    self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                    self.__ser_ports_dict[p.name] = {
+                        "serial": serial.Serial(p.name, config.SERIAL_BAUDRATE),
+                        "busy": False,
+                        "id": 0
+                    }
                     serial_found = 1
         else:
             #n not in a Win env
@@ -51,7 +57,12 @@ class Initializer:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     name = f"/dev/{p.name}"
-                    self.__ser_ports_list.append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                    #self.__ser_ports_dict["serial"].append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
+                    self.__ser_ports_dict[p.name] = {
+                        "serial": serial.Serial(p.name, config.SERIAL_BAUDRATE),
+                        "busy": False,
+                        "id": 0
+                    }
                     serial_found = 1
 
         sleep(2)
@@ -61,7 +72,8 @@ class Initializer:
             print("Going in simulation mode")
             config.SIMULATION = 1
         else:
-            for ser in self.__ser_ports_list:
+            for port_name, data in self.__ser_ports_dict.items():
+                ser = data["serial"]
                 packet = ser.read(config.N_BYTES)
                 print(chr(packet[0]))
                 id_ser_0 = int(chr(packet[0]))
@@ -76,7 +88,7 @@ class Initializer:
                     self.__ser_central.write(b"@")
                     break
             if self.__ser_central is not None:
-                self.get_serials().remove(self.__ser_central)
+                del self.__ser_ports_dict[self.__ser_central.name]
             else:
                 #print("Central not found")
                 #print("Going in simulation mode")
@@ -92,7 +104,7 @@ class Initializer:
 
 
     def get_serials(self):
-        return self.__ser_ports_list
+        return self.__ser_ports_dict
 
     def get_central_serial(self):
         return self.__ser_central

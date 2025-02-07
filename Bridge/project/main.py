@@ -12,12 +12,14 @@ from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from init import Initializer
 
-
 def main():
     # SYSTEM INIT
     system = Initializer()
     system.init_system()
     ser = system.get_serials()
+    n_ser = len(ser)
+    free_ser = [0] * n_ser
+
     central_ser = system.get_central_serial()
     print("Acquisition serial list:" + str(ser))
     print("Central serial: " + str(central_ser))
@@ -106,7 +108,26 @@ def main():
         else:
             # NO SIMULATION, System is in GO
             #for ser in system.get_serials():
-            for s in ser:
+
+            central_response = central_ser.read(config.N_BYTES)
+
+            if central_response[4] == 1:
+                print("check")
+            elif central_response [4] == 2:
+                #enroll
+                id_acq = central_response[5]
+
+                for port_name, data in ser.items():
+                    if not data["busy"]:
+                        data["id"] = id_acq
+                        data["serial"].write(id_acq)
+
+                print (id_acq)
+            else:
+                print ("no response from central")
+
+            for port_name, data in ser.items():
+                s = data["serial"]
                 val = s.read(config.N_BYTES)
                 box_1.set_box_param(val)
                 requests.post(box_1.get_url_dev(), box_1.get_packet_str())
