@@ -74,7 +74,8 @@ void setup()
   lcd.setCursor(0,0);
 
   randomSeed(analogRead(0));
- 
+  
+  //finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
  /* Sending a "0" to let the bridge recognize Central */
 
   Serial.print("00000000000"); 
@@ -143,7 +144,7 @@ void loop()
 
   int err = NO_ERROR;
 
-  //finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
+  
   //LEGGO SE IL BRIDGE MANDA IL LOCK 
   if (Serial.available() > 0) {
     read = Serial.read();

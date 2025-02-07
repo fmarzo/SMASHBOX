@@ -1,5 +1,12 @@
 #include "check.h"
 
+String padLeft(String str, int length, char padChar = ' ') {
+  while (str.length() < length) {
+    str = padChar + str;  // Aggiunge il carattere di padding a sinistra
+  }
+  return str;
+}
+
 uint8_t getFingerprintID()
 {
   uint8_t p = finger.getImage();
