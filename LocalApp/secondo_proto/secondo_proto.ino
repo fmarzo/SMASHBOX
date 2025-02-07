@@ -60,8 +60,15 @@ void setup() {
   }
 
   lock = "0"; //di default non è attivo il lock
-  ID = "001"; //identificativo della cassetta
 
+  while(1)
+  {
+    if (Serial.available() > 0) 
+    {
+      ID = String(Serial.read());
+      break;
+    }
+  }
 }
 
 void loop() {

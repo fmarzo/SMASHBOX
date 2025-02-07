@@ -88,7 +88,7 @@ uint8_t getFingerprintID()
   lcd.clear();
   lcd.print("ID: " + finger.fingerID);
   delay(500);
-  Serial.print("Found ID #"); Serial.print(finger.fingerID);
+  Serial.print("01" + padLeft(String(finger.fingerID), 3, '0') + "0000" );
   lcd.clear();
   lcd.print("confidence: " + finger.confidence);
   delay(500);

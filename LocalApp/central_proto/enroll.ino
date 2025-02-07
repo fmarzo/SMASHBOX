@@ -168,7 +168,7 @@ uint8_t getFingerprintEnroll()
     lcd.clear();
     lcd.print("Stored!");
     delay(500);
-    Serial.print("Stored: " + String(id));
+    Serial.print("02" + padLeft(String(id), 3, '0') + "0000" );
 
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     lcd.clear();
