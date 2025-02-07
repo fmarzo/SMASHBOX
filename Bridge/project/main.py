@@ -106,11 +106,12 @@ def main():
         else:
             # NO SIMULATION, System is in GO
             #for ser in system.get_serials():
-            val = central_ser.read(config.N_BYTES)
-            box_1.set_box_param(val)
-            requests.post(box_1.get_url_dev(), box_1.get_packet_str())
-            print(val)
-            sleep(1)
+            for s in ser:
+                val = s.read(config.N_BYTES)
+                box_1.set_box_param(val)
+                requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+                print(val)
+                sleep(1)
 
 # entry point
 if __name__ == '__main__':

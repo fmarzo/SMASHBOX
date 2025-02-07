@@ -74,9 +74,9 @@ class Initializer:
             if self.__ser_central is not None:
                 self.get_serials().remove(self.__ser_central)
             else:
-                print("Central not found")
-                print("Going in simulation mode")
-                config.SIMULATION = 1
+                #print("Central not found")
+                #print("Going in simulation mode")
+                config.SIMULATION = 0
 
     def init_firebase_db(self):
         if self.__firebase is None:
