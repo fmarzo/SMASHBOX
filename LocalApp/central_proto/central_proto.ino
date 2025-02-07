@@ -36,6 +36,7 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 uint8_t id = 0;
 uint8_t ENR = 0;
 int read = 0;
+int init_response = 0;
 
 const int rs=11, en=12, d4=5, d5=6, d6=7, d7=8;
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
@@ -64,12 +65,37 @@ void setup()
   Serial.begin(9600);
   while (!Serial);  // For Yun/Leo/Micro/Zero/...
   delay(100);
+
   // set the data rate for the sensor serial port
   finger.begin(57600);
 
   pinMode(4, INPUT);
   lcd.begin(16,1);
   lcd.setCursor(0,0);
+
+  randomSeed(analogRead(0));
+ 
+ /* Sending a "0" to let the bridge recognize Central */
+
+  Serial.print("000000000"); 
+
+  while (1)
+  {
+      if (Serial.available() > 0) 
+      {
+          init_response = Serial.read();
+          lcd.print(init_response);
+          if (init_response == 0x40)
+          {
+            /*OK*/
+            lcd.clear();
+            lcd.print("FOUND");
+            break;
+          }
+      }
+
+      lcd.print("OUT");
+  }
 
   if (finger.verifyPassword()) {
     Serial.println("Found fingerprint sensor!");
@@ -86,7 +112,7 @@ void setup()
     Serial.println("Waiting for valid finger...");
       Serial.print("Sensor contains "); Serial.print(finger.templateCount); Serial.println(" templates");
   }
- randomSeed(analogRead(0));
+
 }
 
 uint8_t readnumber(void) {

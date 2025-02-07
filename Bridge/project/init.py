@@ -70,13 +70,14 @@ class Initializer:
                 if id_ser == config.CENTRAL_SERIAL:
                     self.__ser_central = ser
                     print("Central serial assigned: it's " + str(self.__ser_central))
+                    self.__ser_central.write(b"@")
                     break
             if self.__ser_central is not None:
                 self.get_serials().remove(self.__ser_central)
             else:
                 #print("Central not found")
                 #print("Going in simulation mode")
-                config.SIMULATION = 0
+                config.SIMULATION = 1
 
     def init_firebase_db(self):
         if self.__firebase is None:
