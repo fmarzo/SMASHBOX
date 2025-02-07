@@ -20,13 +20,43 @@ SoftwareSerial mySerial(2, 3);
 #endif
 
 
+/* ----------------------------------------------- */
+
+/* DEFINES */
+
+#define ID_SIZE_NUM 128
+#define NO_ERROR 0x00
+#define ID_EXISTING_ERR 0x01
+
+/* ----------------------------------------------- */
+
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
-uint8_t id, ENR;
-int read;
+uint8_t id = 0;
+uint8_t ENR = 0;
+int read = 0;
+
 const int rs=11, en=12, d4=5, d5=6, d6=7, d7=8;
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 int idarr[128]={0};
+
+/* DEBUG FUNCTION ONLY */
+
+/*void find_and_add_id (void)
+{
+  int o = 0;
+  for(int i=1; i < ID_SIZE_NUM; i++)
+  {
+    if (finger.loadModel(i) == FINGERPRINT_OK)
+    {
+      //Serial.print(i);
+      //delay(500);
+      idarr[o]=i;
+      o++;
+    }
+  }
+}
+*/
 
 void setup()
 {
@@ -37,7 +67,7 @@ void setup()
   finger.begin(57600);
 
   pinMode(4, INPUT);
-    lcd.begin(16,1);
+  lcd.begin(16,1);
   lcd.setCursor(0,0);
 
   if (finger.verifyPassword()) {
@@ -68,8 +98,22 @@ uint8_t readnumber(void) {
   return num;
 }
 
+int check_for_existing_id (uint8_t id)
+{
+  if (finger.loadModel(id) == FINGERPRINT_OK)
+  {
+      return ID_EXISTING_ERR;
+  }
+  
+  return NO_ERROR;
+}
+
+
 void loop()                     // run over and over again
 {
+
+  int err = NO_ERROR;
+
   //finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
   //LEGGO SE IL BRIDGE MANDA IL LOCK 
   if (Serial.available() > 0) {
@@ -95,33 +139,36 @@ void loop()                     // run over and over again
     } //modo per pulire il buffer
   }
 
-  if (digitalRead(4) == LOW) {
+  if (digitalRead(4) == LOW) 
+  {
     ENR = 1;
-  } else {
+  } 
+  else 
+  {
     ENR = 0;
   }
-  if(ENR == 1){
-    int o = 0;
+
+  if (ENR == 1)
+  {
     lcd.clear();
     lcd.print("ENROLL");
     delay(500);
-    for(int i=1; i < 128; i++){
-       if (finger.loadModel(i) == FINGERPRINT_OK){
-        lcd.clear();
-        Serial.print(i);
-        delay(500);
-        idarr[o]=i;
-        o++;
-       }
-    }
+
     id = random(1,127);
+
+    while (check_for_existing_id (id) != NO_ERROR)
+    {
+      id = random(1,127);
+    }
+
     lcd.clear();
     lcd.print("ENROLL: "+ String(id)); 
     delay(500);
     while (! getFingerprintEnroll() );
     delay(1000);
   }
-  else{
+  else
+  {
     getFingerprintID();
     delay(50);   
   }
@@ -295,9 +342,9 @@ uint8_t getFingerprintEnroll() {
   p = finger.storeModel(id);
   if (p == FINGERPRINT_OK) {
     lcd.clear();
-    lcd.print("stored");
+    lcd.print("Stored!");
     delay(500);
-    Serial.print("Stored: " + id);
+    Serial.print("Stored: " + String(id));
 
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     lcd.clear();
