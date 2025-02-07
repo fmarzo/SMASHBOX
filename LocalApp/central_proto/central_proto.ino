@@ -1,5 +1,6 @@
 #include <Adafruit_Fingerprint.h>
 #include <LiquidCrystal.h>
+#include "check.h"
 
 
 //NELLA VERSIONE ATTUALE PER SWITCHARE TRA LA MADOALITà DI REGISTRAZIONE (ENROLL) E DI VERIFICA, VIENE UTILIZZATO UN SENSORE A INFRAROSSI. 
@@ -27,6 +28,7 @@ SoftwareSerial mySerial(2, 3);
 #define ID_SIZE_NUM 128
 #define NO_ERROR 0x00
 #define ID_EXISTING_ERR 0x01
+#define ERR_SYSTEM  0x02;
 
 /* ----------------------------------------------- */
 
@@ -109,7 +111,9 @@ int check_for_existing_id (uint8_t id)
 }
 
 
-void loop()                     // run over and over again
+/* --------------------- LOOP --------------------*/
+
+void loop()                  
 {
 
   int err = NO_ERROR;
@@ -174,12 +178,13 @@ void loop()                     // run over and over again
   }
 }
 
-uint8_t getFingerprintEnroll() {
+/* ---------------------ENROLL --------------------*/
 
+uint8_t getFingerprintEnroll() 
+{
   int p = -1;
   lcd.clear();
-  lcd.print("waiting finger");
-  delay(500);
+  lcd.print("Waiting finger..");
   while (p != FINGERPRINT_OK) {
     p = finger.getImage();
     switch (p) {
@@ -190,7 +195,7 @@ uint8_t getFingerprintEnroll() {
       break;
     case FINGERPRINT_NOFINGER:
       lcd.clear();
-      lcd.print(".");
+      lcd.print("Waiting finger..");
       delay(500);
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
@@ -245,7 +250,6 @@ uint8_t getFingerprintEnroll() {
   lcd.clear();
   lcd.print("Remove finger");
   delay(500);
-  delay(2000);
   p = 0;
   while (p != FINGERPRINT_NOFINGER) {
     p = finger.getImage();
@@ -368,7 +372,12 @@ uint8_t getFingerprintEnroll() {
 
   return true;
 }
-uint8_t getFingerprintID() {
+
+/* ---------------------CHECK --------------------*/
+
+
+uint8_t getFingerprintID() 
+{
   uint8_t p = finger.getImage();
   switch (p) {
     case FINGERPRINT_OK:
@@ -378,7 +387,7 @@ uint8_t getFingerprintID() {
       break;
     case FINGERPRINT_NOFINGER:
       lcd.clear();
-      lcd.print("waiting finger");
+      lcd.print("Waiting finger");
       delay(500);
       return p;
     case FINGERPRINT_PACKETRECIEVEERR:
@@ -462,19 +471,3 @@ uint8_t getFingerprintID() {
 
   return finger.fingerID;
 }
-
-// returns -1 if failed, otherwise returns ID #
-int getFingerprintIDez() {
-  uint8_t p = finger.getImage();
-  if (p != FINGERPRINT_OK)  return -1;
-
-  p = finger.image2Tz();
-  if (p != FINGERPRINT_OK)  return -1;
-
-  p = finger.fingerFastSearch();
-  if (p != FINGERPRINT_OK)  return -1;
-
-  // found a match!
-  return finger.fingerID;
-}
-
