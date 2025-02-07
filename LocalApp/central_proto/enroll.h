@@ -4,4 +4,4 @@
 
 uint8_t getFingerprintEnroll();
 
-#define _ENROLL
+#endif _ENROLL
