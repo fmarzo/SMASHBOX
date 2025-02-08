@@ -110,19 +110,23 @@ def main():
             #for ser in system.get_serials():
 
             central_response = central_ser.read(config.N_BYTES)
+            print("Central response: ")
+            print(central_response)
 
-            if central_response[4] == 1:
+            if chr(central_response[1]) == "1":
                 print("check")
-            elif central_response [4] == 2:
+            elif chr(central_response[1]) == "2":
                 #enroll
-                id_acq = central_response[5]
+                id_acq = central_response[2:5]
+                print(id_acq)
 
                 for port_name, data in ser.items():
                     if not data["busy"]:
                         data["id"] = id_acq
-                        data["serial"].write(id_acq)
-
-                print (id_acq)
+                        print(data["serial"])
+                        data["serial"].write(b"5")
+                        sleep(1)
+                        break
             else:
                 print ("no response from central")
 

@@ -15,8 +15,9 @@ Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); //SDO low
 double X, Y, Z;
 sensors_event_t humidity, temp;
-String ID, pres, infr, lock, open;
+String pres, infr, lock, open;
 int read;
+String ID;
 bool firstRun = true;  // Variabile per verificare la prima esecuzione
 
 void setup() {
@@ -61,12 +62,19 @@ void setup() {
 
   lock = "0"; //di default non è attivo il lock
 
+
   while(1)
   {
     if (Serial.available() > 0) 
     {
-      ID = String(Serial.read());
-      break;
+      ID = Serial.read();
+      if (ID != 0)
+        break;
+      else;
+    }
+    else
+    {
+        Serial.print("10000000000");
     }
   }
 }

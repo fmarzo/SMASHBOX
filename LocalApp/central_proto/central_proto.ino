@@ -75,7 +75,7 @@ void setup()
 
   randomSeed(analogRead(0));
   
-  //finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
+  finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
  /* Sending a "0" to let the bridge recognize Central */
 
   Serial.print("00000000000"); 
@@ -94,25 +94,23 @@ void setup()
             break;
           }
       }
-
-      lcd.print("OUT");
   }
 
-  if (finger.verifyPassword()) {
-    Serial.println("Found fingerprint sensor!");
-  } else {
-    Serial.println("Did not find fingerprint sensor :(");
-    while (1) { delay(1); }
-  }
-  finger.getTemplateCount();
+ //if (finger.verifyPassword()) {
+ //  Serial.println("Found fingerprint sensor!");
+ //} else {
+ //  Serial.println("Did not find fingerprint sensor :(");
+ //  while (1) { delay(1); }
+ //}
+ //finger.getTemplateCount();
 
-  if (finger.templateCount == 0) {
-    Serial.print("Sensor doesn't contain any fingerprint data. Please run the 'enroll' example.");
-  }
-  else {
-    Serial.println("Waiting for valid finger...");
-      Serial.print("Sensor contains "); Serial.print(finger.templateCount); Serial.println(" templates");
-  }
+ //if (finger.templateCount == 0) {
+ //  Serial.print("Sensor doesn't contain any fingerprint data. Please run the 'enroll' example.");
+ //}
+ //else {
+ //  Serial.println("Waiting for valid finger...");
+ //    Serial.print("Sensor contains "); Serial.print(finger.templateCount); Serial.println(" templates");
+ //}
 
 }
 
