@@ -162,31 +162,38 @@ uint8_t getFingerprintEnroll()
     //Serial.println("Unknown error");
     return p;
   }
-
+  
   p = finger.storeModel(id);
-  if (p == FINGERPRINT_OK) {
+  if (p == FINGERPRINT_OK) 
+  {
     lcd.clear();
     lcd.print("Stored!");
     delay(500);
-    //Serial.print("02015000000");
     Serial.print("02" + padLeft(String(id), 3, '0') + "000000" );
-
-  } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
+  } 
+  else if (p == FINGERPRINT_PACKETRECIEVEERR) 
+  {
     lcd.clear();
     lcd.print("error com");
     delay(500);
     return p;
-  } else if (p == FINGERPRINT_BADLOCATION) {
+  } 
+  else if (p == FINGERPRINT_BADLOCATION)
+  {
     lcd.clear();
     lcd.print("can't store");
     delay(500);
     return p;
-  } else if (p == FINGERPRINT_FLASHERR) {
+  } 
+  else if (p == FINGERPRINT_FLASHERR) 
+  {
     lcd.clear();
     lcd.print("error");
     delay(500);
     return p;
-  } else {
+  }
+  else 
+  {
    // Serial.println("Unknown error");
     return p;
   }

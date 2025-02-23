@@ -57,7 +57,6 @@ class Initializer:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     name = f"/dev/{p.name}"
-                    #self.__ser_ports_dict["serial"].append(serial.Serial(p.name, config.SERIAL_BAUDRATE))
                     self.__ser_ports_dict[p.name] = {
                         "serial": serial.Serial(p.name, config.SERIAL_BAUDRATE),
                         "busy": False,
