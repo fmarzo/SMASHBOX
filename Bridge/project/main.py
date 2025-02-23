@@ -3,6 +3,7 @@ from configparser import NoOptionError
 from time import sleep
 
 import requests
+import serial
 
 from init import Initializer
 from models.box import Box
@@ -14,12 +15,12 @@ from init import Initializer
 
 def main():
     # SYSTEM INIT
+
     system = Initializer()
     system.init_system()
     ser = system.get_serials()
     n_ser = len(ser)
     free_ser = [0] * n_ser
-
     central_ser = system.get_central_serial()
     print("Acquisition serial list:" + str(ser))
     print("Central serial: " + str(central_ser))
@@ -76,6 +77,8 @@ def main():
         firebase_db.update_customer(box_5, cli_5, {'Names': 'Tuccu'})
         sleep(1)
 
+    central_ok = 1
+
     while True:
 
         # ENDLESS LOOP
@@ -109,26 +112,28 @@ def main():
             # NO SIMULATION, System is in GO
             #for ser in system.get_serials():
 
-            central_response = central_ser.read(config.N_BYTES)
-            print("Central response: ")
-            print(central_response)
+            if central_ok:
+                central_ok = 0
+                central_response = central_ser.read(config.N_BYTES)
+                print("Central response: ")
+                print(central_response)
 
-            if chr(central_response[1]) == "1":
-                print("check")
-            elif chr(central_response[1]) == "2":
-                #enroll
-                id_acq = central_response[2:5]
-                print(id_acq)
+                if chr(central_response[1]) == "1":
+                    print("check")
+                elif chr(central_response[1]) == "2":
+                    #enroll
+                    id_acq = central_response[2:5]
+                    print(id_acq)
 
                 for port_name, data in ser.items():
                     if not data["busy"]:
                         data["id"] = id_acq
+                        print("sto per inviare")
                         print(data["serial"])
-                        data["serial"].write(b"5")
-                        sleep(1)
+                        data["serial"].write(id_acq)
                         break
-            else:
-                print ("no response from central")
+                else:
+                    print ("no response from central")
 
             for port_name, data in ser.items():
                 s = data["serial"]
@@ -137,6 +142,8 @@ def main():
                 requests.post(box_1.get_url_dev(), box_1.get_packet_str())
                 print(val)
                 sleep(1)
+
+            print ("loop")
 
 # entry point
 if __name__ == '__main__':

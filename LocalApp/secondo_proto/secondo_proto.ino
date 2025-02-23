@@ -25,6 +25,9 @@ void setup() {
   Wire.begin();
   pinMode(4, INPUT);
   pinMode(5, INPUT);
+  pinMode(13, OUTPUT);
+
+  digitalWrite(13, LOW);
 
   byte deviceID = accel.readDeviceID();
   if (deviceID == 0) {
@@ -62,25 +65,26 @@ void setup() {
 
   lock = "0"; //di default non è attivo il lock
 
-
+  //ID = "015";
+  char buffer_id [4] = {0};
   while(1)
   {
-    if (Serial.available() > 0) 
-    {
-      ID = Serial.read();
-      if (ID != 0)
+      if (Serial.available() >= 3) 
+      {  // Controlla se ci sono dati in ingresso
+        Serial.readBytes(buffer_id, 3);
+        ID.concat(buffer_id);
         break;
-      else;
-    }
-    else
-    {
-        Serial.print("10000000000");
-    }
+      }
+    //Serial.print("stalloooooo");
+    //delay(1000);
   }
 }
 
+
 void loop() {
   // Lettura di 1 byte dalla Serial 
+
+
   if (Serial.available() > 0) {
     read = Serial.read();
     if (read == 49) {
@@ -123,6 +127,11 @@ void loop() {
       } else {
         infr = "0";
       }
+
+      digitalWrite(13, HIGH);
+      delay(1000);
+      digitalWrite(13, LOW);
+
       X = accel.getX();
       Y = accel.getY();
       Z = accel.getZ();
