@@ -28,6 +28,7 @@ SoftwareSerial mySerial(2, 3);
 #define NO_ERROR 0x00
 #define ID_EXISTING_ERR 0x01
 #define ERR_SYSTEM  0x02;
+#define CENTRAL_CHAR_REGOGNIZE 0x40 /* @ for bridge-central handshake */
 
 /* ----------------------------------------------- */
 
@@ -86,7 +87,7 @@ void setup()
       {
           init_response = Serial.read();
           lcd.print(init_response);
-          if (init_response == 0x40)
+          if (init_response == CENTRAL_CHAR_REGOGNIZE)
           {
             /*OK*/
             lcd.clear();
