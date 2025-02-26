@@ -99,6 +99,7 @@ uint8_t getFingerprintID()
   lcd.clear();
   lcd.print("confidence: " + finger.confidence);
   delay(500);
+  check = 1;
 
   return finger.fingerID;
 }

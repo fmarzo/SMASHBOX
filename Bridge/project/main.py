@@ -135,9 +135,14 @@ def main():
                 else:
                     print ("no response from central")
 
+            print(ser.items())
             for port_name, data in ser.items():
                 s = data["serial"]
+                print(port_name)
+                s.timeout = 1  # Imposta un timeout di 1 secondo
                 val = s.read(config.N_BYTES)
+                if not val:  # Se timeout, val sarà vuoto
+                    continue  # Salta le operazioni successive e passa alla prossima porta, non voglio impostare i dati della cassetta siccome non ho letto
                 box_1.set_box_param(val)
                 requests.post(box_1.get_url_dev(), box_1.get_packet_str())
                 print(val)

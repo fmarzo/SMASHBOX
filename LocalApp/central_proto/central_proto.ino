@@ -38,6 +38,7 @@ uint8_t id = 0;
 uint8_t ENR = 0;
 int read = 0;
 int init_response = 0;
+int check = 0;
 
 const int rs=11, en=12, d4=5, d5=6, d6=7, d7=8;
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
@@ -142,7 +143,7 @@ void loop()
 {
 
   int err = NO_ERROR;
-
+  check = 0;
   
   //LEGGO SE IL BRIDGE MANDA IL LOCK 
   if (Serial.available() > 0) {
@@ -201,5 +202,10 @@ void loop()
     getFingerprintID();
     delay(50);   
   }
+
+  if (check == 0){
+    Serial.print("00000000000"); 
+  }
+
 }
 
