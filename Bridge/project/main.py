@@ -125,13 +125,13 @@ def main():
                     id_acq = central_response[2:5]
                     print(id_acq)
 
-                for port_name, data in ser.items():
-                    if not data["busy"]:
-                        data["id"] = id_acq
-                        print("sto per inviare")
-                        print(data["serial"])
-                        data["serial"].write(id_acq)
-                        break
+                    for port_name, data in ser.items():
+                        if not data["busy"]:
+                            data["id"] = id_acq
+                            print("sto per inviare")
+                            print(data["serial"])
+                            data["serial"].write(id_acq)
+                            break
                 else:
                     print ("no response from central")
 
