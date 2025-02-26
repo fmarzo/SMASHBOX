@@ -112,33 +112,39 @@ def main():
             # NO SIMULATION, System is in GO
             #for ser in system.get_serials():
 
-            if central_ok:
-                central_ok = 0
-                central_response = central_ser.read(config.N_BYTES)
-                print("Central response: ")
-                print(central_response)
 
-                if chr(central_response[1]) == "1":
-                    print("check")
-                elif chr(central_response[1]) == "2":
-                    #enroll
-                    id_acq = central_response[2:5]
-                    print(id_acq)
+            central_response = central_ser.read(config.N_BYTES)
+            print("Central response: ")
+            print(central_response)
 
-                    for port_name, data in ser.items():
-                        if not data["busy"]:
-                            data["id"] = id_acq
-                            print("sto per inviare")
-                            print(data["serial"])
-                            data["serial"].write(id_acq)
-                            break
-                else:
-                    print ("no response from central")
+            if chr(central_response[1]) == "1":
+                print("check")
+                id_acq = central_response[2:5]
+                for port_name, data in ser.items():
+                    if data["id"] == id_acq:
+                        data["serial"].write(b"&")
+                        break
 
-            print(ser.items())
+            elif chr(central_response[1]) == "2":
+                #enroll
+                id_acq = central_response[2:5]
+                print(id_acq)
+
+                for port_name, data in ser.items():
+                    if not data["busy"]:
+                        data["id"] = id_acq
+                        print("sto per inviare")
+                        print(data["serial"])
+                        data["serial"].write(id_acq)
+                        break
+            #else:
+                #print ("no response from central")
+                #val = central_ser.read(config.N_BYTES)
+                #print(val)
+                #central_ok = 1
+
             for port_name, data in ser.items():
                 s = data["serial"]
-                print(port_name)
                 s.timeout = 1  # Imposta un timeout di 1 secondo
                 val = s.read(config.N_BYTES)
                 if not val:  # Se timeout, val sarà vuoto
@@ -148,7 +154,7 @@ def main():
                 print(val)
                 sleep(1)
 
-            print ("loop")
+            #print ("loop")
 
 # entry point
 if __name__ == '__main__':

@@ -11,6 +11,9 @@ X4: write range: failed
 X5: start: failed
 X6: update failed
 */
+
+#define OPENCHARACTER 0x26 /* & for opening */
+
 Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); //SDO low
 double X, Y, Z;
@@ -83,7 +86,7 @@ void loop() {
 
   if (Serial.available() > 0) {
     read = Serial.read();
-    if (read == 49) {
+    if (read == OPENCHARACTER) {
       lock = "1";
     } else {
       lock = "0";

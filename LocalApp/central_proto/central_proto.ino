@@ -76,8 +76,9 @@ void setup()
   lcd.setCursor(0,0);
 
   randomSeed(analogRead(0));
+  pinMode(LED_BUILTIN, OUTPUT);
   
-  finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
+  //finger.emptyDatabase(); //SE VUOI CANCELLARE TUTTI I TEMPLATE REGISTRATI 
  /* Sending a "0" to let the bridge recognize Central */
 
   Serial.print("00000000000"); 
@@ -90,7 +91,7 @@ void setup()
           lcd.print(init_response);
           if (init_response == CENTRAL_CHAR_REGOGNIZE)
           {
-            /*OK*/
+            
             lcd.clear();
             lcd.print("FOUND");
             break;
@@ -204,7 +205,10 @@ void loop()
   }
 
   if (check == 0){
+    digitalWrite(LED_BUILTIN, HIGH);
     Serial.print("00000000000"); 
+    delay(500);
+    digitalWrite(LED_BUILTIN, LOW);
   }
 
 }
