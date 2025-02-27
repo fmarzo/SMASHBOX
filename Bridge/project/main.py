@@ -4,7 +4,9 @@ from time import sleep
 
 import requests
 import serial
+import threading
 
+from bot.tgbot import TgBot
 from init import Initializer
 from models.box import Box
 import config
@@ -78,6 +80,12 @@ def main():
         sleep(1)
 
 
+    #TELEGRAM BOT
+    tg_bot = TgBot()
+
+    # Avvia il bot in un thread separato
+    thread = threading.Thread(target=tg_bot.run_bot, daemon=True)
+    thread.start()
 
     while True:
 
