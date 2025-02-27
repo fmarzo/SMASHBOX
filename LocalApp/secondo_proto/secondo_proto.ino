@@ -23,6 +23,7 @@ String pres, infr, open;
 int read;
 String ID;
 bool firstRun = true;  // Variabile per verificare la prima esecuzione
+int RELOCK = 0; //variabile che serve per rimettere il lock a 0 (chiuso) una volta che la cassetta è stata aperta e poi ri-chiusa
 
 void setup() {
   Serial.begin(9600);
@@ -70,7 +71,7 @@ void setup() {
   char buffer_id [4] = {0};
   while(1)
   {
-      /* Check if 3 chars from bridge are ready */
+      
       if (Serial.available() >= 3) 
       {  
         Serial.readBytes(buffer_id, 3);
@@ -91,9 +92,6 @@ void loop() {
     } else {
       lock = "0";
     }
-    while (Serial.available()) {
-      Serial.read();
-    } //modo per pulire il buffer
   }
 
   if (digitalRead(4) == LOW) {
@@ -103,8 +101,15 @@ void loop() {
   }
   if (digitalRead(5) == LOW) {
     open = "0";
+    if (RELOCK == 1){ //ovvero la cassetta è già stata aperta ed è stata chiusa, imposta il lock a 0
+      lock = "0"; //imposto il lock nuovamente a 0 siccome è già stata aperta e chiusa
+      RELOCK = 0; //ri imposto la variabile ausiliaria relock a 0
+    }
   } else {
-    open = "1";
+    if(lock == "1"){ //la cassetta si può aprire solo se è stata sbloccata con il lock
+        open = "1";
+        RELOCK = 1; //ho aperto la cassetta, imposto la variabile ausiliaria RELOCK a 1
+    }
   }
 
   aht.getEvent(&humidity, &temp);
@@ -135,7 +140,7 @@ void loop() {
       Y = accel.getY();
       Z = accel.getZ();
       //Serial.print("\n");
-      Serial.print(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
+      Serial.println(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
     } else {
       Serial.println("X6");
       while (1) {

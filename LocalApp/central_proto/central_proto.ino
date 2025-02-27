@@ -82,8 +82,7 @@ void setup()
  /* Sending a "0" to let the bridge recognize Central */
 
   Serial.print("00000000000"); 
-
-  while (1)
+ while (1)
   {
       if (Serial.available() > 0) 
       {

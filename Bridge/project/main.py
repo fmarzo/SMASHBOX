@@ -114,8 +114,8 @@ def main():
 
 
             central_response = central_ser.read(config.N_BYTES)
-            print("Central response: ")
-            print(central_response)
+            #print("Central response: ")
+            #print(central_response)
 
             if chr(central_response[1]) == "1":
                 print("check")
