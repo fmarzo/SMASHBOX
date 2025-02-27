@@ -81,9 +81,8 @@ def main():
 
 
     #TELEGRAM BOT
-    tg_bot = TgBot()
-
-    # Avvia il bot in un thread separato
+    tg_bot = system.get_tg_bot()
+    # Start in a separate thread
     thread = threading.Thread(target=tg_bot.run_bot, daemon=True)
     thread.start()
 

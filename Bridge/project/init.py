@@ -5,6 +5,7 @@ import serial.tools.list_ports
 from scipy.stats import false_discovery_control
 
 import config
+from bot.tgbot import TgBot
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from time import sleep
@@ -31,7 +32,7 @@ class Initializer:
         self.init_serial_by_os()
         self.init_firebase_db()
         self.init_mqtt_server()
-        #self.init_tg_bot()
+        self.init_tg_bot()
 
     def init_serial_by_os(self):
         serial_found = 0
