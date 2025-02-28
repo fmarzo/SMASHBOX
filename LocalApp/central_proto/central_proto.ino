@@ -29,6 +29,7 @@ SoftwareSerial mySerial(2, 3);
 #define ID_EXISTING_ERR 0x01
 #define ERR_SYSTEM  0x02;
 #define CENTRAL_CHAR_REGOGNIZE 0x40 /* @ for bridge-central handshake */
+#define CHAR_INFR 0x5F /* _ for notify the infringement*/
 
 /* ----------------------------------------------- */
 
@@ -72,6 +73,7 @@ void setup()
   finger.begin(57600);
 
   pinMode(4, INPUT);
+  pinMode(10,INPUT); // pulsante
   lcd.begin(16,1);
   lcd.setCursor(0,0);
 
@@ -144,29 +146,24 @@ void loop()
 
   int err = NO_ERROR;
   check = 0;
+  ENR=0;
   
   //LEGGO SE IL BRIDGE MANDA IL LOCK 
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) 
+  {
     read = Serial.read();
-    ENR=0;
-    if (read == 56) {
+    if (read == CHAR_INFR) 
+    {
       //UTILIZZO COME MECCANISMO DI SBLOCCO IL SENSORE AD INFRAROSSI ALTRIMENTI NON ESCI DA LOOP
-      while(1){
-        if (digitalRead(4) == LOW) {
-          lcd.clear();
-          lcd.print("Unlocked");
+      while(1)
+      {
+        if (digitalRead(10) == LOW)
+        {
           break;
         }
-        if (digitalRead(4) == HIGH){
-          lcd.clear();
-          lcd.print("ERROR");
-          delay(1000);
-          }
+        Serial.print("00000000001"); 
       }
     } 
-    while (Serial.available()) {
-      Serial.read();
-    } //modo per pulire il buffer
   }
 
   if (digitalRead(4) == LOW) 
