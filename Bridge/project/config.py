@@ -24,7 +24,10 @@ SERIAL_COM_MAC_RADIX = "/dev/cu.usbmodem"
 SERIAL_COM_WIN_RADIX = "COM"
 N_BYTES = 11
 CENTRAL_SERIAL = 0
-
+CHAR_CHECK = "1"
+CHAR_ENROLL = "2"
+CHAR_UNLOCK = b"&"
+CHAR_IDLE = "0"
 #FIREBASE PARAMS
 
 DB_DATABASE_URL = "https://customerlist-970ff-default-rtdb.europe-west1.firebasedatabase.app/"

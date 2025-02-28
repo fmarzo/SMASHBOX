@@ -105,7 +105,7 @@ void loop() {
       lock = "0"; //imposto il lock nuovamente a 0 siccome è già stata aperta e chiusa
       RELOCK = 0; //ri imposto la variabile ausiliaria relock a 0
     }
-  } else {
+  } else{
     if(lock == "1"){ //la cassetta si può aprire solo se è stata sbloccata con il lock
         open = "1";
         RELOCK = 1; //ho aperto la cassetta, imposto la variabile ausiliaria RELOCK a 1
@@ -140,7 +140,7 @@ void loop() {
       Y = accel.getY();
       Z = accel.getZ();
       //Serial.print("\n");
-      Serial.println(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
+      Serial.print(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
     } else {
       Serial.println("X6");
       while (1) {

@@ -12,6 +12,8 @@ from models.client import Client
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from init import Initializer
+from project.config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
+
 
 def main():
     # SYSTEM INIT
@@ -19,8 +21,6 @@ def main():
     system = Initializer()
     system.init_system()
     ser = system.get_serials()
-    n_ser = len(ser)
-    free_ser = [0] * n_ser
     central_ser = system.get_central_serial()
     print("Acquisition serial list:" + str(ser))
     print("Central serial: " + str(central_ser))
@@ -77,12 +77,12 @@ def main():
         firebase_db.update_customer(box_5, cli_5, {'Names': 'Tuccu'})
         sleep(1)
 
-    central_ok = 1
+
 
     while True:
 
         # ENDLESS LOOP
-        #print("Central: " + str(system.get_central_serial()))
+
         if config.SIMULATION == 1:
             # Simulation starts here
             # BOX 1
@@ -110,26 +110,23 @@ def main():
             sleep(1)
         else:
             # NO SIMULATION, System is in GO
-            #for ser in system.get_serials():
-
 
             central_response = central_ser.read(config.N_BYTES)
             #print("Central response: ")
             #print(central_response)
-
-            if chr(central_response[1]) == "1":
+            if chr(central_response[1]) == CHAR_IDLE:
+                pass
+            elif chr(central_response[1]) == CHAR_CHECK:
                 print("check")
                 id_acq = central_response[2:5]
                 for port_name, data in ser.items():
                     if data["id"] == id_acq:
-                        data["serial"].write(b"&")
+                        data["serial"].write(CHAR_UNLOCK)
                         break
-
-            elif chr(central_response[1]) == "2":
+            elif chr(central_response[1]) == CHAR_ENROLL:
                 #enroll
                 id_acq = central_response[2:5]
                 print(id_acq)
-
                 for port_name, data in ser.items():
                     if not data["busy"]:
                         data["id"] = id_acq
@@ -137,11 +134,6 @@ def main():
                         print(data["serial"])
                         data["serial"].write(id_acq)
                         break
-            #else:
-                #print ("no response from central")
-                #val = central_ser.read(config.N_BYTES)
-                #print(val)
-                #central_ok = 1
 
             for port_name, data in ser.items():
                 s = data["serial"]
