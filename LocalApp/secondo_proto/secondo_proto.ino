@@ -12,7 +12,8 @@ X5: start: failed
 X6: update failed
 */
 
-#define OPENCHARACTER 0x26 /* & for opening */
+#define OPEN_CHAR 0x26 /* & for opening lock */
+#define INFR_CHAR 0x2A /* * for infringement lock */
 
 Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); //SDO low
@@ -88,11 +89,19 @@ void loop() {
   // Lettura di 1 byte dalla Serial 
   int relock = 0; //variabile che serve per rimettere il lock a 0 (chiuso) una volta che la cassetta è stata aperta e poi ri-chiusa
 
-  if (Serial.available() > 0) {
+  if (Serial.available() > 0) 
+  {
     read = Serial.read();
-    if (read == OPENCHARACTER) {
+    if (read == OPEN_CHAR) 
+    {
       lock = "1";
-    } else {
+    } 
+    else if (read == INFR_CHAR)
+    {
+      lock = "0";
+    }
+    else 
+    {
       lock = "0";
     }
   }
