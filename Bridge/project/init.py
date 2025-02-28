@@ -74,7 +74,6 @@ class Initializer:
             for port_name, data in self.__ser_ports_dict.items():
                 ser = data["serial"]
                 packet = ser.read(config.N_BYTES)
-                print(chr(packet[0]))
                 id_ser_0 = int(chr(packet[0]))
                 id_ser_1 = int(chr(packet[1]))
                 id_ser_2 = int(chr(packet[2]))

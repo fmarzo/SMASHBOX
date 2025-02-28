@@ -23,7 +23,7 @@ String pres, infr, open;
 int read;
 String ID;
 bool firstRun = true;  // Variabile per verificare la prima esecuzione
-int RELOCK = 0; //variabile che serve per rimettere il lock a 0 (chiuso) una volta che la cassetta è stata aperta e poi ri-chiusa
+
 
 void setup() {
   Serial.begin(9600);
@@ -35,9 +35,11 @@ void setup() {
   digitalWrite(13, LOW);
 
   byte deviceID = accel.readDeviceID();
-  if (deviceID == 0) {
+  if (deviceID == 0) 
+  {
     Serial.println("X1");
-    while (1) {
+    while (1) 
+    {
       delay(100);
     }
   }
@@ -84,6 +86,7 @@ void setup() {
 
 void loop() {
   // Lettura di 1 byte dalla Serial 
+  int relock = 0; //variabile che serve per rimettere il lock a 0 (chiuso) una volta che la cassetta è stata aperta e poi ri-chiusa
 
   if (Serial.available() > 0) {
     read = Serial.read();
@@ -101,14 +104,14 @@ void loop() {
   }
   if (digitalRead(5) == LOW) {
     open = "0";
-    if (RELOCK == 1){ //ovvero la cassetta è già stata aperta ed è stata chiusa, imposta il lock a 0
+    if (relock == 1){ //ovvero la cassetta è già stata aperta ed è stata chiusa, imposta il lock a 0
       lock = "0"; //imposto il lock nuovamente a 0 siccome è già stata aperta e chiusa
-      RELOCK = 0; //ri imposto la variabile ausiliaria relock a 0
+      relock = 0; //ri imposto la variabile ausiliaria relock a 0
     }
   } else{
     if(lock == "1"){ //la cassetta si può aprire solo se è stata sbloccata con il lock
         open = "1";
-        RELOCK = 1; //ho aperto la cassetta, imposto la variabile ausiliaria RELOCK a 1
+        relock = 1; //ho aperto la cassetta, imposto la variabile ausiliaria RELOCK a 1
     }
   }
 
