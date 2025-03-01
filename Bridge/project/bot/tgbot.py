@@ -1,14 +1,17 @@
 import asyncio
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from config import TOKEN_TG_BOT
+from config import TOKEN_TG_BOT, CHAT_ID_TG_BOT
+
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Response to /start"""
-    await update.message.reply_text("Estamos a tope Tucu")
+    chat_id = update.message.chat_id
+    await update.message.reply_text(chat_id)
 
 async def cmd_ask_log(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Response to /log"""
+    await context.bot.send_message(CHAT_ID_TG_BOT, "A TOPE" + " 3")
     await update.message.reply_text("Richiesta di log")
 
 class TgBot:
