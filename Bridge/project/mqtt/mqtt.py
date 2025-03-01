@@ -45,6 +45,12 @@ class MqttClient:
         data = json.loads(msg.payload.decode())
         ser = init.Initializer()
         ser_central = ser.get_central_serial()
+        print("data")
+        print(data["open"])
+
+        # TODO : retrieve TgBot object and send a msg
+        #  asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Test di invio messaggio"))
+
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:
             ser_central.write(b"1") #sending "1" to notify safe mode to central

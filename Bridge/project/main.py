@@ -1,3 +1,4 @@
+import asyncio
 import os
 from configparser import NoOptionError
 from time import sleep
@@ -14,7 +15,7 @@ from models.client import Client
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from init import Initializer
-from project.config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
+from config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
 
 
 def main():
@@ -85,6 +86,8 @@ def main():
     # Start in a separate thread
     thread = threading.Thread(target=tg_bot.run_bot, daemon=True)
     thread.start()
+    #Test msg to TG bot
+    asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Test di invio messaggio"))
 
     while True:
 

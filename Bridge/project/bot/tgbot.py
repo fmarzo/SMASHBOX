@@ -20,7 +20,6 @@ class TgBot:
         self.__app = ApplicationBuilder().token(TOKEN_TG_BOT).build()
         self.__app.add_handler(CommandHandler("start", cmd_start))
         self.__app.add_handler(CommandHandler("log", cmd_ask_log))
-
         self.loop = None
 
     def run_bot(self):
@@ -34,3 +33,15 @@ class TgBot:
             print("Bot stopped")
         finally:
             self.loop.run_forever()
+
+    async def send_msg(self, chat_id: int, message: str):
+        """Invia un messaggio a un chat ID specifico."""
+        if not self.__app.bot:
+            print("Errore: il bot non è inizializzato correttamente.")
+            return
+
+        try:
+            await self.__app.bot.send_message(chat_id=chat_id, text=message)
+            print(f"Messaggio inviato a {chat_id}: {message}")
+        except Exception as e:
+            print(f"Errore nell'invio del messaggio: {e}")
