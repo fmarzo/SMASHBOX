@@ -1,3 +1,5 @@
+import asyncio
+from time import sleep
 from urllib.parse import ResultBase
 
 import paho.mqtt.client as mqtt
@@ -6,6 +8,8 @@ import config
 from google.api_core.operations_v1.operations_client_config import config
 
 import init
+from bot.tgbot import TgBot
+
 
 #bridge rebase
 class MqttClient:
@@ -48,8 +52,11 @@ class MqttClient:
         print("data")
         print(data["open"])
 
+        sleep(1)
         # TODO : retrieve TgBot object and send a msg
-        #  asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Test di invio messaggio"))
+        tg_bot = TgBot()
+        asyncio.run(tg_bot.send_msg(2074734224, "ALARM!"))
+        sleep(1)
 
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:

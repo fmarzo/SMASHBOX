@@ -14,13 +14,24 @@ async def cmd_ask_log(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await context.bot.send_message(CHAT_ID_TG_BOT, "A TOPE" + " 3")
     await update.message.reply_text("Richiesta di log")
 
+
+
 class TgBot:
+    _instance = None
+    _initialized = False
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
         """Init bot"""
-        self.__app = ApplicationBuilder().token(TOKEN_TG_BOT).build()
-        self.__app.add_handler(CommandHandler("start", cmd_start))
-        self.__app.add_handler(CommandHandler("log", cmd_ask_log))
-        self.loop = None
+        if not self._initialized:
+            TgBot._initialized = True
+            self.__app = ApplicationBuilder().token(TOKEN_TG_BOT).build()
+            self.__app.add_handler(CommandHandler("start", cmd_start))
+            self.__app.add_handler(CommandHandler("log", cmd_ask_log))
+            self.loop = None
 
     def run_bot(self):
         """Start bot in a separate thread"""

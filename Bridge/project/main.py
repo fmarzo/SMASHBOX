@@ -87,7 +87,7 @@ def main():
     thread = threading.Thread(target=tg_bot.run_bot, daemon=True)
     thread.start()
     #Test msg to TG bot
-    asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Test di invio messaggio"))
+    asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
     while True:
 
