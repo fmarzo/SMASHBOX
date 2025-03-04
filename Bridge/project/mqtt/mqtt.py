@@ -53,7 +53,7 @@ class MqttClient:
         print(data["open"])
 
         sleep(1)
-        # TODO : retrieve TgBot object and send a msg
+        # TODO : how to get correct bot with multiple users?
         tg_bot = TgBot()
         asyncio.run(tg_bot.send_msg(2074734224, "ALARM!"))
         sleep(1)
