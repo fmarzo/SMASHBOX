@@ -98,11 +98,11 @@ uint8_t getFingerprintID()
   } 
   else 
   {
+   // TODO: se non serve togliamo
    // Serial.println("Unknown error");
     return p;
   }
-
-  // found a match!
+  /* found a match! */
   lcd.clear();
   lcd.print("ID: " );
   lcd.print(finger.fingerID);
@@ -111,6 +111,7 @@ uint8_t getFingerprintID()
   lcd.clear();
   lcd.print("confidence: " + finger.confidence);
   delay(500);
+  // TODO: questa serve? Se no, togliamo. Se si (credo di si), è la stessa di central_proto.ino? Perchè in quel caso va gestita diversamente (ne parliamo a voce)
   check = 1;
 
   return finger.fingerID;

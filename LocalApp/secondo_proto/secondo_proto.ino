@@ -5,8 +5,10 @@
 #include "config.h"
 
 void setup() {
+  // TODO: anche questa è una costante di configurazione. Possiamo settarla
   Serial.begin(9600);
   Wire.begin();
+  // TODO: sostituzione macro?
   pinMode(4, INPUT);
   pinMode(5, INPUT);
   pinMode(13, OUTPUT);
@@ -59,7 +61,6 @@ void setup() {
   char buffer_id [4] = {0};
   while(1)
   {
-      
       if (Serial.available() >= 3) 
       {  
         Serial.readBytes(buffer_id, 3);
@@ -129,7 +130,6 @@ void loop() {
     X = accel.getX();
     Y = accel.getY();
     Z = accel.getZ();
-
   } 
   else 
   {
@@ -146,6 +146,7 @@ void loop() {
         infr = "0";
       }
 
+      // TODO: sostizione macro
       digitalWrite(13, HIGH);
       delay(1000);
       digitalWrite(13, LOW);
@@ -153,6 +154,7 @@ void loop() {
       X = accel.getX();
       Y = accel.getY();
       Z = accel.getZ();
+      // TODO: togliamo se non serve
       //Serial.print("\n");
       Serial.print(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
     } 
@@ -168,3 +170,18 @@ void loop() {
 
   delay(2000);  // Ritardo per evitare letture troppo rapide
 }
+
+
+
+// NOTE PER IL REFACTORING:
+
+/* 
+
+1. Decidiamo se scrivere tutto in italiano o in inglese (decidi tu, ma meglio in inglese perchè se carichiamo il progetto su Git abbiamo più audiance)
+2. Scegliamo uno stile per i commenti. Tendenzialmente io userei / *  * / ma va bene anche //. Però decidiamone uno.
+3. Se riusciamo teniamo al massimo 1 riga vuota tra una riga di codice e l'altra.abort
+4. Ti ho messo apposto alcune parentesi che ti eri scordato
+5. Nota sulla definizione delle macro. In realtà ora che ci penso non andrei a modificare direttamente la funzione (ti mando un audio)
+6. Cancelliamo i commenti che non ci aiutano o che non servono più
+7. Cancella anche questa sezione una volta che hai finito
+*/
