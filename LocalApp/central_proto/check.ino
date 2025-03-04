@@ -1,7 +1,9 @@
 #include "check.h"
 
-String padLeft(String str, int length, char padChar = ' ') {
-  while (str.length() < length) {
+String padLeft(String str, int length, char padChar = ' ') 
+{
+  while (str.length() < length) 
+  {
     str = padChar + str;  // Aggiunge il carattere di padding a sinistra
   }
   return str;
@@ -10,7 +12,8 @@ String padLeft(String str, int length, char padChar = ' ') {
 uint8_t getFingerprintID()
 {
   uint8_t p = finger.getImage();
-  switch (p) {
+  switch (p) 
+  {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("image taken");
@@ -39,7 +42,8 @@ uint8_t getFingerprintID()
   // OK success!
 
   p = finger.image2Tz();
-  switch (p) {
+  switch (p) 
+  {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image converted");
@@ -72,21 +76,28 @@ uint8_t getFingerprintID()
 
   // OK converted!
   p = finger.fingerSearch();
-  if (p == FINGERPRINT_OK) {
+  if (p == FINGERPRINT_OK) 
+  {
     lcd.clear();
     lcd.print("match found");
     delay(500);
-  } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
+  } 
+  else if (p == FINGERPRINT_PACKETRECIEVEERR) 
+  {
     lcd.clear();
     lcd.print("com error");
     delay(500);
     return p;
-  } else if (p == FINGERPRINT_NOTFOUND) {
+  } 
+  else if (p == FINGERPRINT_NOTFOUND) 
+  {
     lcd.clear();
     lcd.print("no match found");
     delay(500);
     return p;
-  } else {
+  } 
+  else 
+  {
    // Serial.println("Unknown error");
     return p;
   }

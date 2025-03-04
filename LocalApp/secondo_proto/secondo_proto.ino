@@ -2,29 +2,7 @@
 #include <ADXL345.h>
 #include <stdlib.h>
 #include <Adafruit_AHTX0.h>
-/*
-ERROR LEGEND
-X1: read device id: failed
-X2: could not find AHT
-X3: write rate: failed
-X4: write range: failed
-X5: start: failed
-X6: update failed
-*/
-
-#define OPEN_CHAR 0x26 /* & for opening lock */
-#define INFR_CHAR 0x2A /* * for infringement lock */
-
-Adafruit_AHTX0 aht;
-ADXL345 accel(ADXL345_ALT); //SDO low
-double X, Y, Z;
-sensors_event_t humidity, temp;
-String lock = "0";
-String pres, infr, open;
-int read;
-String ID;
-bool firstRun = true;  // Variabile per verificare la prima esecuzione
-
+#include "config.h"
 
 void setup() {
   Serial.begin(9600);
@@ -44,29 +22,36 @@ void setup() {
       delay(100);
     }
   }
-  if (!aht.begin()) {
+  if (!aht.begin()) 
+  {
     Serial.println("X2");
     while (1)
       delay(100);
   }
 
-  if (!accel.writeRate(ADXL345_RATE_200HZ)) {
+  if (!accel.writeRate(ADXL345_RATE_200HZ)) 
+  {
     Serial.println("X3");
-    while (1) {
+    while (1) 
+    {
       delay(100);
     }
   }
 
-  if (!accel.writeRange(ADXL345_RANGE_16G)) {
+  if (!accel.writeRange(ADXL345_RANGE_16G)) 
+  {
     Serial.println("X4");
-    while (1) {
+    while (1) 
+    {
       delay(100);
     }
   }
 
-  if (!accel.start()) {
+  if (!accel.start()) 
+  {
     Serial.println("X6");
-    while (1) {
+    while (1) 
+    {
       delay(100);
     }
   }
@@ -88,6 +73,8 @@ void setup() {
 void loop() {
   // Lettura di 1 byte dalla Serial 
   int relock = 0; //variabile che serve per rimettere il lock a 0 (chiuso) una volta che la cassetta è stata aperta e poi ri-chiusa
+  int read;
+  String pres;
 
   if (Serial.available() > 0) 
   {
@@ -106,19 +93,27 @@ void loop() {
     }
   }
 
-  if (digitalRead(4) == LOW) {
+  if (PRESENCE == LOW) 
+  {
     pres = "1";
-  } else {
+  } 
+  else 
+  {
     pres = "0";
   }
-  if (digitalRead(5) == LOW) {
+  if (OPEN == LOW) 
+  {
     open = "0";
-    if (relock == 1){ //ovvero la cassetta è già stata aperta ed è stata chiusa, imposta il lock a 0
+    if (relock == 1)
+    { //ovvero la cassetta è già stata aperta ed è stata chiusa, imposta il lock a 0
       lock = "0"; //imposto il lock nuovamente a 0 siccome è già stata aperta e chiusa
       relock = 0; //ri imposto la variabile ausiliaria relock a 0
     }
-  } else{
-    if(lock == "1"){ //la cassetta si può aprire solo se è stata sbloccata con il lock
+  } 
+  else
+  {
+    if(lock == "1")//la cassetta si può aprire solo se è stata sbloccata con il lock
+    { 
         open = "1";
         relock = 1; //ho aperto la cassetta, imposto la variabile ausiliaria RELOCK a 1
     }
@@ -127,20 +122,27 @@ void loop() {
   aht.getEvent(&humidity, &temp);
 
   // Verifica se è la prima esecuzione e salta il controllo iniziale
-  if (firstRun) {
+  if (firstRun) 
+  {
     firstRun = false;
     accel.update();
     X = accel.getX();
     Y = accel.getY();
     Z = accel.getZ();
 
-  } else {
+  } 
+  else 
+  {
     // Aggiorna i dati dell'accelerometro
-    if (accel.update()) {
+    if (accel.update())
+    {
       // Versione in cui invio allarme
-      if (abs(X - accel.getX()) > 0.5 || abs(Y - accel.getY()) > 0.5 || abs(Z - accel.getZ()) > 0.5) {
+      if (abs(X - accel.getX()) > 0.5 || abs(Y - accel.getY()) > 0.5 || abs(Z - accel.getZ()) > 0.5) 
+      {
         infr = "1";
-      } else {
+      } 
+      else 
+      {
         infr = "0";
       }
 
@@ -153,9 +155,12 @@ void loop() {
       Z = accel.getZ();
       //Serial.print("\n");
       Serial.print(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
-    } else {
+    } 
+    else 
+    {
       Serial.println("X6");
-      while (1) {
+      while (1) 
+      {
         delay(100);
       }
     }

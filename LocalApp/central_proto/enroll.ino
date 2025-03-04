@@ -5,7 +5,8 @@ uint8_t getFingerprintEnroll()
   int p = -1;
   lcd.clear();
   lcd.print("Waiting finger..");
-  while (p != FINGERPRINT_OK) {
+  while (p != FINGERPRINT_OK) 
+  {
     p = finger.getImage();
     switch (p) {
     case FINGERPRINT_OK:
@@ -37,7 +38,8 @@ uint8_t getFingerprintEnroll()
   // OK success!
 
   p = finger.image2Tz(1);
-  switch (p) {
+  switch (p) 
+  {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image converted");
@@ -71,16 +73,19 @@ uint8_t getFingerprintEnroll()
   lcd.print("Remove finger");
   delay(500);
   p = 0;
-  while (p != FINGERPRINT_NOFINGER) {
+  while (p != FINGERPRINT_NOFINGER) 
+  {
     p = finger.getImage();
   }
   p = -1;
   lcd.clear();
   lcd.print("Put same finger");
   delay(500);
-  while (p != FINGERPRINT_OK) {
+  while (p != FINGERPRINT_OK) 
+  {
     p = finger.getImage();
-    switch (p) {
+    switch (p) 
+    {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image taken");
@@ -110,7 +115,8 @@ uint8_t getFingerprintEnroll()
   // OK success!
 
   p = finger.image2Tz(2);
-  switch (p) {
+  switch (p) 
+  {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image converted");
@@ -144,21 +150,28 @@ uint8_t getFingerprintEnroll()
   // OK converted!
 
   p = finger.createModel();
-  if (p == FINGERPRINT_OK) {
+  if (p == FINGERPRINT_OK) 
+  {
     lcd.clear();
     lcd.print("Prints matched");
     delay(500);
-  } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
+  } 
+  else if (p == FINGERPRINT_PACKETRECIEVEERR) 
+  {
     lcd.clear();
     lcd.print("com error");
     delay(500);
     return p;
-  } else if (p == FINGERPRINT_ENROLLMISMATCH) {
+  } 
+  else if (p == FINGERPRINT_ENROLLMISMATCH) 
+  {
     lcd.clear();
     lcd.print("Prints not matched");
     delay(500);
     return p;
-  } else {
+  } 
+  else 
+  {
     //Serial.println("Unknown error");
     return p;
   }
