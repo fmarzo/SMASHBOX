@@ -52,11 +52,10 @@ class MqttClient:
         print("data")
         print(data["open"])
 
-        sleep(1)
         # TODO : how to get correct bot with multiple users?
+        # TODO: retrieve chat ID depending on the box ID?
         tg_bot = TgBot()
         asyncio.run(tg_bot.send_msg(2074734224, "ALARM!"))
-        sleep(1)
 
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:
