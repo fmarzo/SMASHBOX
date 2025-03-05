@@ -54,8 +54,8 @@ void setup() {
       delay(100);
     }
   }
-  ID = "AAA";
-  /* char buffer_id [4] = {0};
+  
+  char buffer_id [4] = {0};
   while(1)
   {
       if (Serial.available() >= 3) 
@@ -64,7 +64,7 @@ void setup() {
         ID.concat(buffer_id);
         break;
       }
-  } */
+  }
 }
 
 
