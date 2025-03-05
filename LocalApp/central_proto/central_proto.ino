@@ -4,17 +4,27 @@
 #include "check.h"
 #include "enroll.h"
 
+/* GLOBAL VARIABLES */
+
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+uint8_t id = 0;
+int check = 0;
+const int rs=11, en=12, d4=5, d5=6, d6=7, d7=8;
+LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
+
 void setup()
 {
-  Serial.begin(STANDARD_BOUNDRATE);
+  int init_response = 0;
+
+  Serial.begin(STANDARD_BAUDRATE);
   while (!Serial);  
   delay(100);
 
   /* set the data rate for the sensor serial port */
-  finger.begin(FINGERSENSOR_DATARATE);
+  finger.begin(FINGER_SENSOR_DATARATE);
 
-  pinMode(SWITCHENROLL_PIN, INPUT);
-  pinMode(UNLOCKBUTTON_PIN,INPUT);
+  pinMode(SWITCH_ENROLL_PIN, INPUT);
+  pinMode(UNLOCK_BUTTON_PIN,INPUT);
   lcd.begin(16,1);
   lcd.setCursor(0,0);
 
@@ -25,23 +35,23 @@ void setup()
   // finger.emptyDatabase(); 
 
   /* Sending a "0" to let the bridge recognize Central */
-  Serial.print(NOT_STRING); 
+  Serial.print(IDLE_PACKET); 
 
   while (1)
-    {
-        if (Serial.available() > 0) 
-        {
-            init_response = Serial.read();
-            lcd.print(init_response);
-            if (init_response == CENTRAL_CHAR_REGOGNIZE)
-            {
-              
-              lcd.clear();
-              lcd.print("FOUND");
-              break;
-            }
-        }
-    }
+  {
+      if (Serial.available() > 0) 
+      {
+          init_response = Serial.read();
+          lcd.print(init_response);
+
+          if (init_response == CENTRAL_RECOGNIZE_CHAR)
+          {
+            lcd.clear();
+            lcd.print("FOUND");
+            break;
+          }
+      }
+  }
 }
 
 int check_for_existing_id (uint8_t id)
@@ -59,8 +69,9 @@ void loop()
 {
   int err = NO_ERROR;
   check = 0;
-  enr=0;
-  
+  uint8_t enr = 0;
+  int read = 0;
+
   /* Read if bridge sends lock */
   if (Serial.available() > 0) 
   {
@@ -70,15 +81,16 @@ void loop()
       /* Using infrared mechanism, otherwise not quitting from main loop */
       while(1)
       {
-        if (digitalRead(UNLOCKBUTTON_PIN) == LOW)
+        if (digitalRead(UNLOCK_BUTTON_PIN) == LOW)
         {
           break;
         }
-        Serial.print(INFR_STRING); 
+        Serial.print(INFRING_PACKET); 
       }
     } 
   }
-  if (digitalRead(SWITCHENROLL_PIN) == LOW) 
+  
+  if (digitalRead(SWITCH_ENROLL_PIN) == LOW) 
   {
     enr = 1;
   } 
@@ -93,11 +105,11 @@ void loop()
     lcd.print("ENROLL");
     delay(500);
 
-    id = random(1,127);
+    id = random(MIN_ID_NUM, MAX_ID_NUM);
 
     while (check_for_existing_id (id) != NO_ERROR)
     {
-      id = random(1,127);
+      id = random(MIN_ID_NUM, MAX_ID_NUM);
     }
 
     lcd.clear();
@@ -115,7 +127,7 @@ void loop()
   if (check == 0)
   {
     digitalWrite(LED_BUILTIN, HIGH);
-    Serial.print(NOT_STRING); 
+    Serial.print(IDLE_PACKET); 
     delay(500);
     digitalWrite(LED_BUILTIN, LOW);
   }
