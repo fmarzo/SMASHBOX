@@ -4,7 +4,7 @@ String padLeft(String str, int length, char padChar = ' ')
 {
   while (str.length() < length) 
   {
-    str = padChar + str;  // Aggiunge il carattere di padding a sinistra
+    str = padChar + str;  /* adding on left the padding character */
   }
   return str;
 }
@@ -35,11 +35,12 @@ uint8_t getFingerprintID()
       delay(500);
       return p;
     default:
-    //  Serial.println("Unknown error");
+      lcd.clear();
+      lcd.print("Unknown");
       return p;
   }
 
-  // OK success!
+  /* OK success! */
 
   p = finger.image2Tz();
   switch (p) 
@@ -70,11 +71,12 @@ uint8_t getFingerprintID()
       delay(500);
       return p;
     default:
-      //Serial.println("Unknown error");
+      lcd.clear();
+      lcd.print("Unknown");
       return p;
   }
 
-  // OK converted!
+  /* OK converted! */
   p = finger.fingerSearch();
   if (p == FINGERPRINT_OK) 
   {
@@ -98,8 +100,8 @@ uint8_t getFingerprintID()
   } 
   else 
   {
-   // TODO: se non serve togliamo
-   // Serial.println("Unknown error");
+    lcd.clear();
+    lcd.print("Unknown");
     return p;
   }
   /* found a match! */

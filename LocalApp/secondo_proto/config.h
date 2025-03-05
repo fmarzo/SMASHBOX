@@ -5,20 +5,22 @@
 /* ----------------------------------------------------------------- */
 #define OPEN_CHAR 0x26 /* & for opening lock */
 #define INFR_CHAR 0x2A /* * for infringement lock */
-#define PRESENCE digitalRead(4)
-#define OPEN digitalRead(5)
+#define PRESENCE_PIN 4
+#define OPEN_PIN 5
+#define STANDARD_BOUNDRATE 9600
 /* ----------------------------------------------------------------- */
 
 /* GLOBAL VARIABLES*/
 /* ----------------------------------------------------------------- */
 Adafruit_AHTX0 aht;
-ADXL345 accel(ADXL345_ALT); //SDO low
+ADXL345 accel(ADXL345_ALT); 
 double X, Y, Z;
 sensors_event_t humidity, temp;
-String lock = "0";
-String infr, open;
+String lock = "1";
+String open;
 String ID;
-bool firstRun = true;  // Variabile per verificare la prima esecuzione
+bool firstRun = true; 
+int relock = 0; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
 /* ----------------------------------------------------------------- */
 
 #endif _CONFIG

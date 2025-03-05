@@ -6,28 +6,26 @@
 
 void setup()
 {
-  Serial.begin(9600);
-  while (!Serial);  // For Yun/Leo/Micro/Zero/...
+  Serial.begin(STANDARD_BOUNDRATE);
+  while (!Serial);  
   delay(100);
 
   /* set the data rate for the sensor serial port */
-  finger.begin(57600);
+  finger.begin(FINGERSENSOR_DATARATE);
 
-  // TODO: anche qui, se hai definito le macro in config, puoi sostituire
-  pinMode(4, INPUT);
-  pinMode(10,INPUT); /* pulsante */
+  pinMode(SWITCHENROLL_PIN, INPUT);
+  pinMode(UNLOCKBUTTON_PIN,INPUT);
   lcd.begin(16,1);
   lcd.setCursor(0,0);
 
   randomSeed(analogRead(0));
   pinMode(LED_BUILTIN, OUTPUT);
   
-  /* In case we would like to erase all register IDs*/
-  /*finger.emptyDatabase();*/ 
+  /* In case we would like to erase all register IDs */
+  // finger.emptyDatabase(); 
 
   /* Sending a "0" to let the bridge recognize Central */
-  // TODO: la stringa "00000000000" la mandiamo più volte. Forse possiamo mettere anche questa in config.h (se non l'hai già fatto)
-  Serial.print("00000000000"); 
+  Serial.print(NOT_STRING); 
 
   while (1)
     {
@@ -44,19 +42,6 @@ void setup()
             }
         }
     }
-}
-
-//TODO: è utilizzata questa funzione? Se no, allora togliamola
-uint8_t readnumber(void) 
-{
-  uint8_t num = 0;
-
-  while (num == 0) 
-  {
-    while (! Serial.available());
-    num = Serial.parseInt();
-  }
-  return num;
 }
 
 int check_for_existing_id (uint8_t id)
@@ -85,17 +70,15 @@ void loop()
       /* Using infrared mechanism, otherwise not quitting from main loop */
       while(1)
       {
-        // TODO: sostituzione macro?
-        if (digitalRead(10) == LOW)
+        if (digitalRead(UNLOCKBUTTON_PIN) == LOW)
         {
           break;
         }
-        Serial.print("00000000001"); 
+        Serial.print(INFR_STRING); 
       }
     } 
   }
-  // TODO: qui se hai definito in config.h la macro, puoi sostituire digitalRead(4) proprio con il valore del #define
-  if (digitalRead(4) == LOW) 
+  if (digitalRead(SWITCHENROLL_PIN) == LOW) 
   {
     enr = 1;
   } 
@@ -107,8 +90,7 @@ void loop()
   if (enr == 1)
   {
     lcd.clear();
-    // TODO: enrOLL è voluto? Oppure era Enroll/ENROLL?
-    lcd.print("enrOLL");
+    lcd.print("ENROLL");
     delay(500);
 
     id = random(1,127);
@@ -119,10 +101,9 @@ void loop()
     }
 
     lcd.clear();
-    // TODO: enrOLL è voluto? Oppure era Enroll/ENROLL?
-    lcd.print("enrOLL: "+ String(id)); 
+    lcd.print("ENROLL: "+ String(id)); 
     delay(500);
-    while (!getFingerprintenroll());
+    while (!getFingerprintEnroll());
     delay(1000);
   }
   else
@@ -134,7 +115,7 @@ void loop()
   if (check == 0)
   {
     digitalWrite(LED_BUILTIN, HIGH);
-    Serial.print("00000000000"); 
+    Serial.print(NOT_STRING); 
     delay(500);
     digitalWrite(LED_BUILTIN, LOW);
   }

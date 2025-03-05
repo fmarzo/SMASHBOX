@@ -30,12 +30,13 @@ uint8_t getFingerprintEnroll()
       delay(500);
       break;
     default:
-      //Serial.println("Unknown error");
+      lcd.clear();
+      lcd.print("Unknown");
       break;
     }
   }
 
-  // OK success!
+  /* OK success! */
 
   p = finger.image2Tz(1);
   switch (p) 
@@ -66,7 +67,8 @@ uint8_t getFingerprintEnroll()
       delay(500);
       return p;
     default:
-      //Serial.println("Unknown error");
+      lcd.clear();
+      lcd.print("Unknown");
       return p;
   }
   lcd.clear();
@@ -107,12 +109,13 @@ uint8_t getFingerprintEnroll()
       delay(500);
       break;
     default:
-      //Serial.println("Unknown error");
+      lcd.clear();
+      lcd.print("Unknown");
       break;
     }
   }
 
-  // OK success!
+  /* OK success! */
 
   p = finger.image2Tz(2);
   switch (p) 
@@ -143,11 +146,12 @@ uint8_t getFingerprintEnroll()
       delay(500);
       return p;
     default:
-     // Serial.println("Unknown error");
+      lcd.clear();
+      lcd.print("Unknown");
       return p;
   }
 
-  // OK converted!
+  /* OK converted! */
 
   p = finger.createModel();
   if (p == FINGERPRINT_OK) 
@@ -172,7 +176,8 @@ uint8_t getFingerprintEnroll()
   } 
   else 
   {
-    //Serial.println("Unknown error");
+    lcd.clear();
+    lcd.print("Unknown");
     return p;
   }
   
@@ -208,7 +213,8 @@ uint8_t getFingerprintEnroll()
   }
   else 
   {
-   // Serial.println("Unknown error");
+    lcd.clear();
+    lcd.print("Unknown");
     return p;
   }
 
