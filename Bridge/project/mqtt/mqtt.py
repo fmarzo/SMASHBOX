@@ -5,6 +5,7 @@ from urllib.parse import ResultBase
 import paho.mqtt.client as mqtt
 import json
 import config
+from config import CHAT_ID_TG_BOT
 from google.api_core.operations_v1.operations_client_config import config
 
 import init
@@ -52,10 +53,8 @@ class MqttClient:
         print("data")
         print(data["open"])
 
-        # TODO : how to get correct bot with multiple users?
-        # TODO: retrieve chat ID depending on the box ID?
         tg_bot = TgBot()
-        asyncio.run(tg_bot.send_msg(2074734224, "ALARM!"))
+        asyncio.run(tg_bot.send_msg(CHAT_ID_TG_BOT, "ALARM!"))
 
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:

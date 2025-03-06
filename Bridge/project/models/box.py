@@ -3,7 +3,7 @@ from mpl_toolkits.axisartist.angle_helper import select_step_degree
 
 import config
 import random
-
+from datetime import datetime
 
 def simulate_param(param):
     if param == config.LOCK_PARAM:
@@ -23,6 +23,7 @@ class Box:
     self.infringement = 0
     self.presence = 0
     self.open = 0
+    self.date = "NULL"
 
   def set_url_dev(self, url_dev):
       self.__url_device = url_dev
@@ -38,7 +39,8 @@ class Box:
           "humidity": self.humidity,
           "infringement": self.infringement,
           "lock": self.lock,
-          "open": self.open
+          "open": self.open,
+          "log": self.date
       }
       print(packet)
       return str(packet)
@@ -58,6 +60,12 @@ class Box:
       self.infringement = int(chr(packet [8]))
       self.lock = int(chr(packet[9]))
       self.open = int(chr(packet[10]))
+
+  def update_latest_log(self):
+      formatted_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+      print(formatted_timestamp)
+      print(type(formatted_timestamp))
+      self.date = formatted_timestamp
 
 
 
