@@ -56,3 +56,8 @@ class TgBot:
             print(f"Messaggio inviato a {chat_id}: {message}")
         except Exception as e:
             print(f"Errore nell'invio del messaggio: {e}")
+
+
+#TODO
+# MAKE A NEW BOT OFFICIAL
+# FIND OUT HOW TO RETRIEVE DATE FROM THINGSBOARD (USING MQTT? OTHERWISE, SAVE DATE INTO FIREBASE E RETRIEVE IT FROM THERE?)
