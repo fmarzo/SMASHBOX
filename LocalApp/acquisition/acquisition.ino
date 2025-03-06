@@ -4,6 +4,18 @@
 #include <Adafruit_AHTX0.h>
 #include "config.h"
 
+/* GLOBAL VARIABLES */
+
+Adafruit_AHTX0 aht;
+ADXL345 accel(ADXL345_ALT); 
+double X, Y, Z;
+sensors_event_t humidity, temp;
+String lock = "1";
+String open;
+String ID;
+bool firstRun = true; 
+int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
+
 void setup() {
   Serial.begin(STANDARD_BOUNDRATE);
   Wire.begin();
@@ -100,11 +112,11 @@ void loop() {
   if (digitalRead(OPEN_PIN) == LOW) 
   {
     open = "0";
-    if (relock == 1)
+    if (relock == BOX_OPENED)
     { 
       /* the box has already been opened (relock == 1) and it has been closed (digitalRead(OPEN_PIN) == LOW), so we set the lock to 1 */
       lock = "1"; 
-      relock = 0; /* resetting the lock to the deafault value */
+      relock = BOX_NOT_OPENED; /* resetting the lock to the deafault value */
     }
   } 
   else
@@ -113,7 +125,7 @@ void loop() {
     if(lock == "0")
     { 
         open = "1";
-        relock = 1; /* since i've opened the box we set the relock variable to 1 */
+        relock = BOX_OPENED; /* since i've opened the box we set the relock variable to 1 */
     }
   }
 
