@@ -27,7 +27,7 @@ void setup() {
   byte deviceID = accel.readDeviceID();
   if (deviceID == 0) 
   {
-    Serial.println("X1");
+    Serial.print("X1");
     while (1) 
     {
       delay(100);
@@ -35,14 +35,14 @@ void setup() {
   }
   if (!aht.begin()) 
   {
-    Serial.println("X2");
+    Serial.print("X2");
     while (1)
       delay(100);
   }
 
   if (!accel.writeRate(ADXL345_RATE_200HZ)) 
   {
-    Serial.println("X3");
+    Serial.print("X3");
     while (1) 
     {
       delay(100);
@@ -51,7 +51,7 @@ void setup() {
 
   if (!accel.writeRange(ADXL345_RANGE_16G)) 
   {
-    Serial.println("X4");
+    Serial.print("X4");
     while (1) 
     {
       delay(100);
@@ -60,7 +60,7 @@ void setup() {
 
   if (!accel.start()) 
   {
-    Serial.println("X6");
+    Serial.print("X6");
     while (1) 
     {
       delay(100);
@@ -165,7 +165,7 @@ void loop() {
     } 
     else 
     {
-      Serial.println("X6");
+      Serial.print("X6");
       while (1) 
       {
         delay(100);

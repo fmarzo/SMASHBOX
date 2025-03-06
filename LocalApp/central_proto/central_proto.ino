@@ -32,7 +32,7 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   
   /* In case we would like to erase all register IDs */
-  // finger.emptyDatabase(); 
+  finger.emptyDatabase(); 
 
   /* Sending a "0" to let the bridge recognize Central */
   Serial.print(IDLE_PACKET); 
