@@ -17,6 +17,8 @@ bool firstRun = true;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
 
 void setup() {
+
+  char buffer_id [4] = {0};
   Serial.begin(STANDARD_BOUNDRATE);
   Wire.begin();
   pinMode(PRESENCE_PIN, INPUT);
@@ -67,7 +69,6 @@ void setup() {
     }
   }
   
-  char buffer_id [4] = {0};
   while(1)
   {
       if (Serial.available() >= 3) 
