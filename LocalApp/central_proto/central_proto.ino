@@ -24,7 +24,7 @@ void setup()
   finger.begin(FINGER_SENSOR_DATARATE);
 
   pinMode(SWITCH_ENROLL_PIN, INPUT);
-  pinMode(UNLOCK_BUTTON_PIN,INPUT);
+  pinMode(UNLOCK_BUTTON_PIN,INPUT_PULLUP); /* INPUT_PULLUP Enable the internal arduino pull-up resistor*/
   lcd.begin(16,1);
   lcd.setCursor(0,0);
 
@@ -76,16 +76,18 @@ void loop()
   if (Serial.available() > 0) 
   {
     read = Serial.read();
-    if (read == CHAR_INFR) 
+    if (read == INFRING_CHAR) 
     {
-      /* Using infrared mechanism, otherwise not quitting from main loop */
       while(1)
       {
         if (digitalRead(UNLOCK_BUTTON_PIN) == LOW)
         {
           break;
         }
-        Serial.print(INFRING_PACKET); 
+        Serial.print(INFRING_PACKET);
+        lcd.clear();
+        lcd.print("ALARM!");
+
       }
     } 
   }
