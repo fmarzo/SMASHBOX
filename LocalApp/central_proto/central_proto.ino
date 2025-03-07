@@ -67,7 +67,6 @@ int check_for_existing_id (uint8_t id)
 
 void loop()                  
 {
-  int err = NO_ERROR;
   check = 0;
   uint8_t enr = 0;
   int read = 0;

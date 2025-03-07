@@ -11,7 +11,6 @@ ADXL345 accel(ADXL345_ALT);
 double X, Y, Z;
 sensors_event_t humidity, temp;
 String lock = "1";
-String open;
 String ID;
 bool firstRun = true; 
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
@@ -82,6 +81,7 @@ void setup() {
 
 
 void loop() {
+  String open = "0";
   int read;
   String infr, pres;
 

@@ -73,12 +73,16 @@ class Initializer:
         else:
             for port_name, data in self.__ser_ports_dict.items():
                 ser = data["serial"]
+                ser.timeout = 1  # Imposta un timeout di 1 secondo
                 packet = ser.read(config.N_BYTES)
+                if not packet:  # Se timeout, packet sarà vuoto
+                    continue
                 id_ser_0 = int(chr(packet[0]))
                 id_ser_1 = int(chr(packet[1]))
                 id_ser_2 = int(chr(packet[2]))
 
                 id_ser = id_ser_0 + id_ser_1 + id_ser_2
+                print(id_ser)
 
                 if id_ser == config.CENTRAL_SERIAL:
                     self.__ser_central = ser

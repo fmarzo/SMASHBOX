@@ -22,8 +22,6 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /* DEFINES */
-
-#define ID_SIZE_NUM 128
 #define MIN_ID_NUM 1
 #define MAX_ID_NUM 127
 
