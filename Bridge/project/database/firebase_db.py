@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import db, credentials
 from serialpy.utils import update
+from datetime import datetime
 
 import config
 
@@ -30,6 +31,31 @@ class FirebaseDB:
         else:
             self.__n_cust = 0
 
+    def add_new_access(self, Box, Client):
+        client = self.find_client(Client.client_id, Box.id)
+        if client[0]:
+            ref = self.get_db_reference().child(client[1])
+
+            current_logs = ref.child("Logs").get()
+            if current_logs is None:
+                current_logs = []
+
+            new_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            current_logs.append(new_timestamp)
+            ref.update({"Logs": current_logs})
+            print(f"Log registered for {Client.client_id} at {new_timestamp}")
+        else:
+            print("Customer not found!")
+
+    def get_logs(self, Box, Client):
+        client = self.find_client(Client.client_id, Box.id)
+        if client[0]:
+            ref = self.get_db_reference().child(client[1])
+            access_log = client[2].get("AccessLog", [])
+            print (f"{access_log} for {Client.client_id}")
+        else:
+            print("Customer not found!")
+
     def get_db_reference (self):
         return db.reference(f"/Customers")
 
@@ -52,7 +78,8 @@ class FirebaseDB:
                 "ID": Client.client_id,
                 "Mail": Client.mail,
                 "Name": Client.name,
-                "Surname": Client.surname
+                "Surname": Client.surname,
+                "Logs": []
             }
             ref = db.reference(config.DB_ROOT_PATH)
             ref.push(new_item)
