@@ -1,7 +1,11 @@
 import asyncio
+from functools import partial
+from turtledemo.chaos import jumpto
+
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from config import TOKEN_TG_BOT, CHAT_ID_TG_BOT
+from database.firebase_db import FirebaseDB
 
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -9,11 +13,24 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat_id = update.message.chat_id
     await update.message.reply_text(chat_id)
 
-async def cmd_ask_log(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def cmd_ask_log(update: Update, context: ContextTypes.DEFAULT_TYPE, box, client) -> None:
     """Response to /log"""
-    await context.bot.send_message(CHAT_ID_TG_BOT, "A TOPE" + " 3")
-    await update.message.reply_text("Richiesta di log")
+    firebase_db = FirebaseDB()
+    loop = asyncio.get_running_loop()
+    logs = await loop.run_in_executor(None, firebase_db.get_logs, box, client)
 
+    if logs:
+        formatted_logs = "\n".join([f"Data: {log.split()[0]}, Ora: {log.split()[1]}" for log in logs])
+    else:
+        formatted_logs = "No logs found!."
+
+    try:
+        await update.message.reply_text(f"{formatted_logs}")
+    except Exception as e:
+        try:
+            await update.message.reply_text(f"{formatted_logs}")
+        except Exception as retry_error:
+            print(f"Errore nel tentativo di invio del messaggio: {retry_error}")
 
 
 class TgBot:
@@ -24,13 +41,14 @@ class TgBot:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self, box, client):
         """Init bot"""
         if not self._initialized:
             TgBot._initialized = True
+
             self.__app = ApplicationBuilder().token(TOKEN_TG_BOT).build()
             self.__app.add_handler(CommandHandler("start", cmd_start))
-            self.__app.add_handler(CommandHandler("log", cmd_ask_log))
+            self.__app.add_handler(CommandHandler("log", partial(cmd_ask_log, box= box, client= client)))
             self.loop = None
 
     def run_bot(self):

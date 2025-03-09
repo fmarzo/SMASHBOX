@@ -6,12 +6,22 @@ from datetime import datetime
 import config
 
 class FirebaseDB:
+    _instance = None
+    _initialized = False
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        self.__cred = credentials.Certificate(config.DB_CREDENTIALS_PATH)
-        self.__database_url = config.DB_DATABASE_URL
-        self.__customer_list = list()
-        self.__n_cust = 0
-        self.db_init()
+        if not self._initialized:
+            FirebaseDB._initialized = True
+            self.__cred = credentials.Certificate(config.DB_CREDENTIALS_PATH)
+            self.__database_url = config.DB_DATABASE_URL
+            self.__customer_list = list()
+            self.__n_cust = 0
+            self.db_init()
 
     def db_init(self):
         firebase_admin.initialize_app(self.__cred, {
@@ -47,12 +57,13 @@ class FirebaseDB:
         else:
             print("Customer not found!")
 
-    def get_logs(self, Box, Client):
+    def get_logs(self, Box, Client) -> []:
         client = self.find_client(Client.client_id, Box.id)
         if client[0]:
             ref = self.get_db_reference().child(client[1])
-            access_log = client[2].get("AccessLog", [])
-            print (f"{access_log} for {Client.client_id}")
+            current_logs = ref.child("Logs").get()
+            print (f"{current_logs} for {Client.client_id}")
+            return current_logs
         else:
             print("Customer not found!")
 
@@ -125,9 +136,6 @@ class FirebaseDB:
         else:
             print("Customer list is empty!")
             return False, None, None
-
-    #TODO: Add routine to query clients trough client_id
-    #TODO: Add routine to query clients trough box_id
 
 
 

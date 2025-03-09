@@ -25,14 +25,12 @@ class Initializer:
             self.__ser_central = None
             self.__firebase = None
             self.__mqtt = None
-            self.__tg_bot = None
         sleep(1)
 
     def init_system(self):
         self.init_serial_by_os()
         self.init_firebase_db()
         self.init_mqtt_server()
-        self.init_tg_bot()
 
     def init_serial_by_os(self):
         serial_found = 0
@@ -102,10 +100,6 @@ class Initializer:
     def init_mqtt_server(self):
         if self.__mqtt is None:
             self.__mqtt = MqttClient(config.BROKER, config.PORT, config.TOPIC)
-
-    def init_tg_bot(self):
-        if self.__tg_bot is None:
-            self.__tg_bot = TgBot()
 
     def get_serials(self):
         return self.__ser_ports_dict

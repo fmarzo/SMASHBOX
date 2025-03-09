@@ -7,6 +7,7 @@ import requests
 import serial
 import threading
 
+import init
 from bot.tgbot import TgBot
 from init import Initializer
 from models.box import Box
@@ -27,15 +28,6 @@ def main():
     central_ser = system.get_central_serial()
     print("Acquisition serial list:" + str(ser))
     print("Central serial: " + str(central_ser))
-
-    # MQTT alarm server
-    mqtt = system.get_mqtt()
-    mqtt.start_mqtt()
-
-    while not mqtt.is_init():
-        print("Wait for connection established")
-        sleep(1)
-        pass
 
     # firebase server
     firebase_db = system.get_firebase_db()
@@ -80,9 +72,17 @@ def main():
         firebase_db.update_customer(box_5, cli_5, {'Names': 'Tuccu'})
         sleep(1)
 
+    # MQTT alarm server
+    mqtt = system.get_mqtt()
+    mqtt.start_mqtt()
+
+    while not mqtt.is_init():
+        print("Wait for connection established")
+        sleep(1)
+        pass
 
     #TELEGRAM BOT
-    tg_bot = system.get_tg_bot()
+    tg_bot = TgBot(box_1, cli_1)
     # Start in a separate thread
     thread = threading.Thread(target=tg_bot.run_bot, daemon=True)
     thread.start()
@@ -90,9 +90,7 @@ def main():
     asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
     while True:
-
         # ENDLESS LOOP
-
         if config.SIMULATION == 1:
             # Simulation starts here
             # BOX 1
