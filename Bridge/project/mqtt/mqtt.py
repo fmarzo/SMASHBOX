@@ -53,8 +53,8 @@ class MqttClient:
         print("data")
         print(data["open"])
 
-        tg_bot = TgBot()
-        asyncio.run(tg_bot.send_msg(CHAT_ID_TG_BOT, "ALARM!"))
+        #tg_bot = TgBot()
+        #asyncio.run(tg_bot.send_msg(CHAT_ID_TG_BOT, "ALARM!"))
 
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:
