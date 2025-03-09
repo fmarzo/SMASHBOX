@@ -51,6 +51,12 @@ class TgBot:
             self.__app.add_handler(CommandHandler("log", partial(cmd_ask_log, box= box, client= client)))
             self.loop = None
 
+    @staticmethod
+    def get_instance():
+        if TgBot._instance is None:
+            raise ValueError("TgBot non è stato inizializzato. Assicurati di chiamare TgBot() prima di usarlo.")
+        return TgBot._instance
+
     def run_bot(self):
         """Start bot in a separate thread"""
         self.loop = asyncio.new_event_loop()
