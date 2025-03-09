@@ -121,40 +121,39 @@ def main():
 
             central_response = central_ser.read(config.N_BYTES)
             #print("Central response: ")
-            #print(central_response)
-            if chr(central_response[1]) == CHAR_IDLE:
-                pass
-            elif chr(central_response[1]) == CHAR_CHECK:
-                print("check")
-                id_acq = central_response[2:5]
-                for port_name, data in ser.items():
-                    if data["id"] == id_acq:
-                        data["serial"].write(CHAR_UNLOCK)
-                        break
-            elif chr(central_response[1]) == CHAR_ENROLL:
-                #enroll
-                id_acq = central_response[2:5]
-                print(id_acq)
-                for port_name, data in ser.items():
-                    if not data["busy"]:
-                        data["id"] = id_acq
-                        print("sto per inviare")
-                        print(data["serial"])
-                        data["serial"].write(id_acq)
-                        break
+            print(central_response)
+            # risolto il problema del time out, ora però c'è il rischio che andando troppo veloce legga da central una stringa vuota provocando errore
+            if len(central_response) > 1:
+                if chr(central_response[1]) == CHAR_IDLE:
+                    pass
+                elif chr(central_response[1]) == CHAR_CHECK:
+                    print("check")
+                    id_acq = central_response[2:5]
+                    for port_name, data in ser.items():
+                        if data["id"] == id_acq:
+                            data["serial"].write(CHAR_UNLOCK)
+                            break
+                elif chr(central_response[1]) == CHAR_ENROLL:
+                    #enroll
+                    id_acq = central_response[2:5]
+                    print(id_acq)
+                    for port_name, data in ser.items():
+                        if not data["busy"]:
+                            data["id"] = id_acq
+                            print("sto per inviare")
+                            print(data["serial"])
+                            data["serial"].write(id_acq)
+                            break
 
-            for port_name, data in ser.items():
-                s = data["serial"]
-                s.timeout = 1  # Imposta un timeout di 1 secondo
-                val = s.read(config.N_BYTES)
-                if not val:  # Se timeout, val sarà vuoto
-                    continue  # Salta le operazioni successive e passa alla prossima porta, non voglio impostare i dati della cassetta siccome non ho letto
-                box_1.set_box_param(val)
-                requests.post(box_1.get_url_dev(), box_1.get_packet_str())
-                print(val)
-                sleep(1)
-
-            #print ("loop")
+                for port_name, data in ser.items():
+                    s = data["serial"]
+                    if s.in_waiting > 0:  # Se ci sono dati disponibili
+                        val = s.read(config.N_BYTES)
+                        if val:
+                            box_1.set_box_param(val)
+                            requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+                            print(val)
+                            sleep(1)
 
 # entry point
 if __name__ == '__main__':
