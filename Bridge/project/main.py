@@ -121,7 +121,7 @@ def main():
 
             central_response = central_ser.read(config.N_BYTES)
             #print("Central response: ")
-            print(central_response)
+            #print(central_response)
             # risolto il problema del time out, ora però c'è il rischio che andando troppo veloce legga da central una stringa vuota provocando errore
             if len(central_response) > 1:
                 if chr(central_response[1]) == CHAR_IDLE:

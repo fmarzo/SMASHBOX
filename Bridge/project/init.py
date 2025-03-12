@@ -54,7 +54,7 @@ class Initializer:
             #n not in a Win env
             for p in ports:
                 print(p.name)
-                if "cu.usbmodem" in p.name:
+                if "cu.usb" in p.name:
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     name = f"/dev/{p.name}"
