@@ -146,14 +146,26 @@ def main():
                             break
 
                 for port_name, data in ser.items():
-                    s = data["serial"]
-                    if s.in_waiting > 0:  # Se ci sono dati disponibili
-                        val = s.read(config.N_BYTES)
-                        if val:
-                            box_1.set_box_param(val)
+                    if config.FORCE_SIMULATION == 0:
+                        s = data["serial"]
+                        if s.in_waiting > 0:  # Se ci sono dati disponibili
+                            val = s.read(config.N_BYTES)
+                            if val:
+                                box_1.set_box_param(val)
+                                requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+                                print(val)
+                                sleep(1)
+                    else:
+                            box_1.simulate_box_param()
                             requests.post(box_1.get_url_dev(), box_1.get_packet_str())
-                            print(val)
-                            sleep(1)
+                            box_2.simulate_box_param()
+                            requests.post(box_2.get_url_dev(), box_2.get_packet_str())
+
+
+
+
+
+
 
 # entry point
 if __name__ == '__main__':
