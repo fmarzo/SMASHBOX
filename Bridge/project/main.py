@@ -163,11 +163,6 @@ def main():
                             requests.post(box_2.get_url_dev(), box_2.get_packet_str())
                             sleep(1)
 
-
-
-
-
-
 # entry point
 if __name__ == '__main__':
     main()
