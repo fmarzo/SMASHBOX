@@ -158,9 +158,10 @@ def main():
                     else:
                             box_1.simulate_box_param()
                             requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+                            sleep(1)
                             box_2.simulate_box_param()
                             requests.post(box_2.get_url_dev(), box_2.get_packet_str())
-
+                            sleep(1)
 
 
 
