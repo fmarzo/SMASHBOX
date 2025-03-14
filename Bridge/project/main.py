@@ -121,7 +121,9 @@ def main():
 
             central_response = central_ser.read(config.N_BYTES)
             #print("Central response: ")
-            #print(central_response)
+            #debug
+            if central_response != b'00000000000'and central_response != b'':
+                print(central_response)
             # risolto il problema del time out, ora però c'è il rischio che andando troppo veloce legga da central una stringa vuota provocando errore
             if len(central_response) > 1:
                 if chr(central_response[1]) == CHAR_IDLE:
@@ -143,6 +145,7 @@ def main():
                             print("sto per inviare")
                             print(data["serial"])
                             data["serial"].write(id_acq)
+                            data["busy"] = True
                             break
 
                 for port_name, data in ser.items():
