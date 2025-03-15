@@ -36,7 +36,7 @@ def main():
     box_1 = Box("-1", config.URL_DEVICE_1)
     box_2 = Box("-1", config.URL_DEVICE_2)
 
-    box_list = list[box_1, box_2]
+    box_list = [box_1, box_2]
 
     cli_1 = Client("El", "EL", 1001, "eltucuman1@gmail.com")
     cli_2 = Client("Tu", "TU", 1002, "eltucuman2@gmail.com")
@@ -129,12 +129,11 @@ def main():
                         if s.in_waiting > 0:  # Se ci sono dati disponibili
                             val = s.read(config.N_BYTES)
                             if val:
-                                id_comm = val[2:5]
+                                id_comm = val[0:3]
                                 for b in box_list:
-                                    if b.id == id_comm:
+                                    if b.get_id() == id_comm:
                                         b.set_box_param(val)
-                                        requests.post(box_1.get_url_dev(), box_1.get_packet_str())
-                                        print(val)
+                                        requests.post(b.get_url_dev(), b.get_packet_str())
                                         break
                             print(val)
                             sleep(1)
