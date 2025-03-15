@@ -49,6 +49,7 @@ WINDOWS_OS_ID = "nt"
 
 #DEBUG_PARAMETERS
 SIMULATION = 0 # no simulation for default
+FORCE_SIMULATION = 1 # simulation while aquisitions are live
 INJECT_CUSTOMERS = 0
 DELETE_CUSTOMERS = 0
 UPDATE_CUSTOMERS = 0
