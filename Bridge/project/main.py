@@ -33,11 +33,10 @@ def main():
     firebase_db = system.get_firebase_db()
 
     # Entities
-    box_1 = Box(1, config.URL_DEVICE_1)
-    box_2 = Box(2, config.URL_DEVICE_2)
-    box_3 = Box(3, config.URL_DEVICE_3)
-    box_4 = Box(4, config.URL_DEVICE_4)
-    box_5 = Box(5, config.URL_DEVICE_5)
+    box_1 = Box("-1", config.URL_DEVICE_1)
+    box_2 = Box("-1", config.URL_DEVICE_2)
+
+    box_list = list[box_1, box_2]
 
     cli_1 = Client("El", "EL", 1001, "eltucuman1@gmail.com")
     cli_2 = Client("Tu", "TU", 1002, "eltucuman2@gmail.com")
@@ -50,26 +49,15 @@ def main():
         sleep(1)
         firebase_db.insert_new_customer(box_2, cli_2)
         sleep(1)
-        firebase_db.insert_new_customer(box_3, cli_3)
-        sleep(1)
-        firebase_db.insert_new_customer(box_4, cli_4)
-        sleep(1)
-        firebase_db.insert_new_customer(box_5, cli_5)
 
     if config.DELETE_CUSTOMERS == 1:
         firebase_db.delete_customer(box_1, cli_1)
         sleep(1)
         firebase_db.delete_customer(box_2, cli_2)
         sleep(1)
-        firebase_db.delete_customer(box_3, cli_3)
-        sleep(1)
-        firebase_db.delete_customer(box_4, cli_4)
-        sleep(1)
-        firebase_db.delete_customer(box_5, cli_5)
-        sleep(1)
 
     if config.UPDATE_CUSTOMERS == 1:
-        firebase_db.update_customer(box_5, cli_5, {'Names': 'Tuccu'})
+        firebase_db.update_customer(box_2, cli_2, {'Names': 'Tuccu'})
         sleep(1)
 
     # MQTT alarm server
@@ -101,18 +89,6 @@ def main():
             box_2.simulate_box_param()
             requests.post(box_2.get_url_dev(), box_2.get_packet_str())
 
-            # BOX 3
-            box_3.simulate_box_param()
-            requests.post(box_3.get_url_dev(), box_3.get_packet_str())
-
-            # BOX 4
-            box_4.simulate_box_param()
-            requests.post(box_4.get_url_dev(), box_4.get_packet_str())
-
-            # BOX 5
-            box_5.simulate_box_param()
-            requests.post(box_5.get_url_dev(), box_5.get_packet_str())
-
             print("searching for client..")
             firebase_db.find_client(1001, 1)
             sleep(1)
@@ -120,11 +96,6 @@ def main():
             # NO SIMULATION, System is in GO
 
             central_response = central_ser.read(config.N_BYTES)
-            #print("Central response: ")
-            #debug
-            if central_response != b'00000000000'and central_response != b'':
-                print(central_response)
-            # risolto il problema del time out, ora però c'è il rischio che andando troppo veloce legga da central una stringa vuota provocando errore
             if len(central_response) > 1:
                 if chr(central_response[1]) == CHAR_IDLE:
                     pass
@@ -138,7 +109,7 @@ def main():
                 elif chr(central_response[1]) == CHAR_ENROLL:
                     #enroll
                     id_acq = central_response[2:5]
-                    print(id_acq)
+                    print(f"id_acq: {id_acq}")
                     for port_name, data in ser.items():
                         if not data["busy"]:
                             data["id"] = id_acq
@@ -146,10 +117,14 @@ def main():
                             print(data["serial"])
                             data["serial"].write(id_acq)
                             data["busy"] = True
+                            #update box_id according with what received
+                            for b in box_list:
+                                if b.id == "-1":
+                                    b.id = id_acq
+                                    break
                             break
 
                 for port_name, data in ser.items():
-                    if config.FORCE_SIMULATION == 0:
                         s = data["serial"]
                         if s.in_waiting > 0:  # Se ci sono dati disponibili
                             val = s.read(config.N_BYTES)
@@ -158,13 +133,6 @@ def main():
                                 requests.post(box_1.get_url_dev(), box_1.get_packet_str())
                                 print(val)
                                 sleep(1)
-                    else:
-                            box_1.simulate_box_param()
-                            requests.post(box_1.get_url_dev(), box_1.get_packet_str())
-                            sleep(1)
-                            box_2.simulate_box_param()
-                            requests.post(box_2.get_url_dev(), box_2.get_packet_str())
-                            sleep(1)
 
 # entry point
 if __name__ == '__main__':
