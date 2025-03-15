@@ -24,6 +24,12 @@ class Box:
     self.presence = 0
     self.open = 0
     self.date = "NULL"
+    
+  def set_id(self, id):
+      self.id = id
+
+  def get_id(self):
+      return self.id
 
   def set_url_dev(self, url_dev):
       self.__url_device = url_dev
@@ -66,6 +72,8 @@ class Box:
       print(formatted_timestamp)
       print(type(formatted_timestamp))
       self.date = formatted_timestamp
+
+
 
 
 

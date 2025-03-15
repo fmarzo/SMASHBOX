@@ -119,8 +119,8 @@ def main():
                             data["busy"] = True
                             #update box_id according with what received
                             for b in box_list:
-                                if b.id == "-1":
-                                    b.id = id_acq
+                                if b.get_id() == "-1":
+                                    b.set_id(id_acq)
                                     break
                             break
 
