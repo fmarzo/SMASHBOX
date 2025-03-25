@@ -42,7 +42,7 @@ DB_ROOT_PATH = "/Customers"
 #MQTT SERVER
 BROKER = "broker.hivemq.com"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
-TOPIC = "alarm/box"          # Topic to publish/subscribe
+TOPIC = "smashbox/alarms"          # Topic to publish/subscribe
 
 #OPERATING SYSTEM ID
 WINDOWS_OS_ID = "nt"
