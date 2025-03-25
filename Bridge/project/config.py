@@ -40,7 +40,7 @@ DB_FIELD_MAIL = 'Mail'
 DB_ROOT_PATH = "/Customers"
 
 #MQTT SERVER
-BROKER = "broker.hivemq.com"  # Free MQTT broker
+BROKER = "test.mosquitto.org"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
 TOPIC = "smashbox/alarms"          # Topic to publish/subscribe
 

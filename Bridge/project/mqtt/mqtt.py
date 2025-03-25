@@ -50,8 +50,7 @@ class MqttClient:
         data = json.loads(msg.payload.decode())
         ser = init.Initializer()
         ser_central = ser.get_central_serial()
-        print("data")
-        print(data["open"])
+
 
         tg_bot = TgBot.get_instance()
         asyncio.run(tg_bot.send_msg(CHAT_ID_TG_BOT, "ALARM!"))
