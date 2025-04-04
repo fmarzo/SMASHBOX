@@ -15,6 +15,7 @@
 
 #define PRESENCE_PIN 4
 #define OPEN_PIN 5
+#define MAGNET_PIN 3
 
 /* DEFINES */
 

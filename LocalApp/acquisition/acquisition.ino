@@ -25,6 +25,7 @@ void setup() {
   pinMode(PRESENCE_PIN, INPUT);
   pinMode(OPEN_PIN, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(MAGNET_PIN,OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
   byte deviceID = accel.readDeviceID();
@@ -107,14 +108,17 @@ void loop() {
       if (read == OPEN_CHAR) 
       {
         lock = "0";
+        digitalWrite(MAGNET_PIN,LOW);
       } 
       else if (read == INFR_CHAR)
       {
         lock = "1";
+        digitalWrite(MAGNET_PIN,HIGH);
       }
       else 
       {
         lock = "1";
+        digitalWrite(MAGNET_PIN,HIGH);
       }
     }
 
@@ -133,6 +137,7 @@ void loop() {
       { 
         /* the box has already been opened (relock == 1) and it has been closed (digitalRead(OPEN_PIN) == LOW), so we set the lock to 1 */
         lock = "1"; 
+        digitalWrite(MAGNET_PIN,HIGH); /* reset de magnet on as soon as we close the box */
         relock = BOX_NOT_OPENED; /* resetting the lock to the deafault value */
       }
     } 
