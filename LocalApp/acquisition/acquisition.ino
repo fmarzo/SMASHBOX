@@ -10,15 +10,20 @@ Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); 
 double X, Y, Z;
 sensors_event_t humidity, temp;
-String lock = "1";
+String lock = "0";
 String ID;
 bool firstRun = true; 
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
 String SIMULATION_STRING = "12154010";
 int SIMULATION = 0;
 
-void setup() {
 
+
+
+
+void setup() {  
+
+  digitalWrite(MAGNET_PIN,HIGH);
   char buffer_id [4] = {0};
   Serial.begin(STANDARD_BOUNDRATE);
   Wire.begin();
@@ -26,6 +31,7 @@ void setup() {
   pinMode(OPEN_PIN, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(MAGNET_PIN,OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
   byte deviceID = accel.readDeviceID();
@@ -83,7 +89,7 @@ void setup() {
     }
   }
   
-  while(1)
+  /*while(1)
   {
       if (Serial.available() >= 3) 
       {  
@@ -91,36 +97,41 @@ void setup() {
         ID.concat(buffer_id);
         break;
       }
-  }
+  }*/
+  ID="AAA";
 }
 
 
 void loop() {
+  
   if(!SIMULATION)
   {
     String open = "0";
     int read;
     String infr, pres;
-
-    if (Serial.available() > 0) 
+    
+    /*if (Serial.available() > 0) 
     {
       read = Serial.read();
       if (read == OPEN_CHAR) 
       {
         lock = "0";
         digitalWrite(MAGNET_PIN,LOW);
+        digitalWrite(LED_PIN, HIGH);
       } 
       else if (read == INFR_CHAR)
       {
         lock = "1";
         digitalWrite(MAGNET_PIN,HIGH);
+        digitalWrite(LED_PIN, LOW);
       }
       else 
       {
         lock = "1";
         digitalWrite(MAGNET_PIN,HIGH);
+        digitalWrite(LED_PIN, LOW);
       }
-    }
+    }*/
 
     if (digitalRead(PRESENCE_PIN) == LOW) 
     {
@@ -138,6 +149,7 @@ void loop() {
         /* the box has already been opened (relock == 1) and it has been closed (digitalRead(OPEN_PIN) == LOW), so we set the lock to 1 */
         lock = "1"; 
         digitalWrite(MAGNET_PIN,HIGH); /* reset de magnet on as soon as we close the box */
+        digitalWrite(LED_PIN, LOW);
         relock = BOX_NOT_OPENED; /* resetting the lock to the deafault value */
       }
     } 
@@ -176,9 +188,9 @@ void loop() {
           infr = "0";
         }
 
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(1000);
-        digitalWrite(LED_BUILTIN, LOW);
+        //digitalWrite(LED_BUILTIN, HIGH);
+        //delay(1000);
+        //digitalWrite(LED_BUILTIN, LOW);
 
         X = accel.getX();
         Y = accel.getY();
@@ -199,8 +211,8 @@ void loop() {
   {
     Serial.print(ID + SIMULATION_STRING);
   }
-
   delay(2000);  /* Delay to prevent overly fast readings */
+      
 }
 
 
