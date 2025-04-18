@@ -142,8 +142,12 @@ def main():
 if __name__ == '__main__':
     main()
 
+# Probabilmente acquisition manda pacchetti a stecca verso il bridge ma lui non riesce a consumarli in maniera veloce.
+# Ergo avevamo messo un delay molto alto lato acquisition. Funziona meglio, ma è estramemte lento
+# Bisogna fare in modo che non si crei una coda di valori nel buffer che viene consumata troppo lentamente
 
-
-
+# Probabilmeente acquisition manda pacchetti a stecca verso il bridge ma lui non riesce a consumarli in maniera veloce.
+# Ergo avevamo messo un delay molto alto lato acquisition. Funziona meglio, ma è estramemte lento
+# Bisogna fare in modo che non si crei una coda di valori nel buffer che viene consumata troppo lentamente
 
 
