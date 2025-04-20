@@ -1,6 +1,8 @@
 import asyncio
 import os
+import time
 from configparser import NoOptionError
+from random import randint
 from time import sleep
 
 import requests
@@ -83,10 +85,8 @@ def main():
     # 3. Connetti al broker
     client.connect(TH, P, 60)
 
-    # 4. Pubblica il messaggio
-
-
-    #sleep(0.1)
+    print("sleeppo")
+    sleep(2)
     # 5. Disconnetti (dopo breve pausa se necessario)
     #client.disconnect()
 
@@ -107,6 +107,7 @@ def main():
     #Test msg to TG bot
     asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
+
     while True:
         # ENDLESS LOOP
         if config.SIMULATION == 1:
@@ -120,6 +121,8 @@ def main():
                 s = data["serial"]
                 if s.in_waiting > 0:  # Se ci sono dati disponibili
                     val = s.read(config.N_BYTES)
+                    val_str = val.decode()
+                    print(val)
                     if val:
                         id_comm = val[0:3]
                         for b in box_list:
@@ -132,17 +135,18 @@ def main():
                                 #print("Update server")
                                 payload = {
                                     "temperature": 42,
-                                    "presence": chr(val[3])
+                                    "presence": val_str[3]
                                 }
                                 #payload = b.get_packet_str()
                                 print(payload)
-                                client.publish(T, json.dumps(payload), qos=1)
+                                client.publish(T, json.dumps(payload), qos=0)
+                                time.sleep(1)
                                 #requests.post(b.get_url_dev(), b.get_packet_str())
                                 break
                     #print(val)
                     #sleep(1)
 
-            sleep(0.200)
+            sleep(0.2)
         else:
             # NO SIMULATION, System is in GO
 
