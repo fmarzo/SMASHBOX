@@ -25,9 +25,10 @@
 
 /* PINOUT */
 
-#define PRESENCE_PIN 4
-#define OPEN_PIN 5
-#define MAGNET_PIN 3
+#define PRESENCE_PIN 10
+#define OPEN_PIN 11
+#define MAGNET_PIN 12
+#define LED_PIN 13
 
 /* DEFINES */
 
