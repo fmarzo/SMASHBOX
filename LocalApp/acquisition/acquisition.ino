@@ -71,14 +71,14 @@ void setup()
       }
   }
 #else
-  packet.id = "AAA";
+  packet.id = "122";
 #endif
 
 }
 
 void send_packet (packet_t* packet)
 {
-  Serial.println(packet->id + packet->pres + round(packet->temp.temperature) + round(packet->humidity.relative_humidity) + packet->infr + packet->lock + packet->open);
+  Serial.print(packet->id + packet->pres + round(packet->temp.temperature) + round(packet->humidity.relative_humidity) + packet->infr + packet->lock + packet->open);
 }
 
 void loop() 
@@ -102,7 +102,7 @@ void loop()
 
   #endif
 
-  delay(1000);  /* Delay to prevent overly fast readings */
+  delay(100);  /* Delay to prevent overly fast readings */
 }
 
 

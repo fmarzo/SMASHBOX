@@ -31,7 +31,7 @@ String update_open_field(String* lock, int* relock)
     } 
     else
     {
-      /* the box can be physical opened only if it has been unlocked throught the sensor (lock == 0) */
+      /* the box can be physically opened only if it has been unlocked throught the sensor (lock == 0) */
       if(*lock == "0")
       { 
           tmp_open = "1";

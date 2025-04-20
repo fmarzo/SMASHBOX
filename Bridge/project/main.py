@@ -33,7 +33,7 @@ def main():
     firebase_db = system.get_firebase_db()
 
     # Entities
-    box_1 = Box("-1", config.URL_DEVICE_1)
+    box_1 = Box(b"122", config.URL_DEVICE_1)
     box_2 = Box("-1", config.URL_DEVICE_2)
 
     box_list = [box_1, box_2]
@@ -61,13 +61,43 @@ def main():
         sleep(1)
 
     # MQTT alarm server
-    mqtt = system.get_mqtt()
-    mqtt.start_mqtt()
 
-    while not mqtt.is_init():
-        print("Wait for connection established")
-        sleep(1)
-        pass
+    import paho.mqtt.client as mqtt
+    import json
+
+    # Token dispositivo (usato come username)
+    AT = "o0SzxyiH8fZWK1uQrRh2"
+    TH = "demo.thingsboard.io"
+    P = 1883
+    T = "v1/devices/me/telemetry"
+
+    # Dati da inviare
+
+
+    # 1. Crea il client
+    client = mqtt.Client()
+
+    # 2. Imposta username (token)
+    client.username_pw_set(AT)
+
+    # 3. Connetti al broker
+    client.connect(TH, P, 60)
+
+    # 4. Pubblica il messaggio
+
+
+    #sleep(0.1)
+    # 5. Disconnetti (dopo breve pausa se necessario)
+    #client.disconnect()
+
+    #exit(1)
+    # mqtt = system.get_mqtt()
+  # mqtt.start_mqtt()
+
+  # while not mqtt.is_init():
+  #     print("Wait for connection established")
+  #     sleep(1)
+  #     pass
 
     #TELEGRAM BOT
     tg_bot = TgBot(box_1, cli_1)
@@ -81,17 +111,38 @@ def main():
         # ENDLESS LOOP
         if config.SIMULATION == 1:
             # Simulation starts here
+            #print(ser.items())
             # BOX 1
-            box_1.simulate_box_param()
-            requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+            #box_1.simulate_box_param()
+            #requests.post(box_1.get_url_dev(), box_1.get_packet_str())
+            cnt = 0
+            for port_name, data in ser.items():
+                s = data["serial"]
+                if s.in_waiting > 0:  # Se ci sono dati disponibili
+                    val = s.read(config.N_BYTES)
+                    if val:
+                        id_comm = val[0:3]
+                        for b in box_list:
+                            #print(f"get_id {b.get_id()}")
+                            #print(f"id_comm{id_comm}")
+                            if b.get_id() == id_comm:
+                                #print("Update server")
+                                #box_1.simulate_box_param()
+                                b.set_box_param(val)
+                                #print("Update server")
+                                payload = {
+                                    "temperature": 42,
+                                    "presence": chr(val[3])
+                                }
+                                #payload = b.get_packet_str()
+                                print(payload)
+                                client.publish(T, json.dumps(payload), qos=1)
+                                #requests.post(b.get_url_dev(), b.get_packet_str())
+                                break
+                    #print(val)
+                    #sleep(1)
 
-            # BOX 2
-            box_2.simulate_box_param()
-            requests.post(box_2.get_url_dev(), box_2.get_packet_str())
-
-            print("searching for client..")
-            firebase_db.find_client(1001, 1)
-            sleep(1)
+            sleep(0.200)
         else:
             # NO SIMULATION, System is in GO
 
@@ -145,9 +196,4 @@ if __name__ == '__main__':
 # Probabilmente acquisition manda pacchetti a stecca verso il bridge ma lui non riesce a consumarli in maniera veloce.
 # Ergo avevamo messo un delay molto alto lato acquisition. Funziona meglio, ma è estramemte lento
 # Bisogna fare in modo che non si crei una coda di valori nel buffer che viene consumata troppo lentamente
-
-# Probabilmeente acquisition manda pacchetti a stecca verso il bridge ma lui non riesce a consumarli in maniera veloce.
-# Ergo avevamo messo un delay molto alto lato acquisition. Funziona meglio, ma è estramemte lento
-# Bisogna fare in modo che non si crei una coda di valori nel buffer che viene consumata troppo lentamente
-
 
