@@ -11,6 +11,8 @@ from google.api_core.operations_v1.operations_client_config import config
 import init
 from bot.tgbot import TgBot
 
+from project.config import CHAR_INFR
+
 
 #bridge rebase
 class MqttClient:
@@ -61,7 +63,7 @@ class MqttClient:
             #TODO: send to acquisition notification for locking
         for port_name, data in ser.get_serials().items():
             s = data["serial"]
-            s.write(b"*") #sending "*" to notify infringement to acquisition
+            s.write(CHAR_INFR) #sending "*" to notify infringement to acquisition
 
 
 

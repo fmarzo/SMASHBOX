@@ -3,25 +3,21 @@
 #include <stdlib.h>
 #include <Adafruit_AHTX0.h>
 #include "config.h"
+#include "sensors.h"
 
 /* GLOBAL VARIABLES */
-
-Adafruit_AHTX0 aht;
 ADXL345 accel(ADXL345_ALT); 
-double X, Y, Z;
-sensors_event_t humidity, temp;
+Adafruit_AHTX0 aht;
 String lock = "1";
-String ID;
-bool firstRun = true; 
+packet_t packet;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
-String SIMULATION_STRING = "12154010";
-int SIMULATION = 0;
 
-void setup() {
-
+void setup() 
+{
   char buffer_id [4] = {0};
-  Serial.begin(STANDARD_BOUNDRATE);
+  Serial.begin(STANDARD_BAUDRATE);
   Wire.begin();
+
   pinMode(PRESENCE_PIN, INPUT);
   pinMode(OPEN_PIN, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
@@ -36,171 +32,77 @@ void setup() {
     !accel.writeRange(ADXL345_RANGE_16G) && 
     !accel.start()) 
   {
-    SIMULATION = 1;
+    error_handler(INIT_ERR);
   }
 
-  if(!SIMULATION){
-    if (deviceID == 0) 
-    {
-      Serial.print("X1");
-      while (1) 
-      {
-        delay(100);
-      }
-    }
-    if (!aht.begin()) 
-    {
-      Serial.print("X2");
-      while (1)
-        delay(100);
-    }
+  if (deviceID == 0) 
+  {
+    error_handler(DEVICE_ID_ERR);
+  }
 
-    if (!accel.writeRate(ADXL345_RATE_200HZ)) 
-    {
-      Serial.print("X3");
-      while (1) 
-      {
-        delay(100);
-      }
-    }
-
-    if (!accel.writeRange(ADXL345_RANGE_16G)) 
-    {
-      Serial.print("X4");
-      while (1) 
-      {
-        delay(100);
-      }
-    }
-
-    if (!accel.start()) 
-    {
-      Serial.print("X5");
-      while (1) 
-      {
-        delay(100);
-      }
-    }
+  if (!aht.begin()) 
+  {
+    error_handler(AHT_ERR);
   }
   
+  if (!accel.writeRate(ADXL345_RATE_200HZ)) 
+  {
+    error_handler(ACCEL_ERR_RATE);
+  }
+
+  if (!accel.writeRange(ADXL345_RANGE_16G)) 
+  {
+    error_handler(ACCEL_ERR_RANGE);
+  }
+
+  if (!accel.start()) 
+  {
+    error_handler(ACCEL_ERR_START);
+  }
+  
+#ifdef ASSIGN_ID_FROM_CENTRAL
   while(1)
   {
       if (Serial.available() >= 3) 
       {  
         Serial.readBytes(buffer_id, 3);
-        ID.concat(buffer_id);
+        packet->id.concat(buffer_id);
         break;
       }
   }
+#else
+  packet.id = "AAA";
+#endif
+
 }
 
+void send_packet (packet_t* packet)
+{
+  Serial.println(packet->id + packet->pres + round(packet->temp.temperature) + round(packet->humidity.relative_humidity) + packet->infr + packet->lock + packet->open);
+}
 
-void loop() {
-  if(!SIMULATION)
-  {
-    String open = "0";
-    int read;
-    String infr, pres;
+void loop() 
+{
+ #ifndef SIMULATION_MODE
 
-    if (Serial.available() > 0) 
-    {
-      read = Serial.read();
-      if (read == OPEN_CHAR) 
-      {
-        lock = "0";
-        digitalWrite(MAGNET_PIN,LOW);
-      } 
-      else if (read == INFR_CHAR)
-      {
-        lock = "1";
-        digitalWrite(MAGNET_PIN,HIGH);
-      }
-      else 
-      {
-        lock = "1";
-        digitalWrite(MAGNET_PIN,HIGH);
-      }
-    }
+    packet.lock = update_lock_field();
 
-    if (digitalRead(PRESENCE_PIN) == LOW) 
-    {
-      pres = "1";
-    } 
-    else 
-    {
-      pres = "0";
-    }
-    if (digitalRead(OPEN_PIN) == LOW) 
-    {
-      open = "0";
-      if (relock == BOX_OPENED)
-      { 
-        /* the box has already been opened (relock == 1) and it has been closed (digitalRead(OPEN_PIN) == LOW), so we set the lock to 1 */
-        lock = "1"; 
-        digitalWrite(MAGNET_PIN,HIGH); /* reset de magnet on as soon as we close the box */
-        relock = BOX_NOT_OPENED; /* resetting the lock to the deafault value */
-      }
-    } 
-    else
-    {
-      /* the box can be fisical opened only if it has been unlocked throught the sensor (lock == 0) */
-      if(lock == "0")
-      { 
-          open = "1";
-          relock = BOX_OPENED; /* since i've opened the box we set the relock variable to 1 */
-      }
-    }
+    packet.pres = update_pres_field();
 
-    aht.getEvent(&humidity, &temp);
+    packet.open = update_open_field (&lock, &relock);
 
-    /* if it is the first iteration you can't compare the value with the ones of the previous iteration */
-    if (firstRun) 
-    {
-      firstRun = false;
-      accel.update();
-      X = accel.getX();
-      Y = accel.getY();
-      Z = accel.getZ();
-    } 
-    else 
-    {
-      /* updating accellerometer parameters */
-      if (accel.update())
-      {
-        if (abs(X - accel.getX()) > 0.5 || abs(Y - accel.getY()) > 0.5 || abs(Z - accel.getZ()) > 0.5) 
-        {
-          infr = "1";
-        } 
-        else 
-        {
-          infr = "0";
-        }
+    packet.infr = update_accel_field(&accel);
 
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(1000);
-        digitalWrite(LED_BUILTIN, LOW);
+    update_temp_field(&aht, &packet);
 
-        X = accel.getX();
-        Y = accel.getY();
-        Z = accel.getZ();
-        Serial.print(ID + pres + round(temp.temperature) + round(humidity.relative_humidity) + infr + lock + open);
-      } 
-      else 
-      {
-        Serial.print("X6");
-        while (1) 
-        {
-          delay(100);
-        }
-      }
-    }
-  }
-  else
-  {
+    send_packet(&packet);
+
+  #else
     Serial.print(ID + SIMULATION_STRING);
-  }
 
-  delay(2000);  /* Delay to prevent overly fast readings */
+  #endif
+
+  delay(1000);  /* Delay to prevent overly fast readings */
 }
 
 

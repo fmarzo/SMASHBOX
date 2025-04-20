@@ -10,6 +10,9 @@ from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from time import sleep
 
+from project.config import CHAR_CENTRAL_ASSIGN
+
+
 class Initializer:
     _instance = None
     _initialized = False
@@ -88,7 +91,7 @@ class Initializer:
                 if id_ser == config.CENTRAL_SERIAL:
                     self.__ser_central = ser
                     print("Central serial assigned: it's " + str(self.__ser_central))
-                    self.__ser_central.write(b"@")
+                    self.__ser_central.write(CHAR_CENTRAL_ASSIGN)
                     break
             if self.__ser_central is not None:
                 del self.__ser_ports_dict[self.__ser_central.name]
