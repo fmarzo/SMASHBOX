@@ -24,6 +24,8 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(MAGNET_PIN,OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(MAGNET_PIN, LOW);
+
 
   byte deviceID = accel.readDeviceID();
 
@@ -72,28 +74,23 @@ void setup()
       }
   }
 #else
-  packet.id = 124u;
+  packet.id = 122u;
 #endif
 
 }
 
 void send_packet (packet_raw_t* packet)
 {
-  packet->temp = 0u;//(uint8_t) round(temperature.temperature);
-  packet->humidity = 65u;//(uint8_t) round(humidity.relative_humidity);
+  packet->temp = (uint8_t) round(temperature.temperature);
+  packet->humidity = (uint8_t) round(humidity.relative_humidity);
+  
+  Serial.write((uint8_t*)packet, sizeof(packet_raw_t));
 
-  //uint8_t tmp [7] = {34,4,6,8,1,3,3};
-  
-  Serial.write((uint8_t*)packet, 7);
-  
-  //Serial.print(packet->id + packet->pres + round(packet->temp.temperature) + round(packet->humidity.relative_humidity) + packet->infr + packet->lock + packet->open);
 }
 
 void loop() 
 {
  #ifndef SIMULATION_MODE
-
-    packet.id = 121;
 
     packet.lock = update_lock_field();
 
