@@ -3,22 +3,22 @@
 
 #include <stdlib.h>
 
-typedef struct packet_t
-{
-  String open;
-  String id;
-  sensors_event_t humidity;
-  sensors_event_t temp;
-  String lock;
-  String infr;
-  String pres;
-}packet_t;
+typedef struct __attribute__((packed)) packet_raw_t
+  {
+    uint8_t id;
+    uint8_t pres;
+    uint8_t temp;
+    uint8_t humidity;
+    uint8_t infr;
+    uint8_t lock;
+    uint8_t open;
+  }packet_raw_t;
 
 void error_handler(int error);
-String update_open_field(String* lock, int* relock);
-String update_lock_field();
-String update_pres_field();
-String update_accel_field(ADXL345* accel);
-void update_temp_field(Adafruit_AHTX0* aht, packet_t* packet);
+uint8_t update_open_field(String* lock, int* relock);
+uint8_t update_lock_field();
+uint8_t update_pres_field();
+uint8_t update_accel_field(ADXL345* accel);
+void update_temp_field(Adafruit_AHTX0* aht, sensors_event_t* temperature, sensors_event_t* humidity);
 
 #endif

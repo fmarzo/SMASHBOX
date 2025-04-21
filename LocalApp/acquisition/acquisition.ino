@@ -7,9 +7,10 @@
 
 /* GLOBAL VARIABLES */
 ADXL345 accel(ADXL345_ALT); 
+sensors_event_t temperature, humidity;
 Adafruit_AHTX0 aht;
 String lock = "1";
-packet_t packet;
+packet_raw_t packet;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
 
 void setup() 
@@ -71,19 +72,28 @@ void setup()
       }
   }
 #else
-  packet.id = "122";
+  packet.id = 124u;
 #endif
 
 }
 
-void send_packet (packet_t* packet)
+void send_packet (packet_raw_t* packet)
 {
-  Serial.print(packet->id + packet->pres + round(packet->temp.temperature) + round(packet->humidity.relative_humidity) + packet->infr + packet->lock + packet->open);
+  packet->temp = 0u;//(uint8_t) round(temperature.temperature);
+  packet->humidity = 65u;//(uint8_t) round(humidity.relative_humidity);
+
+  //uint8_t tmp [7] = {34,4,6,8,1,3,3};
+  
+  Serial.write((uint8_t*)packet, 7);
+  
+  //Serial.print(packet->id + packet->pres + round(packet->temp.temperature) + round(packet->humidity.relative_humidity) + packet->infr + packet->lock + packet->open);
 }
 
 void loop() 
 {
  #ifndef SIMULATION_MODE
+
+    packet.id = 121;
 
     packet.lock = update_lock_field();
 
@@ -93,7 +103,7 @@ void loop()
 
     packet.infr = update_accel_field(&accel);
 
-    update_temp_field(&aht, &packet);
+    update_temp_field(&aht, &temperature, &humidity);
 
     send_packet(&packet);
 
