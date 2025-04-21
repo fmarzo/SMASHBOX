@@ -15,7 +15,7 @@ typedef struct __attribute__((packed)) packet_raw_t
   }packet_raw_t;
 
 void error_handler(int error);
-uint8_t update_open_field(String* lock, int* relock);
+uint8_t update_open_field(int* lock, int* relock);
 uint8_t update_lock_field();
 uint8_t update_pres_field();
 uint8_t update_accel_field(ADXL345* accel);

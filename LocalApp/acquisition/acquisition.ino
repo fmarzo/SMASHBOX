@@ -96,7 +96,7 @@ void loop()
 
     packet.pres = update_pres_field();
 
-    packet.open = update_open_field (&lock, &relock);
+    packet.open = update_open_field (&packet.lock, &relock);
 
     packet.infr = update_accel_field(&accel);
 

@@ -14,7 +14,7 @@ void error_handler(int error)
   }
 }
 
-uint8_t update_open_field(String* lock, int* relock)
+uint8_t update_open_field(uint8_t* lock, int* relock)
 {
   uint8_t tmp_open = 0;
 
@@ -24,7 +24,7 @@ uint8_t update_open_field(String* lock, int* relock)
       if (*relock == BOX_OPENED)
       { 
         /* the box has already been opened (relock == 1) and it has been closed (digitalRead(OPEN_PIN) == LOW), so we set the lock to 1 */
-        *lock = "1"; 
+        *lock = 1; 
         digitalWrite(MAGNET_PIN,HIGH); /* reset de magnet on as soon as we close the box */
         *relock = BOX_NOT_OPENED; /* resetting the lock to the default value */
       }
@@ -32,7 +32,7 @@ uint8_t update_open_field(String* lock, int* relock)
     else
     {
       /* the box can be physically opened only if it has been unlocked throught the sensor (lock == 0) */
-      if(*lock == "0")
+      if(*lock == 0)
       { 
           tmp_open = 1;
           *relock = BOX_OPENED; /* since i've opened the box we set the relock variable to 1 */
