@@ -1,4 +1,5 @@
 import os
+import struct
 
 import serial
 import serial.tools.list_ports
@@ -77,18 +78,18 @@ class Initializer:
         else:
             for port_name, data in self.__ser_ports_dict.items():
                 ser = data["serial"]
+                print(ser)
                 ser.timeout = 1  # Imposta un timeout di 1 secondo
                 packet = ser.read(config.N_BYTES)
                 if not packet:  # Se timeout, packet sarà vuoto
+                    print("empty")
                     continue
-                id_ser_0 = int(chr(packet[0]))
-                id_ser_1 = int(chr(packet[1]))
-                id_ser_2 = int(chr(packet[2]))
 
-                id_ser = id_ser_0 + id_ser_1 + id_ser_2
-                print(id_ser)
+                id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', packet)
+                print(
+                    f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
 
-                if id_ser == config.CENTRAL_SERIAL:
+                if id_ == config.CENTRAL_SERIAL:
                     self.__ser_central = ser
                     print("Central serial assigned: it's " + str(self.__ser_central))
                     self.__ser_central.write(CHAR_CENTRAL_ASSIGN)
@@ -96,8 +97,8 @@ class Initializer:
             if self.__ser_central is not None:
                 del self.__ser_ports_dict[self.__ser_central.name]
             else:
-                #print("Central not found")
-                #print("Going in simulation mode")
+                print("Central not found")
+                print("Going in simulation mode")
                 config.SIMULATION = 1
 
     def init_firebase_db(self):

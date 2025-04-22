@@ -1,5 +1,6 @@
 import asyncio
 import os
+import struct
 import time
 from configparser import NoOptionError
 from random import randint
@@ -64,33 +65,6 @@ def main():
 
     # MQTT alarm server
 
-    import paho.mqtt.client as mqtt
-    import json
-
-    # Token dispositivo (usato come username)
-    AT = "o0SzxyiH8fZWK1uQrRh2"
-    TH = "demo.thingsboard.io"
-    P = 1883
-    T = "v1/devices/me/telemetry"
-
-    # Dati da inviare
-
-
-    # 1. Crea il client
-    client = mqtt.Client()
-
-    # 2. Imposta username (token)
-    client.username_pw_set(AT)
-
-    # 3. Connetti al broker
-    client.connect(TH, P, 60)
-
-    print("sleeppo")
-    sleep(2)
-    # 5. Disconnetti (dopo breve pausa se necessario)
-    #client.disconnect()
-
-    #exit(1)
     # mqtt = system.get_mqtt()
   # mqtt.start_mqtt()
 
@@ -107,6 +81,19 @@ def main():
     #Test msg to TG bot
     asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
+    def read_serial_loop(s):
+        print("In thread")
+        while True:
+            if s.in_waiting >= config.N_BYTES:
+                val = s.read(config.N_BYTES)
+                id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
+                #print(id_, temp, humidity)
+                print(f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
+            time.sleep(0.005)
+
+    for port_name, data in ser.items():
+        s = data["serial"]
+        threading.Thread(target=read_serial_loop, args=(s,), daemon=True).start()
 
     while True:
         # ENDLESS LOOP
@@ -117,34 +104,25 @@ def main():
             #box_1.simulate_box_param()
             #requests.post(box_1.get_url_dev(), box_1.get_packet_str())
             cnt = 0
-            for port_name, data in ser.items():
-                s = data["serial"]
-                if s.in_waiting > 0:  # Se ci sono dati disponibili
-                    val = s.read(config.N_BYTES)
-                    val_str = val.decode()
-                    print(val)
-                    if val:
-                        id_comm = val[0:3]
-                        for b in box_list:
-                            #print(f"get_id {b.get_id()}")
-                            #print(f"id_comm{id_comm}")
-                            if b.get_id() == id_comm:
-                                #print("Update server")
-                                #box_1.simulate_box_param()
-                                b.set_box_param(val)
-                                #print("Update server")
-                                payload = {
-                                    "temperature": 42,
-                                    "presence": val_str[3]
-                                }
-                                #payload = b.get_packet_str()
-                                print(payload)
-                                client.publish(T, json.dumps(payload), qos=0)
-                                time.sleep(1)
-                                #requests.post(b.get_url_dev(), b.get_packet_str())
-                                break
-                    #print(val)
-                    #sleep(1)
+            #for port_name, data in ser.items():
+            #    s = data["serial"]
+            #    #if s.in_waiting > 0:  # Se ci sono dati disponibili
+            #    val = s.read(config.N_BYTES)
+            #    id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
+            #    print(
+            #        f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
+            #    #if val:
+            #    #    id_comm = val[0:3]
+            #    #    for b in box_list:
+            #    #        #print(f"get_id {b.get_id()}")
+            #    #        #print(f"id_comm{id_comm}")
+            #    #        if b.get_id() == id_comm:
+            #    #            b.set_box_param(val)
+            #    #            time.sleep(1)
+            #    #            #requests.post(b.get_url_dev(), b.get_packet_str())
+            #    #            break
+            #    #    #print(val)
+            #    #    #sleep(1)
 
             sleep(0.2)
         else:
