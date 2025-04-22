@@ -110,7 +110,10 @@ uint8_t getFingerprintID()
   lcd.print("ID: " );
   lcd.print(finger.fingerID);
   delay(500);
-  Serial.print("01" + padLeft(String(finger.fingerID), 3, '0') + "000000" );
+  uint8_t packet_check[ACTION_PACKET_SIZE] = {1, finger.fingerID};
+  Serial.write(packet_check, ACTION_PACKET_SIZE);
+
+  //Serial.print("01" + padLeft(String(finger.fingerID), 3, '0') + "000000" );
   lcd.clear();
   lcd.print("confidence: " + finger.confidence);
   delay(500);

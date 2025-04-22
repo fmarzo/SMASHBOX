@@ -23,8 +23,41 @@ from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from init import Initializer
 from config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
-from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, TB_TOKEN, BROKER, TB_HOST, TB_PORT, TB_TOPIC
+from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, TB_TOKEN, BROKER, TB_HOST, TB_PORT, TB_TOPIC, CODE_UNLOCK, \
+    CODE_ENROLL
 
+
+def read_central(central_ser, ser, box_list):
+    while True:
+        central_response = central_ser.read(config.CNTR_N_BYTES)
+        if len(central_response) > 1:
+            print(central_response)
+            header, id = struct.unpack('<2B', central_response)
+            print(f"header {header}, fingerID {id}")
+
+            if id == CHAR_IDLE:
+                pass
+            elif id == CODE_UNLOCK:
+                print("check")
+                for port_name, data in ser.items():
+                    if data["id"] == id:
+                        data["serial"].write(CHAR_UNLOCK)
+                        break
+            elif id == CODE_ENROLL:
+                print("enroll")
+                for port_name, data in ser.items():
+                    if not data["busy"]:
+                        data["id"] = id
+                        print("sto per inviare")
+                        print(data["serial"])
+                        data["serial"].write(id)
+                        data["busy"] = True
+                        # update box_id according with what received
+                        for b in box_list:
+                            if b.get_id() == "-1":
+                                b.set_id(id)
+                                break
+                        break
 
 def read_serial_loop(s, box_list, client):
     print("In thread")
@@ -32,15 +65,16 @@ def read_serial_loop(s, box_list, client):
         if s.in_waiting >= config.N_BYTES:
             val = s.read(config.N_BYTES)
             id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
-            box_list[0].set_raw_box_param(val)
-            # Dati da inviare
-            payload = box_list[0].get_packet()
-            client.publish(config.TB_TOPIC, json.dumps(payload))
-
-            print(payload)
-            print(
-                f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
-        time.sleep(1)
+            for b in box_list:
+                if b.get_id() == id_:
+                    b.set_raw_box_param(val)
+                    payload = b.get_packet()
+                    client.publish(config.TB_TOPIC, json.dumps(payload))
+                    print(
+                        f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
+                    #requests.post(b.get_url_dev(), b.get_packet_str())
+                    time.sleep(1)
+                    break
 
 def main():
     # SYSTEM INIT
@@ -104,13 +138,13 @@ def main():
     #client.loop_stop()
     #client.disconnect()
 
-    mqtt = system.get_mqtt()
-    mqtt.start_mqtt()
+    #mqtt = system.get_mqtt()
+    #mqtt.start_mqtt()
 
-    while not mqtt.is_init():
-        print("Wait for connection established")
-        sleep(1)
-        pass
+    #while not mqtt.is_init():
+    #    print("Wait for connection established")
+    #    sleep(1)
+    #    pass
 
     #TELEGRAM BOT
     tg_bot = TgBot(box_1, cli_1)
@@ -120,9 +154,11 @@ def main():
     #Test msg to TG bot
     asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
+    threading.Thread(target=read_central, args=(central_ser, ser, box_list, ), daemon=True).start()
+
     for port_name, data in ser.items():
         s = data["serial"]
-        threading.Thread(target=read_serial_loop, args=(s, box_list, client), daemon=True).start()
+        threading.Thread(target=read_serial_loop, args=(s, box_list, client,), daemon=True).start()
 
     while True:
         # ENDLESS LOOP
@@ -156,49 +192,49 @@ def main():
             sleep(0.2)
         else:
             # NO SIMULATION, System is in GO
-
-            central_response = central_ser.read(config.N_BYTES)
-            if len(central_response) > 1:
-                if chr(central_response[1]) == CHAR_IDLE:
-                    pass
-                elif chr(central_response[1]) == CHAR_CHECK:
-                    print("check")
-                    id_acq = central_response[2:5]
-                    for port_name, data in ser.items():
-                        if data["id"] == id_acq:
-                            data["serial"].write(CHAR_UNLOCK)
-                            break
-                elif chr(central_response[1]) == CHAR_ENROLL:
-                    #enroll
-                    id_acq = central_response[2:5]
-                    print(f"id_acq: {id_acq}")
-                    for port_name, data in ser.items():
-                        if not data["busy"]:
-                            data["id"] = id_acq
-                            print("sto per inviare")
-                            print(data["serial"])
-                            data["serial"].write(id_acq)
-                            data["busy"] = True
-                            #update box_id according with what received
-                            for b in box_list:
-                                if b.get_id() == "-1":
-                                    b.set_id(id_acq)
-                                    break
-                            break
-
-                for port_name, data in ser.items():
-                        s = data["serial"]
-                        if s.in_waiting > 0:  # Se ci sono dati disponibili
-                            val = s.read(config.N_BYTES)
-                            if val:
-                                id_comm = val[0:3]
-                                for b in box_list:
-                                    if b.get_id() == id_comm:
-                                        b.set_box_param(val)
-                                        requests.post(b.get_url_dev(), b.get_packet_str())
-                                        break
-                            print(val)
-                            sleep(1)
+            pass
+            #central_response = central_ser.read(configN_BYTES)
+            #if len(central_response) > 1:
+            #    if chr(central_response[1]) == CHAR_IDLE:
+            #        pass
+            #    elif chr(central_response[1]) == CHAR_CHECK:
+            #        print("check")
+            #        id_acq = central_response[2:5]
+            #        for port_name, data in ser.items():
+            #            if data["id"] == id_acq:
+            #                data["serial"].write(CHAR_UNLOCK)
+            #                break
+            #    elif chr(central_response[1]) == CHAR_ENROLL:
+            #        #enroll
+            #        id_acq = central_response[2:5]
+            #        print(f"id_acq: {id_acq}")
+            #        for port_name, data in ser.items():
+            #            if not data["busy"]:
+            #                data["id"] = id_acq
+            #                print("sto per inviare")
+            #                print(data["serial"])
+            #                data["serial"].write(id_acq)
+            #                data["busy"] = True
+            #                #update box_id according with what received
+            #                for b in box_list:
+            #                    if b.get_id() == "-1":
+            #                        b.set_id(id_acq)
+            #                        break
+            #                break
+#
+            #    for port_name, data in ser.items():
+            #            s = data["serial"]
+            #            if s.in_waiting > 0:  # Se ci sono dati disponibili
+            #                val = s.read(config.N_BYTES)
+            #                if val:
+            #                    id_comm = val[0:3]
+            #                    for b in box_list:
+            #                        if b.get_id() == id_comm:
+            #                            b.set_box_param(val)
+            #                            requests.post(b.get_url_dev(), b.get_packet_str())
+            #                            break
+            #                print(val)
+            #                sleep(1)
 
 # entry point
 if __name__ == '__main__':

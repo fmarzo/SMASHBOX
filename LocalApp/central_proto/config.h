@@ -25,6 +25,9 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 #define MIN_ID_NUM 1
 #define MAX_ID_NUM 127
 #define PACKET_SIZE 7
+#define ACTION_PACKET_SIZE 2
+//#define CENTRAL_RECOG 
+
 
 /* SERIAL RATE */
 #define STANDARD_BAUDRATE 115200
@@ -45,7 +48,5 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 
 #define CENTRAL_RECOGNIZE_CHAR 0x40 /* @ for bridge-central handshake */
 #define INFRING_CHAR  0x5F /* _ for notify the infringement*/
-#define IDLE_PACKET uint8_t idle_packet[PACKET_SIZE] = {0,0,0,0,0,0,0}
-#define INFR_PACKET uint8_t infr_packet[PACKET_SIZE] = {0,0,0,0,0,0,1}
 
 #endif _CONFIG

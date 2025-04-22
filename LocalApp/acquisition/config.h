@@ -3,7 +3,7 @@
 
 
 //#define SIMULATION_MODE
-//#define ASSIGN_ID_FROM_CENTRAL
+#define ASSIGN_ID_FROM_CENTRAL
 
 #define NO_ERROR          0
 #define INIT_ERR         -1
@@ -16,7 +16,7 @@
 
 /* NOTIFICATION CHAR */
 
-#define OPEN_CHAR 0x26 /* & for opening lock */
+#define CHAR_UNLOCK 0x26 /* & for opening lock */
 #define INFR_CHAR 0x2A /* * for infringement lock */
 
 /* SERIAL RATE */

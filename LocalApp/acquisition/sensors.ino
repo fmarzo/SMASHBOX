@@ -51,7 +51,7 @@ uint8_t update_lock_field()
     {
       read = Serial.read();
 
-      if (read == OPEN_CHAR) 
+      if (read == CHAR_UNLOCK) 
       {
         tmp_lock = 0u;
         digitalWrite(MAGNET_PIN,LOW);

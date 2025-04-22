@@ -13,7 +13,8 @@ const int rs = 11, en = 12, d4 = 5, d5 = 6, d6 = 7, d7 = 8;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 uint8_t zero_bytes[7] = { 0, 0, 0, 0, 0, 0, 0 };
 
-uint8_t idle_packet[PACKET_SIZE] = {0,0,0,0,0,0,0};
+uint8_t idle_packet[ACTION_PACKET_SIZE] = {0,0};
+uint8_t idle_packet_init[PACKET_SIZE] = {0,0,0,0,0,0,0};
 uint8_t infr_packet[PACKET_SIZE] = {0,0,0,0,0,0,1};
 
 void setup() {
@@ -40,9 +41,10 @@ void setup() {
 
   /* Sending a "0" to let the bridge recognize Central */
 
-  Serial.write(idle_packet, sizeof(idle_packet));
+  Serial.write(idle_packet_init, sizeof(idle_packet_init));
 
-  /*while (1)
+#ifdef CENTRAL_RECOG
+  while (1)
   {
       if (Serial.available() > 0) 
       {
@@ -53,6 +55,7 @@ void setup() {
           {
             lcd.clear();
             lcd.print("FOUND");
+            Serial.write(idle_packet, sizeof(idle_packet));
             break;
           }
       }
@@ -61,7 +64,8 @@ void setup() {
           lcd.clear();
           lcd.print("Wait for Central recognition");
       }
-  }*/
+  }
+#endif
 }
 
 int check_for_existing_id(uint8_t id) {
@@ -130,7 +134,8 @@ void loop() {
     delay(50);
   }
 
-  if (check == 0) {
+  if (check == 0) 
+  {
     digitalWrite(LED_BUILTIN, HIGH);
     Serial.write(idle_packet, sizeof(idle_packet));
     delay(500);

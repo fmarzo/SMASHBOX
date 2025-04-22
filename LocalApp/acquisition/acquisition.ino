@@ -64,12 +64,13 @@ void setup()
   }
   
 #ifdef ASSIGN_ID_FROM_CENTRAL
+  uint8_t my_id = 0;
   while(1)
   {
-      if (Serial.available() >= 3) 
+      if (Serial.available() > 0) 
       {  
-        Serial.readBytes(buffer_id, 3);
-        packet->id.concat(buffer_id);
+        my_id = Serial.read();
+        packet.id = my_id;
         break;
       }
   }
