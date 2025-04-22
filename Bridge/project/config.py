@@ -46,8 +46,24 @@ BROKER = "test.mosquitto.org"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
 TOPIC = "smashbox/alarms"          # Topic to publish/subscribe
 
+TB_TOKEN = "o0SzxyiH8fZWK1uQrRh2"
+TB_HOST = "demo.thingsboard.io"
+TB_PORT = 1883
+TB_TOPIC = "v1/devices/me/telemetry"
+
+# Sostituisci con il tuo token Ubidots
+UBI_TOKEN = "BBUS-LoMWbuJT0n6InWvG96UsiE5tYqTeB0"
+# Etichetta del dispositivo
+UBI_DEVICE_LABEL = "box_1"
+# Broker MQTT di Ubidots
+UBI_BROKER = "industrial.api.ubidots.com"
+UBI_PORT = 1883
+# Topic MQTT
+UBI_TOPIC = f"/v1.6/devices/{UBI_DEVICE_LABEL}"
+
 #OPERATING SYSTEM ID
 WINDOWS_OS_ID = "nt"
+
 
 #DEBUG_PARAMETERS
 SIMULATION = 0 # no simulation for default

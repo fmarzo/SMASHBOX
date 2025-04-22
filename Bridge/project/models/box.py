@@ -1,3 +1,5 @@
+import struct
+
 from jwt.utils import bytes_from_int
 from mpl_toolkits.axisartist.angle_helper import select_step_degree
 
@@ -37,7 +39,7 @@ class Box:
   def get_url_dev(self):
       return self.__url_device
 
-  def get_packet_str(self):
+  def get_packet(self):
       packet = {
           "ID": self.id,
           "presence": self.presence,
@@ -48,8 +50,7 @@ class Box:
           "open": self.open,
           "log": self.date
       }
-      print(packet)
-      return str(packet)
+      return packet
 
   def simulate_box_param(self):
       self.temperature = (simulate_param(config.TEMP_PARAM))
@@ -67,11 +68,22 @@ class Box:
       self.lock = int(chr(packet[9]))
       self.open = int(chr(packet[10]))
 
+
   def update_latest_log(self):
       formatted_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
       print(formatted_timestamp)
       print(type(formatted_timestamp))
       self.date = formatted_timestamp
+
+  def set_raw_box_param(self, val):
+      id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
+      self.id = id_
+      self.presence = pres
+      self.temperature = temp
+      self.humidity = humidity
+      self.infringement = infr
+      self.lock = lock
+      self.open = open_
 
 
 

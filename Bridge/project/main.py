@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import struct
 import time
@@ -10,6 +11,8 @@ import requests
 import serial
 import threading
 
+from pycparser.ply.lex import TOKEN
+
 import init
 from bot.tgbot import TgBot
 from init import Initializer
@@ -20,11 +23,27 @@ from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from init import Initializer
 from config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
+from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, TB_TOKEN, BROKER, TB_HOST, TB_PORT, TB_TOPIC
 
+
+def read_serial_loop(s, box_list, client):
+    print("In thread")
+    while True:
+        if s.in_waiting >= config.N_BYTES:
+            val = s.read(config.N_BYTES)
+            id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
+            box_list[0].set_raw_box_param(val)
+            # Dati da inviare
+            payload = box_list[0].get_packet()
+            client.publish(config.TB_TOPIC, json.dumps(payload))
+
+            print(payload)
+            print(
+                f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
+        time.sleep(1)
 
 def main():
     # SYSTEM INIT
-
     system = Initializer()
     system.init_system()
     ser = system.get_serials()
@@ -65,13 +84,33 @@ def main():
 
     # MQTT alarm server
 
-    # mqtt = system.get_mqtt()
-  # mqtt.start_mqtt()
+    import paho.mqtt.client as mqtt
+    import json
 
-  # while not mqtt.is_init():
-  #     print("Wait for connection established")
-  #     sleep(1)
-  #     pass
+    # Token dispositivo (usato come username)
+
+    # 1. Crea il client
+    client = mqtt.Client()
+
+    # 2. Imposta username (token)
+    client.username_pw_set(TB_TOKEN)
+
+    # 3. Connetti al broker
+    client.connect(TB_HOST, TB_PORT, 60)
+
+    # 5. Disconnetti (dopo breve pausa se necessario)
+    #client.disconnect()
+
+    #client.loop_stop()
+    #client.disconnect()
+
+    mqtt = system.get_mqtt()
+    mqtt.start_mqtt()
+
+    while not mqtt.is_init():
+        print("Wait for connection established")
+        sleep(1)
+        pass
 
     #TELEGRAM BOT
     tg_bot = TgBot(box_1, cli_1)
@@ -81,24 +120,14 @@ def main():
     #Test msg to TG bot
     asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
-    def read_serial_loop(s):
-        print("In thread")
-        while True:
-            if s.in_waiting >= config.N_BYTES:
-                val = s.read(config.N_BYTES)
-                id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
-                #print(id_, temp, humidity)
-                print(f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
-            time.sleep(0.005)
-
     for port_name, data in ser.items():
         s = data["serial"]
-        threading.Thread(target=read_serial_loop, args=(s,), daemon=True).start()
+        threading.Thread(target=read_serial_loop, args=(s, box_list, client), daemon=True).start()
 
     while True:
         # ENDLESS LOOP
+        # Simulation starts here
         if config.SIMULATION == 1:
-            # Simulation starts here
             #print(ser.items())
             # BOX 1
             #box_1.simulate_box_param()
@@ -174,8 +203,3 @@ def main():
 # entry point
 if __name__ == '__main__':
     main()
-
-# Probabilmente acquisition manda pacchetti a stecca verso il bridge ma lui non riesce a consumarli in maniera veloce.
-# Ergo avevamo messo un delay molto alto lato acquisition. Funziona meglio, ma è estramemte lento
-# Bisogna fare in modo che non si crei una coda di valori nel buffer che viene consumata troppo lentamente
-

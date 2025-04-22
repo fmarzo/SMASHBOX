@@ -35,7 +35,8 @@ void setup()
   finger.emptyDatabase(); 
 
   /* Sending a "0" to let the bridge recognize Central */
-  Serial.print(IDLE_PACKET); 
+  uint8_t zero_bytes[7] = {0, 0, 0, 0, 0, 0, 0};
+  Serial.write(zero_bytes, 7);
 
   while (1)
   {

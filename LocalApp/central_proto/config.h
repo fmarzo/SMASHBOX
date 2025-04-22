@@ -26,7 +26,7 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 #define MAX_ID_NUM 127
 
 /* SERIAL RATE */
-#define STANDARD_BAUDRATE 9600
+#define STANDARD_BAUDRATE 115200
 #define FINGER_SENSOR_DATARATE 57600
 
 /* PINOUT */

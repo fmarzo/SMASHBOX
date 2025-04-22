@@ -45,7 +45,9 @@ class Initializer:
             # in a Win env
             for p in ports:
                 print(p.name)
-                if descr in p.description:
+                print(p.description)
+
+                if (descr in p.description) or ("CH340" in p.description) :
                     print("This is an Arduino!")
                     # append it as more than one Arduino can be found
                     self.__ser_ports_dict[p.name] = {
@@ -94,6 +96,7 @@ class Initializer:
                     print("Central serial assigned: it's " + str(self.__ser_central))
                     self.__ser_central.write(CHAR_CENTRAL_ASSIGN)
                     break
+
             if self.__ser_central is not None:
                 del self.__ser_ports_dict[self.__ser_central.name]
             else:
