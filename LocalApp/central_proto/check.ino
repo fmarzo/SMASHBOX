@@ -12,6 +12,7 @@ String padLeft(String str, int length, char padChar = ' ')
 uint8_t getFingerprintID()
 {
   uint8_t p = finger.getImage();
+  delay(500);
   switch (p) 
   {
     case FINGERPRINT_OK:

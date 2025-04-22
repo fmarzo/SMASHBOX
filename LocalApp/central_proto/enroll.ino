@@ -8,16 +8,18 @@ uint8_t getFingerprintEnroll()
   while (p != FINGERPRINT_OK) 
   {
     p = finger.getImage();
+    delay(200);
+
     switch (p) {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("image taken");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_NOFINGER:
       lcd.clear();
       lcd.print("Waiting finger..");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
       lcd.clear();
@@ -44,7 +46,7 @@ uint8_t getFingerprintEnroll()
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image converted");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_IMAGEMESS:
       lcd.clear();
@@ -73,7 +75,7 @@ uint8_t getFingerprintEnroll()
   }
   lcd.clear();
   lcd.print("Remove finger");
-  delay(500);
+  delay(800);
   p = 0;
   while (p != FINGERPRINT_NOFINGER) 
   {
@@ -81,8 +83,7 @@ uint8_t getFingerprintEnroll()
   }
   p = -1;
   lcd.clear();
-  lcd.print("Put same finger");
-  delay(500);
+
   while (p != FINGERPRINT_OK) 
   {
     p = finger.getImage();
@@ -91,12 +92,11 @@ uint8_t getFingerprintEnroll()
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image taken");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_NOFINGER:
-      lcd.clear();
-      lcd.print(".");
-      delay(500);
+      lcd.print("Put same finger");
+      delay(800);
       break;
     case FINGERPRINT_PACKETRECIEVEERR:
       lcd.clear();
@@ -123,7 +123,7 @@ uint8_t getFingerprintEnroll()
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image converted");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_IMAGEMESS:
       lcd.clear();
