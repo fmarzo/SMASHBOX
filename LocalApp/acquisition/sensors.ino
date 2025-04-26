@@ -1,7 +1,8 @@
 #include "sensors.h"
 #include <stdlib.h>
 
-bool firstRun = true; 
+bool firstRun = true;
+double X, Y, Z; 
 
 void error_handler(int error)
 {
@@ -86,7 +87,6 @@ uint8_t update_pres_field()
 uint8_t update_accel_field(ADXL345* accel)
 {
   uint8_t infr = 0u;
-  double X, Y, Z;
 
   /* if it is the first iteration you can't compare the value with the ones of the previous iteration */
     if (firstRun) 
@@ -100,6 +100,12 @@ uint8_t update_accel_field(ADXL345* accel)
     else 
     {
       /* updating accellerometer parameters */
+
+      Serial.println(abs(X - accel->getX()));
+
+      Serial.println(abs(Y - accel->getY()));
+      Serial.println(abs(Z - accel->getZ()));
+
       if (accel->update())
       {
         if (abs(X - accel->getX()) > 0.5 || abs(Y - accel->getY()) > 0.5 || abs(Z - accel->getZ()) > 0.5) 
