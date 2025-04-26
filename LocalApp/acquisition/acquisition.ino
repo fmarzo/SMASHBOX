@@ -67,13 +67,11 @@ void setup()
 while (Serial.available() > 0) Serial.read();
 
 #ifdef ASSIGN_ID_FROM_CENTRAL
-  uint8_t my_id = 0;
   uint8_t buffer[10] = {0u};
   while(1)
   {
       if (Serial.available() >= 10) 
       {  
-        //Serial.print("Assigned!");
         Serial.readBytes(buffer, 10);
         packet.id = buffer[0];
 

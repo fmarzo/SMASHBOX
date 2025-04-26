@@ -78,16 +78,6 @@ def read_serial_loop(s, box_list):
                     time.sleep(0.5)
                     break
 
-            #for b in box_list["Box"]:
-            #    if b.get_id() == id_:
-            #        b.set_raw_box_param(val)
-            #        payload = b.get_packet()
-            #        clients.publish(config.TB_TOPIC, json.dumps(payload))
-            #        print(
-            #            f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
-            #        time.sleep(0.5)
-            #        break
-
 def main():
     # SYSTEM INIT
     system = Initializer()
@@ -133,14 +123,11 @@ def main():
     import paho.mqtt.client as mqtt
     import json
 
-
     for token in box_list["Token"]:
         client = mqtt.Client()
         client.username_pw_set(token)
         client.connect("demo.thingsboard.io", 1883, 60)
         box_list["Clients"].append(client)
-
-
 
     # 5. Disconnetti (dopo breve pausa se necessario)
     #client.disconnect()

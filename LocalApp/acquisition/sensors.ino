@@ -85,7 +85,7 @@ uint8_t update_pres_field()
 
 uint8_t update_accel_field(ADXL345* accel)
 {
-  uint8_t infr = 0;
+  uint8_t infr = 0u;
   double X, Y, Z;
 
   /* if it is the first iteration you can't compare the value with the ones of the previous iteration */
@@ -104,11 +104,11 @@ uint8_t update_accel_field(ADXL345* accel)
       {
         if (abs(X - accel->getX()) > 0.5 || abs(Y - accel->getY()) > 0.5 || abs(Z - accel->getZ()) > 0.5) 
         {
-          infr = 1;
+          infr = 1u;
         } 
         else 
         {
-          infr = 0;
+          infr = 0u;
         }
 
         X = accel->getX();
