@@ -40,7 +40,6 @@ void setup() {
   finger.emptyDatabase();
 
   /* Sending a "0" to let the bridge recognize Central */
-
   Serial.write(idle_packet_init, sizeof(idle_packet_init));
 
 #ifdef CENTRAL_RECOG
@@ -138,7 +137,7 @@ void loop() {
   {
     digitalWrite(LED_BUILTIN, HIGH);
     Serial.write(idle_packet, sizeof(idle_packet));
-    delay(500);
+    delay(200);
     digitalWrite(LED_BUILTIN, LOW);
   }
 }

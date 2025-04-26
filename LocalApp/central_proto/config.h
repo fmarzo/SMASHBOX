@@ -26,7 +26,7 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 #define MAX_ID_NUM 127
 #define PACKET_SIZE 7
 #define ACTION_PACKET_SIZE 2
-//#define CENTRAL_RECOG 
+#define CENTRAL_RECOG 
 
 
 /* SERIAL RATE */
@@ -37,7 +37,7 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 
 #define SWITCH_ENROLL_PIN 4
 #define UNLOCK_BUTTON_PIN 10
-
+x
 /* ERROR CODES */
 
 #define NO_ERROR 0x00

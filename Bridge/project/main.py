@@ -35,26 +35,28 @@ def read_central(central_ser, ser, box_list):
             header, id = struct.unpack('<2B', central_response)
             print(f"header {header}, fingerID {id}")
 
-            if id == CHAR_IDLE:
+            if header == CHAR_IDLE:
                 pass
-            elif id == CODE_UNLOCK:
+            elif header == CODE_UNLOCK:
                 print("check")
                 for port_name, data in ser.items():
                     if data["id"] == id:
                         data["serial"].write(CHAR_UNLOCK)
                         break
-            elif id == CODE_ENROLL:
+            elif header == CODE_ENROLL:
                 print("enroll")
+                enr_packet = [id] + [0] * 9
+                print(enr_packet)
                 for port_name, data in ser.items():
                     if not data["busy"]:
                         data["id"] = id
                         print("sto per inviare")
                         print(data["serial"])
-                        data["serial"].write(id)
+                        data["serial"].write(bytes(enr_packet))
                         data["busy"] = True
                         # update box_id according with what received
                         for b in box_list:
-                            if b.get_id() == "-1":
+                            if b.get_id() == -1:
                                 b.set_id(id)
                                 break
                         break
@@ -65,14 +67,16 @@ def read_serial_loop(s, box_list, client):
         if s.in_waiting >= config.N_BYTES:
             val = s.read(config.N_BYTES)
             id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
+            print(
+                f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
             for b in box_list:
+                print(id_)
                 if b.get_id() == id_:
                     b.set_raw_box_param(val)
                     payload = b.get_packet()
                     client.publish(config.TB_TOPIC, json.dumps(payload))
                     print(
                         f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
-                    #requests.post(b.get_url_dev(), b.get_packet_str())
                     time.sleep(1)
                     break
 
@@ -89,8 +93,8 @@ def main():
     firebase_db = system.get_firebase_db()
 
     # Entities
-    box_1 = Box(b"122", config.URL_DEVICE_1)
-    box_2 = Box("-1", config.URL_DEVICE_2)
+    box_1 = Box(-1, config.URL_DEVICE_1)
+    box_2 = Box(-1, config.URL_DEVICE_2)
 
     box_list = [box_1, box_2]
 
@@ -154,7 +158,8 @@ def main():
     #Test msg to TG bot
     asyncio.run(tg_bot.send_msg(config.CHAT_ID_TG_BOT, "Welcome Bot"))
 
-    threading.Thread(target=read_central, args=(central_ser, ser, box_list, ), daemon=True).start()
+    if central_ser is not None:
+        threading.Thread(target=read_central, args=(central_ser, ser, box_list, ), daemon=True).start()
 
     for port_name, data in ser.items():
         s = data["serial"]

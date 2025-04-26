@@ -63,15 +63,24 @@ void setup()
     error_handler(ACCEL_ERR_START);
   }
   
+
+while (Serial.available() > 0) Serial.read();
+
 #ifdef ASSIGN_ID_FROM_CENTRAL
   uint8_t my_id = 0;
+  uint8_t buffer[10] = {0u};
   while(1)
   {
-      if (Serial.available() > 0) 
+      if (Serial.available() >= 10) 
       {  
-        my_id = Serial.read();
-        packet.id = my_id;
-        break;
+        //Serial.print("Assigned!");
+        Serial.readBytes(buffer, 10);
+        packet.id = buffer[2];
+
+        /* clear internal buffer after reading */
+        while (Serial.available() > 0) Serial.read();
+
+        break;  
       }
   }
 #else
