@@ -96,6 +96,7 @@ uint8_t getFingerprintEnroll()
       delay(800);
       break;
     case FINGERPRINT_NOFINGER:
+      lcd.clear();
       lcd.print("Put same finger");
       delay(800);
       break;

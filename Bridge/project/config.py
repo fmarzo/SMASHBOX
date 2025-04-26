@@ -52,7 +52,9 @@ BROKER = "test.mosquitto.org"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
 TOPIC = "smashbox/alarms"          # Topic to publish/subscribe
 
-TB_TOKEN = "o0SzxyiH8fZWK1uQrRh2"
+TB_TOKEN_1 = "o0SzxyiH8fZWK1uQrRh2"
+TB_TOKEN_2 = "7QC2PthzFKhkp9AJAW2z"
+
 TB_HOST = "demo.thingsboard.io"
 TB_PORT = 1883
 TB_TOPIC = "v1/devices/me/telemetry"

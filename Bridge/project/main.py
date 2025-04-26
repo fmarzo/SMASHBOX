@@ -23,8 +23,8 @@ from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from init import Initializer
 from config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
-from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, TB_TOKEN, BROKER, TB_HOST, TB_PORT, TB_TOPIC, CODE_UNLOCK, \
-    CODE_ENROLL
+from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, BROKER, TB_HOST, TB_PORT, TB_TOPIC, CODE_UNLOCK, \
+    CODE_ENROLL, TB_TOKEN_1, TB_TOKEN_2
 
 
 def read_central(central_ser, ser, box_list):
@@ -55,29 +55,38 @@ def read_central(central_ser, ser, box_list):
                         data["serial"].write(bytes(enr_packet))
                         data["busy"] = True
                         # update box_id according with what received
-                        for b in box_list:
+                        for b in box_list["Box"]:
                             if b.get_id() == -1:
                                 b.set_id(id)
                                 break
                         break
 
-def read_serial_loop(s, box_list, client):
+def read_serial_loop(s, box_list):
     print("In thread")
     while True:
         if s.in_waiting >= config.N_BYTES:
             val = s.read(config.N_BYTES)
             id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
 
-            for b in box_list:
-                print(b.get_id())
-                if b.get_id() == id_:
-                    b.set_raw_box_param(val)
-                    payload = b.get_packet()
+            for i, (box, token, client) in enumerate(zip(box_list["Box"], box_list["Token"], box_list["Clients"])):
+                if box.get_id() == id_:
+                    box.set_raw_box_param(val)
+                    payload = box.get_packet()
                     client.publish(config.TB_TOPIC, json.dumps(payload))
                     print(
-                        f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
-                    #time.sleep(1)
+                        f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}, Token: {client}")
+                    time.sleep(0.5)
                     break
+
+            #for b in box_list["Box"]:
+            #    if b.get_id() == id_:
+            #        b.set_raw_box_param(val)
+            #        payload = b.get_packet()
+            #        clients.publish(config.TB_TOPIC, json.dumps(payload))
+            #        print(
+            #            f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
+            #        time.sleep(0.5)
+            #        break
 
 def main():
     # SYSTEM INIT
@@ -95,7 +104,7 @@ def main():
     box_1 = Box(-1, config.URL_DEVICE_1)
     box_2 = Box(-1, config.URL_DEVICE_2)
 
-    box_list = [box_1, box_2]
+    box_list = {"Box": [box_1, box_2], "Token": [TB_TOKEN_1, TB_TOKEN_2], "Clients": []}
 
     cli_1 = Client("El", "EL", 1001, "eltucuman1@gmail.com")
     cli_2 = Client("Tu", "TU", 1002, "eltucuman2@gmail.com")
@@ -124,16 +133,14 @@ def main():
     import paho.mqtt.client as mqtt
     import json
 
-    # Token dispositivo (usato come username)
 
-    # 1. Crea il client
-    client = mqtt.Client()
+    for token in box_list["Token"]:
+        client = mqtt.Client()
+        client.username_pw_set(token)
+        client.connect("demo.thingsboard.io", 1883, 60)
+        box_list["Clients"].append(client)
 
-    # 2. Imposta username (token)
-    client.username_pw_set(TB_TOKEN)
 
-    # 3. Connetti al broker
-    client.connect(TB_HOST, TB_PORT, 60)
 
     # 5. Disconnetti (dopo breve pausa se necessario)
     #client.disconnect()
@@ -162,7 +169,7 @@ def main():
 
     for port_name, data in ser.items():
         s = data["serial"]
-        threading.Thread(target=read_serial_loop, args=(s, box_list, client,), daemon=True).start()
+        threading.Thread(target=read_serial_loop, args=(s, box_list,), daemon=True).start()
 
     while True:
         # ENDLESS LOOP

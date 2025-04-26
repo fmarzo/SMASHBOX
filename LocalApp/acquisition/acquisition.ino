@@ -119,7 +119,7 @@ void loop()
 
   #endif
 
-  delay(100);  /* Delay to prevent overly fast readings */
+  delay(1000);  /* Delay to prevent overly fast readings */
 }
 
 

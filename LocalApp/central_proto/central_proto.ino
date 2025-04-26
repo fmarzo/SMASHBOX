@@ -62,6 +62,7 @@ void setup() {
       {   
           lcd.clear();
           lcd.print("Wait for Bridge");
+          delay(500);
       }
   }
 #endif
@@ -118,7 +119,8 @@ void loop() {
 
     id = random(MIN_ID_NUM, MAX_ID_NUM);
 
-    while (check_for_existing_id(id) != NO_ERROR) {
+    while (check_for_existing_id(id) != NO_ERROR) 
+    {
       id = random(MIN_ID_NUM, MAX_ID_NUM);
     }
 
@@ -129,7 +131,9 @@ void loop() {
       ;
     delay(1000);
     enr--;
-  } else {
+  }
+  else 
+  {
     getFingerprintID();
     delay(50);
   }
