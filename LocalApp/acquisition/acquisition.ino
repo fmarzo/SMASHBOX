@@ -13,7 +13,7 @@ String lock = "1";
 packet_raw_t packet;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
 
-void setup() 
+void setup()  
 {
   char buffer_id [4] = {0};
   Serial.begin(STANDARD_BAUDRATE);
@@ -75,7 +75,7 @@ while (Serial.available() > 0) Serial.read();
       {  
         //Serial.print("Assigned!");
         Serial.readBytes(buffer, 10);
-        packet.id = buffer[2];
+        packet.id = buffer[0];
 
         /* clear internal buffer after reading */
         while (Serial.available() > 0) Serial.read();

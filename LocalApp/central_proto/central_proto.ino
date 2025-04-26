@@ -61,7 +61,7 @@ void setup() {
       else
       {   
           lcd.clear();
-          lcd.print("Wait for Central recognition");
+          lcd.print("Wait for Bridge");
       }
   }
 #endif

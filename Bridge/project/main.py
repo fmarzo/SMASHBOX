@@ -67,7 +67,8 @@ def read_serial_loop(s, box_list, client):
         if s.in_waiting >= config.N_BYTES:
             val = s.read(config.N_BYTES)
             id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)
-
+            print(
+                f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
             for b in box_list:
                 if b.get_id() == id_:
                     b.set_raw_box_param(val)

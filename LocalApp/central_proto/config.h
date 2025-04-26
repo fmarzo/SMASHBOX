@@ -1,6 +1,7 @@
 #ifndef _CONFIG
 #define _CONFIG
 
+#define __AVR__
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------*/
 /* SOFTWARE SERIAL PORT MANAGEMENT BASED ON THE DEVICES USED*/
 
@@ -30,7 +31,7 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 
 
 /* SERIAL RATE */
-#define STANDARD_BAUDRATE 115200
+#define STANDARD_BAUDRATE 9600
 #define FINGER_SENSOR_DATARATE 57600
 
 /* PINOUT */

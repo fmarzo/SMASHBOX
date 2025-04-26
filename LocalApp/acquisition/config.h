@@ -1,7 +1,6 @@
 #ifndef _CONFIG
 #define _CONFIG
 
-
 //#define SIMULATION_MODE
 #define ASSIGN_ID_FROM_CENTRAL
 
@@ -21,7 +20,7 @@
 
 /* SERIAL RATE */
 
-#define STANDARD_BAUDRATE 115200
+#define STANDARD_BAUDRATE 9600
 
 /* PINOUT */
 

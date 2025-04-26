@@ -189,7 +189,6 @@ uint8_t getFingerprintEnroll()
     delay(500);
     uint8_t packet_enroll[ACTION_PACKET_SIZE] = {2, id};
     Serial.write(packet_enroll, ACTION_PACKET_SIZE);
-    //Serial.print("02" + padLeft(String(id), 3, '0') + "000000" );
     check = 1;
   } 
   else if (p == FINGERPRINT_PACKETRECIEVEERR) 
