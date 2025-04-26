@@ -10,7 +10,8 @@ uint8_t getFingerprintEnroll()
     p = finger.getImage();
     delay(200);
 
-    switch (p) {
+    switch (p) 
+    {
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("image taken");
