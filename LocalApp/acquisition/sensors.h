@@ -16,7 +16,7 @@ typedef struct __attribute__((packed)) packet_raw_t
 
 void error_handler(int error);
 uint8_t update_open_field(int* lock, int* relock);
-uint8_t update_lock_field();
+void update_lock_field(uint8_t* lock, uint8_t* safe_mode);
 uint8_t update_pres_field();
 uint8_t update_accel_field(ADXL345* accel);
 void update_temp_field(Adafruit_AHTX0* aht, sensors_event_t* temperature, sensors_event_t* humidity);

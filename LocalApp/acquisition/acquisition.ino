@@ -10,6 +10,7 @@ ADXL345 accel(ADXL345_ALT);
 sensors_event_t temperature, humidity;
 Adafruit_AHTX0 aht;
 String lock = "1";
+uint8_t safe_mode = 0;
 packet_raw_t packet;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
 
@@ -100,15 +101,26 @@ void loop()
 {
  #ifndef SIMULATION_MODE
 
-    packet.lock = update_lock_field();
+    update_lock_field(&(packet.lock), &safe_mode);
 
-    packet.pres = update_pres_field();
+    if (safe_mode == 0)
+    {
+      packet.pres = update_pres_field();
 
-    packet.open = update_open_field (&packet.lock, &relock);
-
-    packet.infr = update_accel_field(&accel);
-
-    update_temp_field(&aht, &temperature, &humidity);
+      packet.open = update_open_field (&packet.lock, &relock);
+  
+      packet.infr = update_accel_field(&accel);
+  
+      update_temp_field(&aht, &temperature, &humidity);
+    }
+    else
+    {
+      packet.pres = 0;
+      packet.open = 0;
+      packet.infr = 0;
+      packet.humidity = 0;
+      packet.temp = 0;
+    }
 
     send_packet(&packet);
 

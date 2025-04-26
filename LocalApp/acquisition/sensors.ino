@@ -43,10 +43,9 @@ uint8_t update_open_field(uint8_t* lock, int* relock)
     return tmp_open;
 }
 
-uint8_t update_lock_field()
+void update_lock_field(uint8_t* lock, uint8_t* safe_mode)
 {
   int read = 0;
-  uint8_t tmp_lock = 0u;
 
     if (Serial.available() > 0) 
     {
@@ -54,22 +53,20 @@ uint8_t update_lock_field()
 
       if (read == CHAR_UNLOCK) 
       {
-        tmp_lock = 0u;
+        *lock = 0u;
         digitalWrite(MAGNET_PIN,LOW);
       } 
       else if (read == INFR_CHAR)
       {
-        tmp_lock = 1u;
+        *lock = 1u;
+        *safe_mode = 1;
         digitalWrite(MAGNET_PIN,HIGH);
       }
       else 
       {
-        tmp_lock = 1u;
         digitalWrite(MAGNET_PIN,HIGH);
       }
     }
-
-    return tmp_lock;
 }
 
 uint8_t update_pres_field()
@@ -101,14 +98,9 @@ uint8_t update_accel_field(ADXL345* accel)
     {
       /* updating accellerometer parameters */
 
-      Serial.println(abs(X - accel->getX()));
-
-      Serial.println(abs(Y - accel->getY()));
-      Serial.println(abs(Z - accel->getZ()));
-
       if (accel->update())
       {
-        if (abs(X - accel->getX()) > 0.5 || abs(Y - accel->getY()) > 0.5 || abs(Z - accel->getZ()) > 0.5) 
+        if (abs(X - accel->getX()) > 0.2 || abs(Y - accel->getY()) > 0.2 || abs(Z - accel->getZ()) > 0.2) 
         {
           infr = 1u;
         } 
