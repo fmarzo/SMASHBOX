@@ -75,7 +75,7 @@ int check_for_existing_id(uint8_t id) {
 }
 
 /* --------------------- LOOP --------------------*/
-uint8_t enr = 1;
+uint8_t enr = 2;
 
 void loop() {
   check = 0;
@@ -110,7 +110,8 @@ void loop() {
   //  enr = 0;
   //}
 
-  if (enr == 1) {
+  if (enr != 0) 
+  {
     lcd.clear();
     lcd.print("ENROLL");
     delay(500);
@@ -127,7 +128,7 @@ void loop() {
     while (!getFingerprintEnroll())
       ;
     delay(1000);
-    enr = 0;
+    enr--;
   } else {
     getFingerprintID();
     delay(50);

@@ -37,7 +37,7 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 
 #define SWITCH_ENROLL_PIN 4
 #define UNLOCK_BUTTON_PIN 10
-x
+
 /* ERROR CODES */
 
 #define NO_ERROR 0x00
