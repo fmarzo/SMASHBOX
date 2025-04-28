@@ -46,9 +46,7 @@ def read_central(central_ser, ser, box_list):
             elif header == CODE_RE_SAFE:
                 print("re safe")
                 for port_name, data in ser.items():
-                    if data["id"] == id:
-                        data["serial"].write(CHAR_RE_SAFE)
-                        break
+                    data["serial"].write(CHAR_RE_SAFE)
 
             elif header == CODE_ENROLL:
                 print("enroll")

@@ -29,6 +29,12 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 #define ACTION_PACKET_SIZE 2
 #define CENTRAL_RECOG 
 
+/* PACKET CODES */
+
+#define PACKET_IDLE       0
+#define PACKET_CHECK      1
+#define PACKET_ENROLL     2
+#define PACKET_SAFE       3
 
 /* SERIAL RATE */
 #define STANDARD_BAUDRATE 9600

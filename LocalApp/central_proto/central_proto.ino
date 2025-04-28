@@ -13,8 +13,10 @@ const int rs = 11, en = 12, d4 = 5, d5 = 6, d6 = 7, d7 = 8;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 uint8_t zero_bytes[7] = { 0, 0, 0, 0, 0, 0, 0 };
 
-uint8_t idle_packet[ACTION_PACKET_SIZE] = {0,0};
-uint8_t safe_packet[ACTION_PACKET_SIZE] = {1,0};
+uint8_t idle_packet[ACTION_PACKET_SIZE] = {PACKET_IDLE,0};
+// packet check is in check.ino 
+// packet enroll is in enroll.ino 
+uint8_t safe_packet[ACTION_PACKET_SIZE] = {PACKET_SAFE,0};
 uint8_t idle_packet_init[PACKET_SIZE] = {0,0,0,0,0,0,0};
 
 void setup() {
@@ -96,7 +98,7 @@ void loop() {
           lcd.clear();
           lcd.print("Unlock confirmed!");
           delay(1000);
-        
+
           Serial.write(safe_packet, sizeof(safe_packet));
           break;
         }
@@ -150,7 +152,7 @@ void loop() {
   {
     digitalWrite(LED_BUILTIN, HIGH);
     Serial.write(idle_packet, sizeof(idle_packet));
-    delay(200);
+    delay(500);
     digitalWrite(LED_BUILTIN, LOW);
   }
 }

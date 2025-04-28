@@ -189,8 +189,8 @@ uint8_t getFingerprintEnroll()
     lcd.clear();
     lcd.print("Stored!");
     delay(500);
-    uint8_t packet_enroll[ACTION_PACKET_SIZE] = {2, id};
-    Serial.write(packet_enroll, ACTION_PACKET_SIZE);
+    uint8_t packet_enroll[ACTION_PACKET_SIZE] = {PACKET_ENROLL, id};
+    Serial.write(packet_enroll, sizeof(packet_enroll));
     check = 1;
   } 
   else if (p == FINGERPRINT_PACKETRECIEVEERR) 
