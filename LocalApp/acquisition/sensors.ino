@@ -28,6 +28,7 @@ uint8_t update_open_field(uint8_t* lock, int* relock)
         *lock = 1; 
         digitalWrite(MAGNET_PIN,HIGH); /* reset de magnet on as soon as we close the box */
         *relock = BOX_NOT_OPENED; /* resetting the lock to the default value */
+        digitalWrite(LED_PIN, LOW);
       }
     } 
     else
@@ -55,6 +56,7 @@ void update_lock_field(uint8_t* lock, uint8_t* safe_mode)
       {
         /* a simple unlock for the customer is required */
         *lock = 0u;
+        digitalWrite(LED_PIN, HIGH);
         digitalWrite(MAGNET_PIN,LOW);
       } 
       else if (read == CHAR_SAFE_MODE)

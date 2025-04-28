@@ -22,7 +22,7 @@ void setup()
 
   pinMode(PRESENCE_PIN, INPUT);
   pinMode(OPEN_PIN, INPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
   pinMode(MAGNET_PIN,OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   digitalWrite(MAGNET_PIN, LOW);
