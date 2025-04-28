@@ -9,7 +9,6 @@
 ADXL345 accel(ADXL345_ALT); 
 sensors_event_t temperature, humidity;
 Adafruit_AHTX0 aht;
-String lock = "1";
 uint8_t safe_mode = 0;
 packet_raw_t packet;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
@@ -76,8 +75,9 @@ while (Serial.available() > 0) Serial.read();
         Serial.readBytes(buffer, 10);
         packet.id = buffer[0];
 
+        clear_buffer();
         /* clear internal buffer after reading */
-        while (Serial.available() > 0) Serial.read();
+        //while (Serial.available() > 0) Serial.read();
 
         break;  
       }
@@ -89,12 +89,8 @@ while (Serial.available() > 0) Serial.read();
 }
 
 void send_packet (packet_raw_t* packet)
-{
-  packet->temp = (uint8_t) round(temperature.temperature);
-  packet->humidity = (uint8_t) round(humidity.relative_humidity);
-  
+{  
   Serial.write((uint8_t*)packet, sizeof(packet_raw_t));
-
 }
 
 void loop() 
@@ -103,7 +99,7 @@ void loop()
 
     update_lock_field(&(packet.lock), &safe_mode);
 
-    if (safe_mode == 0)
+    if (safe_mode == 0u)
     {
       packet.pres = update_pres_field();
 
@@ -111,15 +107,15 @@ void loop()
   
       packet.infr = update_accel_field(&accel);
   
-      update_temp_field(&aht, &temperature, &humidity);
+      update_temp_field(&aht, &temperature, &humidity, &packet);
     }
     else
     {
-      packet.pres = 0;
-      packet.open = 0;
-      packet.infr = 0;
-      packet.humidity = 0;
-      packet.temp = 0;
+      packet.pres = 0u;
+      packet.open = 0u;
+      packet.infr = 0u;
+      packet.humidity = 0u;
+      packet.temp = 0u;
     }
 
     send_packet(&packet);
@@ -129,7 +125,7 @@ void loop()
 
   #endif
 
-  delay(1000);  /* Delay to prevent overly fast readings */
+  delay(1500);  /* Delay to prevent overly fast readings */
 }
 
 

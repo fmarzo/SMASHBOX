@@ -53,19 +53,34 @@ void update_lock_field(uint8_t* lock, uint8_t* safe_mode)
 
       if (read == CHAR_UNLOCK) 
       {
+        /* a simple unlock for the customer is required */
         *lock = 0u;
         digitalWrite(MAGNET_PIN,LOW);
       } 
-      else if (read == INFR_CHAR)
+      else if (read == CHAR_SAFE_MODE)
       {
+        /* a threshold has been overpassed on the server */
+        /* bridge is notifing acquisitions with ALARM CHAR */
         *lock = 1u;
         *safe_mode = 1;
+        digitalWrite(MAGNET_PIN,HIGH);
+      }
+      else if (read == RE_SAFE_CHAR)
+      {
+        /* a manual operation on central has been performed */
+        /* bridge is notifing acquisitions for quit safe mode */
+        /* acquisitions still locked for safety */
+      
+        *lock = 1u;
+        *safe_mode = 0;
         digitalWrite(MAGNET_PIN,HIGH);
       }
       else 
       {
         digitalWrite(MAGNET_PIN,HIGH);
       }
+
+      clear_buffer();
     }
 }
 
@@ -123,7 +138,9 @@ uint8_t update_accel_field(ADXL345* accel)
     return infr;
 }
 
-void update_temp_field(Adafruit_AHTX0* aht, sensors_event_t* temperature, sensors_event_t* humidity)
+void update_temp_field(Adafruit_AHTX0* aht, sensors_event_t* temperature, sensors_event_t* humidity, packet_raw_t* packet)
 {
   aht->getEvent(humidity, temperature);
+  packet->temp = (uint8_t) round(temperature->temperature);
+  packet->humidity = (uint8_t) round(humidity->relative_humidity);
 }

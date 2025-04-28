@@ -24,7 +24,7 @@ from mqtt.mqtt import MqttClient
 from init import Initializer
 from config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
 from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, BROKER, TB_HOST, TB_PORT, TB_TOPIC, CODE_UNLOCK, \
-    CODE_ENROLL, TB_TOKEN_1, TB_TOKEN_2
+    CODE_ENROLL, TB_TOKEN_1, TB_TOKEN_2, CODE_RE_SAFE, CHAR_RE_SAFE
 
 
 def read_central(central_ser, ser, box_list):
@@ -43,6 +43,13 @@ def read_central(central_ser, ser, box_list):
                     if data["id"] == id:
                         data["serial"].write(CHAR_UNLOCK)
                         break
+            elif header == CODE_RE_SAFE:
+                print("re safe")
+                for port_name, data in ser.items():
+                    if data["id"] == id:
+                        data["serial"].write(CHAR_RE_SAFE)
+                        break
+
             elif header == CODE_ENROLL:
                 print("enroll")
                 enr_packet = [id] + [0] * 9
@@ -74,8 +81,8 @@ def read_serial_loop(s, box_list):
                     payload = box.get_packet()
                     client.publish(config.TB_TOPIC, json.dumps(payload))
                     print(
-                        f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}, Token: {client}")
-                    time.sleep(0.5)
+                        f"ID: {id_}, Presence: {pres}, Temp: {temp}, Humidity: {humidity:}, Infra: {infr}, Lock: {lock}, Open: {open_}")
+                    time.sleep(1.0)
                     break
 
 def main():
@@ -135,8 +142,8 @@ def main():
     #client.loop_stop()
     #client.disconnect()
 
-    #mqtt = system.get_mqtt()
-    #mqtt.start_mqtt()
+    mqtt = system.get_mqtt()
+    mqtt.start_mqtt()
 
     #while not mqtt.is_init():
     #    print("Wait for connection established")

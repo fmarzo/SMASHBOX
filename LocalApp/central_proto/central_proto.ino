@@ -14,8 +14,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 uint8_t zero_bytes[7] = { 0, 0, 0, 0, 0, 0, 0 };
 
 uint8_t idle_packet[ACTION_PACKET_SIZE] = {0,0};
+uint8_t safe_packet[ACTION_PACKET_SIZE] = {1,0};
 uint8_t idle_packet_init[PACKET_SIZE] = {0,0,0,0,0,0,0};
-uint8_t infr_packet[PACKET_SIZE] = {0,0,0,0,0,0,1};
 
 void setup() {
   int init_response = 0;
@@ -91,13 +91,21 @@ void loop() {
     {
       while (1) 
       {
-        if (digitalRead(UNLOCK_BUTTON_PIN) == LOW) 
-        {
-          break;
-        }
-        Serial.write(infr_packet, sizeof(infr_packet));
+        //if (digitalRead(UNLOCK_BUTTON_PIN) == LOW) 
+        //{
+        //  lcd.clear();
+        //  lcd.print("Unlock confirmed!");
+        //  delay(1000);
+//
+        //  Serial.write(safe_packet, sizeof(safe_packet));
+        //  break;
+        //}
+
         lcd.clear();
         lcd.print("ALARM!");
+        lcd.clear();
+        lcd.print("MANUAL OP REQUIRED!");
+        delay(500);
       }
     }
   }

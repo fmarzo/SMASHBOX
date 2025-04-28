@@ -16,7 +16,8 @@
 /* NOTIFICATION CHAR */
 
 #define CHAR_UNLOCK 0x26 /* & for opening lock */
-#define INFR_CHAR 0x2A /* * for infringement lock */
+#define CHAR_SAFE_MODE 0x2A /* * for infringement lock */
+#define RE_SAFE_CHAR 0x2F /* * for re safe unlock */
 
 /* SERIAL RATE */
 
@@ -35,6 +36,12 @@
 #define BOX_NOT_OPENED 0
 String SIMULATION_STRING = "12154010";
 
+
+void clear_buffer ()
+{
+  /* clear internal buffer after reading */
+  while (Serial.available() > 0) Serial.read();
+}
 
 #endif _CONFIG
 
