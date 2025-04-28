@@ -18,12 +18,12 @@ uint8_t getFingerprintID()
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("image taken");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_NOFINGER:
       lcd.clear();
       lcd.print("Waiting finger");
-      delay(500);
+      delay(800);
       return p;
     case FINGERPRINT_PACKETRECIEVEERR:
       lcd.clear();
@@ -49,7 +49,7 @@ uint8_t getFingerprintID()
     case FINGERPRINT_OK:
       lcd.clear();
       lcd.print("Image converted");
-      delay(500);
+      delay(800);
       break;
     case FINGERPRINT_IMAGEMESS:
       lcd.clear();
@@ -83,7 +83,7 @@ uint8_t getFingerprintID()
   {
     lcd.clear();
     lcd.print("match found");
-    delay(500);
+    delay(800);
   } 
   else if (p == FINGERPRINT_PACKETRECIEVEERR) 
   {
@@ -96,7 +96,7 @@ uint8_t getFingerprintID()
   {
     lcd.clear();
     lcd.print("no match found");
-    delay(500);
+    delay(800);
     return p;
   } 
   else 
@@ -109,15 +109,10 @@ uint8_t getFingerprintID()
   lcd.clear();
   lcd.print("ID: " );
   lcd.print(finger.fingerID);
-  delay(500);
+  delay(800);
   uint8_t packet_check[ACTION_PACKET_SIZE] = {PACKET_CHECK, finger.fingerID};
   Serial.write(packet_check, ACTION_PACKET_SIZE);
-
-  //Serial.print("01" + padLeft(String(finger.fingerID), 3, '0') + "000000" );
-  lcd.clear();
-  lcd.print("confidence: " + finger.confidence);
-  delay(500);
-  // TODO: questa serve? Se no, togliamo. Se si (credo di si), è la stessa di central_proto.ino? Perchè in quel caso va gestita diversamente (ne parliamo a voce)
+  
   check = 1;
 
   return finger.fingerID;

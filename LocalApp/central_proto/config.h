@@ -56,4 +56,11 @@ device (such as a fingerprint sensor), we need to create a software serial port 
 #define CENTRAL_RECOGNIZE_CHAR 0x40 /* @ for bridge-central handshake */
 #define INFRING_CHAR  0x5F /* _ for notify the infringement*/
 
+
+void clear_buffer ()
+{
+  /* clear internal buffer after reading */
+  while (Serial.available() > 0) Serial.read();
+}
+
 #endif _CONFIG

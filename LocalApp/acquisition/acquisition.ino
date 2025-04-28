@@ -12,6 +12,7 @@ Adafruit_AHTX0 aht;
 uint8_t safe_mode = 0;
 packet_raw_t packet;
 int relock = BOX_NOT_OPENED; /* variable used to check if the box has been fisically opened and closed in order to reset the lock variable to 0 */
+bool active_infr = false;
 
 void setup()  
 {
@@ -90,7 +91,14 @@ while (Serial.available() > 0) Serial.read();
 
 void send_packet (packet_raw_t* packet)
 {  
+
   Serial.write((uint8_t*)packet, sizeof(packet_raw_t));
+
+  if (packet->infr > 0)
+  {
+    active_infr == true;
+    packet->infr = 0;
+  }
 }
 
 void loop() 
@@ -105,7 +113,10 @@ void loop()
 
       packet.open = update_open_field (&packet.lock, &relock);
   
-      packet.infr = update_accel_field(&accel);
+      if (!active_infr)
+      {
+        packet.infr = update_accel_field(&accel);
+      }
   
       update_temp_field(&aht, &temperature, &humidity, &packet);
     }

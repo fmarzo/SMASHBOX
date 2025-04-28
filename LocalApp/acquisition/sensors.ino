@@ -70,7 +70,7 @@ void update_lock_field(uint8_t* lock, uint8_t* safe_mode)
         /* a manual operation on central has been performed */
         /* bridge is notifing acquisitions for quit safe mode */
         /* acquisitions still locked for safety */
-      
+        active_infr = false;
         *lock = 1u;
         *safe_mode = 0;
         digitalWrite(MAGNET_PIN,HIGH);

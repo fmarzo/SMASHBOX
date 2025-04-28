@@ -100,6 +100,8 @@ void loop() {
           delay(1000);
 
           Serial.write(safe_packet, sizeof(safe_packet));
+
+          clear_buffer();
           break;
         }
 
@@ -145,7 +147,7 @@ void loop() {
   else 
   {
     getFingerprintID();
-    delay(50);
+    delay(100);
   }
 
   if (check == 0) 
