@@ -91,15 +91,15 @@ void loop() {
     {
       while (1) 
       {
-        //if (digitalRead(UNLOCK_BUTTON_PIN) == LOW) 
-        //{
-        //  lcd.clear();
-        //  lcd.print("Unlock confirmed!");
-        //  delay(1000);
-//
-        //  Serial.write(safe_packet, sizeof(safe_packet));
-        //  break;
-        //}
+        if (digitalRead(UNLOCK_BUTTON_PIN) == LOW) 
+        {
+          lcd.clear();
+          lcd.print("Unlock confirmed!");
+          delay(1000);
+        
+          Serial.write(safe_packet, sizeof(safe_packet));
+          break;
+        }
 
         lcd.clear();
         lcd.print("ALARM!");
