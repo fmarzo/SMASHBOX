@@ -127,6 +127,12 @@ void loop()
       packet.infr = 0u;
       packet.humidity = 0u;
       packet.temp = 0u;
+
+      digitalWrite(LED_PIN, HIGH);
+      delay(200);
+      digitalWrite(LED_PIN, LOW);
+      delay(200);
+      
     }
 
     send_packet(&packet);

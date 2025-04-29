@@ -3,12 +3,16 @@
 uint8_t getFingerprintID()
 {
     lcd.clear();
-    //lcd.print("Waiting finger..");
+
     uint8_t p = finger.getImage();
     if (p != FINGERPRINT_OK)
     {
+        lcd.print("Waiting finger..");
         return p;
     }
+      
+    lcd.clear();  
+    lcd.print("Image taken..");
 
     p = finger.image2Tz();
     if (p != FINGERPRINT_OK)
@@ -16,9 +20,13 @@ uint8_t getFingerprintID()
         return p;
     }
 
+    lcd.clear();  
+    lcd.print("Image converted..");
+
     p = finger.fingerFastSearch();
     if (p != FINGERPRINT_OK)
     {
+        lcd.clear();
         lcd.println("Match not found");
         return p;
     }

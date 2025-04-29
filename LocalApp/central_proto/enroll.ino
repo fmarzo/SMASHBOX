@@ -29,7 +29,7 @@ bool enrollFingerprint(int id)
         return false;
     }
 
-    lcd.print("Remove finger.");
+    lcd.print("Remove finger");
     delay(2000);
     while (finger.getImage() != FINGERPRINT_NOFINGER);
 
