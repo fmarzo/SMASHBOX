@@ -140,8 +140,8 @@ def main():
     #client.loop_stop()
     #client.disconnect()
 
-    mqtt = system.get_mqtt()
-    mqtt.start_mqtt()
+    #mqtt = system.get_mqtt()
+    #mqtt.start_mqtt()
 
     #while not mqtt.is_init():
     #    print("Wait for connection established")
