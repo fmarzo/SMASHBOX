@@ -129,10 +129,8 @@ void loop()
       packet.temp = 0u;
 
       digitalWrite(LED_PIN, HIGH);
-      delay(200);
+      delay(100);
       digitalWrite(LED_PIN, LOW);
-      delay(200);
-      
     }
 
     send_packet(&packet);

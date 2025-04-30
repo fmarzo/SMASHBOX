@@ -25,7 +25,7 @@ class Box:
     self.infringement = 0
     self.presence = 0
     self.open = 0
-    self.date = "NULL"
+    self.date = []
     
   def set_id(self, id):
       self.id = id
@@ -48,7 +48,7 @@ class Box:
           "infringement": self.infringement,
           "lock": self.lock,
           "open": self.open,
-          "log": self.date
+          #"log": self.date
       }
       return packet
 
@@ -68,12 +68,11 @@ class Box:
       self.lock = int(chr(packet[9]))
       self.open = int(chr(packet[10]))
 
-
   def update_latest_log(self):
       formatted_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
       print(formatted_timestamp)
       print(type(formatted_timestamp))
-      self.date = formatted_timestamp
+      self.date.append(formatted_timestamp)
 
   def set_raw_box_param(self, val):
       id_, pres, temp, humidity, infr, lock, open_ = struct.unpack('7B', val)

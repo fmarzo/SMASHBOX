@@ -45,11 +45,9 @@ class FirebaseDB:
         client = self.find_client(Client.client_id, Box.id)
         if client[0]:
             ref = self.get_db_reference().child(client[1])
-
             current_logs = ref.child("Logs").get()
             if current_logs is None:
                 current_logs = []
-
             new_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             current_logs.append(new_timestamp)
             ref.update({"Logs": current_logs})
@@ -98,7 +96,7 @@ class FirebaseDB:
         else:
             print("Customer exists already!")
 
-    def delete_customer(self, Box, Client):
+    def     delete_customer(self, Box, Client):
         client = self.find_client(Client.client_id,Box.id)
         if client[0]:
             # Client Exists, proceed with deletion
@@ -125,14 +123,9 @@ class FirebaseDB:
     def find_client(self, id_client, id_box):
         if self.__n_cust != 0:
             for key, item in self.__customer_list:
-                if item.get(config.DB_FIELD_ID) == id_client:
-                    if item.get(config.DB_FIELD_BOX) == id_box:
-                        print ("Found Customers" + "Name " + item.get(config.DB_FIELD_NAME) +
-                               f"Surname " + item.get(config.DB_FIELD_SURNAME) +
-                               f"Client ID {id_client} has Box {id_box}")
-                        return True, key, item
-            print("No matches!")
-            return False, None, None
+                print (key)
+                print(item)
+                return True, key, item
         else:
             print("Customer list is empty!")
             return False, None, None

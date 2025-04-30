@@ -4,8 +4,10 @@ bool enrollFingerprint(int id)
 {
     int p = -1;
     lcd.clear();
+    
+    //String waiting_msg = "Waiting enroll.."
     lcd.print("Waiting enroll...");
-
+    lcd.print(id);
     while (p != FINGERPRINT_OK)
     {
         p = finger.getImage();

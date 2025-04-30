@@ -4,6 +4,7 @@ import os
 import struct
 import time
 from configparser import NoOptionError
+from platform import system
 from random import randint
 from time import sleep
 
@@ -28,6 +29,8 @@ from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, BROKER, TB_HOST, TB_
 
 
 def read_central(central_ser, ser, box_list):
+    fb = FirebaseDB()
+
     while True:
         central_response = central_ser.read(config.CNTR_N_BYTES)
         if len(central_response) > 1:
@@ -39,6 +42,7 @@ def read_central(central_ser, ser, box_list):
                 pass
             elif header == CODE_UNLOCK:
                 print("check")
+                fb.add_new_access(box_list["Box"][0],box_list["Customers"][0])
                 for port_name, data in ser.items():
                     if data["id"] == id:
                         data["serial"].write(CHAR_UNLOCK)
@@ -99,18 +103,16 @@ def main():
     box_1 = Box(-1, config.URL_DEVICE_1)
     box_2 = Box(-1, config.URL_DEVICE_2)
 
-    box_list = {"Box": [box_1, box_2], "Token": [TB_TOKEN_1, TB_TOKEN_2], "Clients": []}
+    cli_1 = Client("Client", "1", 1001, "client1@gmail.com")
 
-    cli_1 = Client("El", "EL", 1001, "eltucuman1@gmail.com")
-    cli_2 = Client("Tu", "TU", 1002, "eltucuman2@gmail.com")
-    cli_3 = Client("Cu", "CU", 1003, "eltucuman3@gmail.com")
-    cli_4 = Client("Ma", "MA", 1004, "eltucuman4@gmail.com")
-    cli_5 = Client("No", "NO", 1005, "eltucuman5@gmail.com")
+    firebase_db.delete_customer(box_1, cli_1)
+    firebase_db.insert_new_customer(box_1, cli_1)
+    #firebase_db.update_customer(box_1, cli_1, {'Names': 'Client', 'Surname': '1', 'Mail': "client1@bank.com", 'ID': "1"})
+
+    box_list = {"Box": [box_1, box_2], "Token": [TB_TOKEN_1, TB_TOKEN_2], "Clients": [], "Customers": [cli_1]}
 
     if config.INJECT_CUSTOMERS == 1:
         firebase_db.insert_new_customer(box_1, cli_1)
-        sleep(1)
-        firebase_db.insert_new_customer(box_2, cli_2)
         sleep(1)
 
     if config.DELETE_CUSTOMERS == 1:

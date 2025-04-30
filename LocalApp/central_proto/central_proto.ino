@@ -146,7 +146,7 @@ void loop()
           {
             lcd.clear();
             lcd.print("Unlock confirmed!");
-            delay(1000);
+            delay(2000);
 
             Serial.write(safe_packet, sizeof(safe_packet));
 
