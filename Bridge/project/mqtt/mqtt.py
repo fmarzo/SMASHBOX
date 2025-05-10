@@ -11,7 +11,7 @@ from google.api_core.operations_v1.operations_client_config import config
 import init
 from bot.tgbot import TgBot
 
-from project.config import CHAR_SAFE_MODE, CHAR_CTRL_SAFE_MODE
+from config import CHAR_SAFE_MODE, CHAR_CTRL_SAFE_MODE
 
 
 #bridge rebase

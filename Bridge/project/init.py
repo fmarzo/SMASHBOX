@@ -3,15 +3,12 @@ import struct
 
 import serial
 import serial.tools.list_ports
-from scipy.stats import false_discovery_control
-
 import config
-from bot.tgbot import TgBot
 from database.firebase_db import FirebaseDB
 from mqtt.mqtt import MqttClient
 from time import sleep
 
-from project.config import CHAR_CENTRAL_ASSIGN
+from config import CHAR_CENTRAL_ASSIGN
 
 
 class Initializer:

@@ -1,31 +1,17 @@
 import asyncio
 import json
-import os
 import struct
 import time
-from configparser import NoOptionError
-from platform import system
-from random import randint
 from time import sleep
-
-import requests
-import serial
 import threading
-
-from pycparser.ply.lex import TOKEN
-
-import init
 from bot.tgbot import TgBot
-from init import Initializer
 from models.box import Box
 import config
 from models.client import Client
 from database.firebase_db import FirebaseDB
-from mqtt.mqtt import MqttClient
 from init import Initializer
-from config import CHAR_ENROLL, CHAR_CHECK, CHAR_UNLOCK, CHAR_IDLE
-from project.config import UBI_TOKEN, UBI_BROKER, UBI_PORT, BROKER, TB_HOST, TB_PORT, TB_TOPIC, CODE_UNLOCK, \
-    CODE_ENROLL, TB_TOKEN_1, TB_TOKEN_2, CODE_RE_SAFE, CHAR_RE_SAFE
+from config import CHAR_UNLOCK, CHAR_IDLE
+from config import CODE_UNLOCK, CODE_ENROLL, TB_TOKEN_1, TB_TOKEN_2, CODE_RE_SAFE, CHAR_RE_SAFE
 
 
 def read_central(central_ser, ser, box_list):
