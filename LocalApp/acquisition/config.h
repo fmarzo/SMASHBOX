@@ -17,7 +17,7 @@
 
 #define CHAR_UNLOCK 0x26 /* & for opening lock */
 #define CHAR_SAFE_MODE 0x2A /* * for infringement lock */
-#define RE_SAFE_CHAR 0x2F /* * for re safe unlock */
+#define RE_SAFE_CHAR 0x2F /* / for re safe unlock */
 
 /* SERIAL RATE */
 
