@@ -14,7 +14,8 @@ SMASHBOX is redefining the traditional concept of bank safe deposit boxes, trans
 2. Start the project, launching (Windows only):
 
    ```bash
-   cd your_path_to_repo/smashbox_launcher.bat
+   cd your_path_to_repo/
+   ./smashbox_launcher.bat
 
   
 ## ⚙️ Technologies
