@@ -3,6 +3,8 @@
 Secure Monitoring And Smart Hub for Biometric Optical boXes 
 SMASHBOX is redefining the traditional concept of bank safe deposit boxes, transforming them into intelligent, interconnected, and biometrically secured systems. We are moving beyond static, conventional storage models to usher in a new era of dynamic, personalized, and digitally enhanced security.”
 
+![SMASHBOX](./Presentation/smashbox.jfif)
+
 ## 🚀 Getting Started
 
 1. Clone the repository:
@@ -13,6 +15,7 @@ SMASHBOX is redefining the traditional concept of bank safe deposit boxes, trans
 
    ```bash
    cd your_path_to_repo/smashbox_launcher.bat
+
   
 ## ⚙️ Technologies
 
@@ -22,8 +25,9 @@ SMASHBOX is redefining the traditional concept of bank safe deposit boxes, trans
 
 🐍 Python – Bridge, data processing, and API integration
 
-## :📑 Documentation
+## 📑 Documentation
 
 Take a look to our PDF presentation of the project: 
 
 [📑 SMASHBOX Presentation](./Presentation/IoT&3D_Intelligent_Systems_project@UniversityofModenaAndReggioEmilia.pdf)
+
