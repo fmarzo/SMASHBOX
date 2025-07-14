@@ -26,4 +26,4 @@ SMASHBOX is redefining the traditional concept of bank safe deposit boxes, trans
 
 Take a look to our PDF presentation of the project: 
 
-[📑 Download PDF Documentation](./Presentation/IoT&3D_Intelligent_Systems_project@UniversityofModenaAndReggioEmilia.pdf)
+[📑 SMASHBOX Presentation](./Presentation/IoT&3D_Intelligent_Systems_project@UniversityofModenaAndReggioEmilia.pdf)
