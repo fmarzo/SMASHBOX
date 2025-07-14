@@ -1,7 +1,7 @@
 # 📦 SMASHBOX
 
 Secure Monitoring And Smart Hub for Biometric Optical boXes 
-SMASHBOX is redefining the traditional concept of bank safe deposit boxes, transforming them into intelligent, interconnected, and biometrically secured systems. We are moving beyond static, conventional storage models to usher in a new era of dynamic, personalized, and digitally enhanced security.”
+SMASHBOX is redefining the traditional concept of bank safe deposit boxes, transforming them into intelligent, interconnected, and biometrically secured systems. We are moving beyond static, conventional storage models to usher in a new era of dynamic, personalized, and digitally enhanced security.
 
 ![SMASHBOX](./Presentation/smashbox.jfif)
 
