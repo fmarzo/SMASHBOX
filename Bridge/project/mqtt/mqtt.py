@@ -1,11 +1,18 @@
+import asyncio
+from time import sleep
 from urllib.parse import ResultBase
 
 import paho.mqtt.client as mqtt
 import json
 import config
+from config import CHAT_ID_TG_BOT
 from google.api_core.operations_v1.operations_client_config import config
 
 import init
+from bot.tgbot import TgBot
+
+from config import CHAR_SAFE_MODE, CHAR_CTRL_SAFE_MODE
+
 
 #bridge rebase
 class MqttClient:
@@ -45,10 +52,16 @@ class MqttClient:
         data = json.loads(msg.payload.decode())
         ser = init.Initializer()
         ser_central = ser.get_central_serial()
+
+        tg_bot = TgBot.get_instance()
+        asyncio.run(tg_bot.send_msg(CHAT_ID_TG_BOT, "ALARM!"))
+
         print("WARNING! ALARM RECEIVED!")
         if ser_central is not None:
-            ser_central.write(b"1") #sending "1" to notify safe mode to central
-            #TODO: send to acquisition notification for locking
+            ser_central.write(CHAR_CTRL_SAFE_MODE) #sending "_" to notify safe mode to central
+        for port_name, data in ser.get_serials().items():
+            s = data["serial"]
+            s.write(CHAR_SAFE_MODE) #sending "*" to notify infringement to acquisition
 
     def is_init (self):
         return self.__initialized

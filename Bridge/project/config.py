@@ -22,9 +22,24 @@ TEMP_PARAM = 10
 SERIAL_BAUDRATE = 9600
 SERIAL_COM_MAC_RADIX = "/dev/cu.usbmodem"
 SERIAL_COM_WIN_RADIX = "COM"
-N_BYTES = 9
-CENTRAL_SERIAL = 0
 
+N_BYTES =7
+CNTR_N_BYTES = 2
+
+CENTRAL_SERIAL = 0
+CODE_UNLOCK = 1
+CODE_ENROLL = 2
+CODE_RE_SAFE = 3
+
+CHAR_CHECK = "1"
+CHAR_ENROLL = "2"
+CHAR_SAFE_MODE = b"*"
+CHAR_UNLOCK = b"&"
+CHAR_CENTRAL_ASSIGN = b"@"
+CHAR_CTRL_SAFE_MODE = b"_"
+CHAR_RE_SAFE = b"/"
+
+CHAR_IDLE = "0"
 #FIREBASE PARAMS
 
 DB_DATABASE_URL = "https://customerlist-970ff-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -37,15 +52,38 @@ DB_FIELD_MAIL = 'Mail'
 DB_ROOT_PATH = "/Customers"
 
 #MQTT SERVER
-BROKER = "broker.hivemq.com"  # Free MQTT broker
+BROKER = "test.mosquitto.org"  # Free MQTT broker
 PORT = 1883                   # Default MQTT port (non-secure)
-TOPIC = "box/alarm"          # Topic to publish/subscribe
+TOPIC = "smashbox/alarms"          # Topic to publish/subscribe
+
+TB_TOKEN_1 = "o0SzxyiH8fZWK1uQrRh2"
+TB_TOKEN_2 = "7QC2PthzFKhkp9AJAW2z"
+
+TB_HOST = "demo.thingsboard.io"
+TB_PORT = 1883
+TB_TOPIC = "v1/devices/me/telemetry"
+
+# Sostituisci con il tuo token Ubidots
+UBI_TOKEN = "BBUS-LoMWbuJT0n6InWvG96UsiE5tYqTeB0"
+# Etichetta del dispositivo
+UBI_DEVICE_LABEL = "box_1"
+# Broker MQTT di Ubidots
+UBI_BROKER = "industrial.api.ubidots.com"
+UBI_PORT = 1883
+# Topic MQTT
+UBI_TOPIC = f"/v1.6/devices/{UBI_DEVICE_LABEL}"
 
 #OPERATING SYSTEM ID
 WINDOWS_OS_ID = "nt"
 
+
 #DEBUG_PARAMETERS
 SIMULATION = 0 # no simulation for default
+FORCE_SIMULATION = 1 # simulation while aquisitions are live
 INJECT_CUSTOMERS = 0
 DELETE_CUSTOMERS = 0
 UPDATE_CUSTOMERS = 0
+
+#TELEGRAM BOT
+TOKEN_TG_BOT = "7994668623:AAEBCL-Ed4IKeRUWzirktG2HHTL62SoEjbY"
+CHAT_ID_TG_BOT = 2074734224

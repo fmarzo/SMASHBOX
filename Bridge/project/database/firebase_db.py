@@ -1,16 +1,27 @@
 import firebase_admin
 from firebase_admin import db, credentials
 from serialpy.utils import update
+from datetime import datetime
 
 import config
 
 class FirebaseDB:
+    _instance = None
+    _initialized = False
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        self.__cred = credentials.Certificate(config.DB_CREDENTIALS_PATH)
-        self.__database_url = config.DB_DATABASE_URL
-        self.__customer_list = list()
-        self.__n_cust = 0
-        self.db_init()
+        if not self._initialized:
+            FirebaseDB._initialized = True
+            self.__cred = credentials.Certificate(config.DB_CREDENTIALS_PATH)
+            self.__database_url = config.DB_DATABASE_URL
+            self.__customer_list = list()
+            self.__n_cust = 0
+            self.db_init()
 
     def db_init(self):
         firebase_admin.initialize_app(self.__cred, {
@@ -29,6 +40,30 @@ class FirebaseDB:
             self.__n_cust = len(self.__customer_list)
         else:
             self.__n_cust = 0
+
+    def add_new_access(self, Box, Client):
+        client = self.find_client(Client.client_id, Box.id)
+        if client[0]:
+            ref = self.get_db_reference().child(client[1])
+            current_logs = ref.child("Logs").get()
+            if current_logs is None:
+                current_logs = []
+            new_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            current_logs.append(new_timestamp)
+            ref.update({"Logs": current_logs})
+            print(f"Log registered for {Client.client_id} at {new_timestamp}")
+        else:
+            print("Customer not found!")
+
+    def get_logs(self, Box, Client) -> []:
+        client = self.find_client(Client.client_id, Box.id)
+        if client[0]:
+            ref = self.get_db_reference().child(client[1])
+            current_logs = ref.child("Logs").get()
+            print (f"{current_logs} for {Client.client_id}")
+            return current_logs
+        else:
+            print("Customer not found!")
 
     def get_db_reference (self):
         return db.reference(f"/Customers")
@@ -52,7 +87,8 @@ class FirebaseDB:
                 "ID": Client.client_id,
                 "Mail": Client.mail,
                 "Name": Client.name,
-                "Surname": Client.surname
+                "Surname": Client.surname,
+                "Logs": []
             }
             ref = db.reference(config.DB_ROOT_PATH)
             ref.push(new_item)
@@ -60,7 +96,7 @@ class FirebaseDB:
         else:
             print("Customer exists already!")
 
-    def delete_customer(self, Box, Client):
+    def     delete_customer(self, Box, Client):
         client = self.find_client(Client.client_id,Box.id)
         if client[0]:
             # Client Exists, proceed with deletion
@@ -87,20 +123,12 @@ class FirebaseDB:
     def find_client(self, id_client, id_box):
         if self.__n_cust != 0:
             for key, item in self.__customer_list:
-                if item.get(config.DB_FIELD_ID) == id_client:
-                    if item.get(config.DB_FIELD_BOX) == id_box:
-                        print ("Found Customers" + "Name " + item.get(config.DB_FIELD_NAME) +
-                               f"Surname " + item.get(config.DB_FIELD_SURNAME) +
-                               f"Client ID {id_client} has Box {id_box}")
-                        return True, key, item
-            print("No matches!")
-            return False, None, None
+                print (key)
+                print(item)
+                return True, key, item
         else:
             print("Customer list is empty!")
             return False, None, None
-
-    #TODO: Add routine to query clients trough client_id
-    #TODO: Add routine to query clients trough box_id
 
 
 

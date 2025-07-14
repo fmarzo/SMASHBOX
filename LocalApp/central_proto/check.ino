@@ -2,96 +2,41 @@
 
 uint8_t getFingerprintID()
 {
-  uint8_t p = finger.getImage();
-  switch (p) {
-    case FINGERPRINT_OK:
-      lcd.clear();
-      lcd.print("image taken");
-      delay(500);
-      break;
-    case FINGERPRINT_NOFINGER:
-      lcd.clear();
-      lcd.print("Waiting finger");
-      delay(500);
-      return p;
-    case FINGERPRINT_PACKETRECIEVEERR:
-      lcd.clear();
-      lcd.print("com error");
-      delay(500);
-      return p;
-    case FINGERPRINT_IMAGEFAIL:
-      lcd.clear();
-      lcd.print("imaging error");
-      delay(500);
-      return p;
-    default:
-    //  Serial.println("Unknown error");
-      return p;
-  }
-
-  // OK success!
-
-  p = finger.image2Tz();
-  switch (p) {
-    case FINGERPRINT_OK:
-      lcd.clear();
-      lcd.print("Image converted");
-      delay(500);
-      break;
-    case FINGERPRINT_IMAGEMESS:
-      lcd.clear();
-      lcd.print("Image messy");
-      delay(500);
-      return p;
-    case FINGERPRINT_PACKETRECIEVEERR:
-      lcd.clear();
-      lcd.print("comm error");
-      delay(500);
-      return p;
-    case FINGERPRINT_FEATUREFAIL:
-      lcd.clear();
-      lcd.print("no finger feat");
-      delay(500);
-      return p;
-    case FINGERPRINT_INVALIDIMAGE:
-      lcd.clear();
-      lcd.print("no finger feat");
-      delay(500);
-      return p;
-    default:
-      //Serial.println("Unknown error");
-      return p;
-  }
-
-  // OK converted!
-  p = finger.fingerSearch();
-  if (p == FINGERPRINT_OK) {
     lcd.clear();
-    lcd.print("match found");
-    delay(500);
-  } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
-    lcd.clear();
-    lcd.print("com error");
-    delay(500);
-    return p;
-  } else if (p == FINGERPRINT_NOTFOUND) {
-    lcd.clear();
-    lcd.print("no match found");
-    delay(500);
-    return p;
-  } else {
-   // Serial.println("Unknown error");
-    return p;
-  }
 
-  // found a match!
-  lcd.clear();
-  lcd.print("ID: " + finger.fingerID);
-  delay(500);
-  Serial.print("Found ID #"); Serial.print(finger.fingerID);
-  lcd.clear();
-  lcd.print("confidence: " + finger.confidence);
-  delay(500);
+    uint8_t p = finger.getImage();
+    if (p != FINGERPRINT_OK)
+    {
+        lcd.print("Waiting finger..");
+        return p;
+    }
+      
+    lcd.clear();  
+    lcd.print("Image taken..");
 
-  return finger.fingerID;
+    p = finger.image2Tz();
+    if (p != FINGERPRINT_OK)
+    {
+        return p;
+    }
+
+    lcd.clear();  
+    lcd.print("Image converted..");
+
+    p = finger.fingerFastSearch();
+    if (p != FINGERPRINT_OK)
+    {
+        lcd.clear();
+        lcd.println("Match not found");
+        return p;
+    }
+
+    /* found a match! */
+    lcd.clear();
+    lcd.print("ID: " );
+    lcd.print(finger.fingerID);
+    delay(800);
+    uint8_t packet_check[ACTION_PACKET_SIZE] = {PACKET_CHECK, finger.fingerID};
+    Serial.write(packet_check, ACTION_PACKET_SIZE);
+    return p;
 }
